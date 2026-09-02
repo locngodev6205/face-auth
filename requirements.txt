@@ -1,0 +1,9 @@
+insightface
+onnxruntime
+opencv-python
+numpy
+psycopg[binary]
+python-dotenv
+scikit-learn
+pillow
+psycopg-pool

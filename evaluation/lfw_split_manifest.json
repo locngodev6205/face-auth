@@ -1,0 +1,4412 @@
+{
+  "random_seed": 42,
+  "max_gallery_images": 5,
+  "min_images_enrolled": 9,
+  "min_images_impostor": 3,
+  "calib_query_images_per_id": 2,
+  "test_query_images_per_id": 2,
+  "enrolled": {
+    "Abdullah_Gul": {
+      "gallery": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Abdullah_Gul/Abdullah_Gul_0007.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Abdullah_Gul/Abdullah_Gul_0005.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Abdullah_Gul/Abdullah_Gul_0001.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Abdullah_Gul/Abdullah_Gul_0003.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Abdullah_Gul/Abdullah_Gul_0004.jpg"
+      ],
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Abdullah_Gul/Abdullah_Gul_0009.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Abdullah_Gul/Abdullah_Gul_0016.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Abdullah_Gul/Abdullah_Gul_0013.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Abdullah_Gul/Abdullah_Gul_0002.jpg"
+      ]
+    },
+    "Andy_Roddick": {
+      "gallery": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Andy_Roddick/Andy_Roddick_0005.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Andy_Roddick/Andy_Roddick_0007.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Andy_Roddick/Andy_Roddick_0011.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Andy_Roddick/Andy_Roddick_0013.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Andy_Roddick/Andy_Roddick_0015.jpg"
+      ],
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Andy_Roddick/Andy_Roddick_0010.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Andy_Roddick/Andy_Roddick_0004.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Andy_Roddick/Andy_Roddick_0008.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Andy_Roddick/Andy_Roddick_0006.jpg"
+      ]
+    },
+    "Anna_Kournikova": {
+      "gallery": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Anna_Kournikova/Anna_Kournikova_0001.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Anna_Kournikova/Anna_Kournikova_0011.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Anna_Kournikova/Anna_Kournikova_0009.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Anna_Kournikova/Anna_Kournikova_0008.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Anna_Kournikova/Anna_Kournikova_0012.jpg"
+      ],
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Anna_Kournikova/Anna_Kournikova_0003.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Anna_Kournikova/Anna_Kournikova_0002.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Anna_Kournikova/Anna_Kournikova_0007.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Anna_Kournikova/Anna_Kournikova_0006.jpg"
+      ]
+    },
+    "Ari_Fleischer": {
+      "gallery": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Ari_Fleischer/Ari_Fleischer_0011.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Ari_Fleischer/Ari_Fleischer_0012.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Ari_Fleischer/Ari_Fleischer_0007.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Ari_Fleischer/Ari_Fleischer_0005.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Ari_Fleischer/Ari_Fleischer_0001.jpg"
+      ],
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Ari_Fleischer/Ari_Fleischer_0009.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Ari_Fleischer/Ari_Fleischer_0002.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Ari_Fleischer/Ari_Fleischer_0003.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Ari_Fleischer/Ari_Fleischer_0008.jpg"
+      ]
+    },
+    "Ariel_Sharon": {
+      "gallery": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Ariel_Sharon/Ariel_Sharon_0011.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Ariel_Sharon/Ariel_Sharon_0066.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Ariel_Sharon/Ariel_Sharon_0050.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Ariel_Sharon/Ariel_Sharon_0071.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Ariel_Sharon/Ariel_Sharon_0020.jpg"
+      ],
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Ariel_Sharon/Ariel_Sharon_0039.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Ariel_Sharon/Ariel_Sharon_0016.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Ariel_Sharon/Ariel_Sharon_0026.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Ariel_Sharon/Ariel_Sharon_0055.jpg"
+      ]
+    },
+    "Bill_Frist": {
+      "gallery": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Bill_Frist/Bill_Frist_0001.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Bill_Frist/Bill_Frist_0004.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Bill_Frist/Bill_Frist_0005.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Bill_Frist/Bill_Frist_0008.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Bill_Frist/Bill_Frist_0002.jpg"
+      ],
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Bill_Frist/Bill_Frist_0006.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Bill_Frist/Bill_Frist_0007.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Bill_Frist/Bill_Frist_0009.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Bill_Frist/Bill_Frist_0003.jpg"
+      ]
+    },
+    "Bill_McBride": {
+      "gallery": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Bill_McBride/Bill_McBride_0006.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Bill_McBride/Bill_McBride_0007.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Bill_McBride/Bill_McBride_0005.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Bill_McBride/Bill_McBride_0001.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Bill_McBride/Bill_McBride_0004.jpg"
+      ],
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Bill_McBride/Bill_McBride_0008.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Bill_McBride/Bill_McBride_0010.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Bill_McBride/Bill_McBride_0003.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Bill_McBride/Bill_McBride_0002.jpg"
+      ]
+    },
+    "Bill_Simon": {
+      "gallery": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Bill_Simon/Bill_Simon_0001.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Bill_Simon/Bill_Simon_0013.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Bill_Simon/Bill_Simon_0005.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Bill_Simon/Bill_Simon_0012.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Bill_Simon/Bill_Simon_0008.jpg"
+      ],
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Bill_Simon/Bill_Simon_0015.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Bill_Simon/Bill_Simon_0011.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Bill_Simon/Bill_Simon_0003.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Bill_Simon/Bill_Simon_0010.jpg"
+      ]
+    },
+    "Carlos_Menem": {
+      "gallery": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Carlos_Menem/Carlos_Menem_0001.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Carlos_Menem/Carlos_Menem_0009.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Carlos_Menem/Carlos_Menem_0006.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Carlos_Menem/Carlos_Menem_0003.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Carlos_Menem/Carlos_Menem_0014.jpg"
+      ],
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Carlos_Menem/Carlos_Menem_0005.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Carlos_Menem/Carlos_Menem_0008.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Carlos_Menem/Carlos_Menem_0002.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Carlos_Menem/Carlos_Menem_0018.jpg"
+      ]
+    },
+    "Catherine_Zeta-Jones": {
+      "gallery": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Catherine_Zeta-Jones/Catherine_Zeta-Jones_0001.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Catherine_Zeta-Jones/Catherine_Zeta-Jones_0005.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Catherine_Zeta-Jones/Catherine_Zeta-Jones_0004.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Catherine_Zeta-Jones/Catherine_Zeta-Jones_0003.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Catherine_Zeta-Jones/Catherine_Zeta-Jones_0010.jpg"
+      ],
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Catherine_Zeta-Jones/Catherine_Zeta-Jones_0008.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Catherine_Zeta-Jones/Catherine_Zeta-Jones_0011.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Catherine_Zeta-Jones/Catherine_Zeta-Jones_0009.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Catherine_Zeta-Jones/Catherine_Zeta-Jones_0007.jpg"
+      ]
+    },
+    "Charles_Moose": {
+      "gallery": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Charles_Moose/Charles_Moose_0001.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Charles_Moose/Charles_Moose_0008.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Charles_Moose/Charles_Moose_0011.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Charles_Moose/Charles_Moose_0013.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Charles_Moose/Charles_Moose_0005.jpg"
+      ],
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Charles_Moose/Charles_Moose_0002.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Charles_Moose/Charles_Moose_0003.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Charles_Moose/Charles_Moose_0004.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Charles_Moose/Charles_Moose_0009.jpg"
+      ]
+    },
+    "Colin_Farrell": {
+      "gallery": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Colin_Farrell/Colin_Farrell_0009.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Colin_Farrell/Colin_Farrell_0002.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Colin_Farrell/Colin_Farrell_0008.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Colin_Farrell/Colin_Farrell_0001.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Colin_Farrell/Colin_Farrell_0007.jpg"
+      ],
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Colin_Farrell/Colin_Farrell_0004.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Colin_Farrell/Colin_Farrell_0006.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Colin_Farrell/Colin_Farrell_0005.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Colin_Farrell/Colin_Farrell_0003.jpg"
+      ]
+    },
+    "Dick_Cheney": {
+      "gallery": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Dick_Cheney/Dick_Cheney_0003.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Dick_Cheney/Dick_Cheney_0013.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Dick_Cheney/Dick_Cheney_0011.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Dick_Cheney/Dick_Cheney_0001.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Dick_Cheney/Dick_Cheney_0009.jpg"
+      ],
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Dick_Cheney/Dick_Cheney_0014.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Dick_Cheney/Dick_Cheney_0005.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Dick_Cheney/Dick_Cheney_0004.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Dick_Cheney/Dick_Cheney_0007.jpg"
+      ]
+    },
+    "Donald_Rumsfeld": {
+      "gallery": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Donald_Rumsfeld/Donald_Rumsfeld_0011.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Donald_Rumsfeld/Donald_Rumsfeld_0050.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Donald_Rumsfeld/Donald_Rumsfeld_0117.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Donald_Rumsfeld/Donald_Rumsfeld_0082.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Donald_Rumsfeld/Donald_Rumsfeld_0032.jpg"
+      ],
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Donald_Rumsfeld/Donald_Rumsfeld_0017.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Donald_Rumsfeld/Donald_Rumsfeld_0058.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Donald_Rumsfeld/Donald_Rumsfeld_0120.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Donald_Rumsfeld/Donald_Rumsfeld_0115.jpg"
+      ]
+    },
+    "Edmund_Stoiber": {
+      "gallery": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Edmund_Stoiber/Edmund_Stoiber_0006.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Edmund_Stoiber/Edmund_Stoiber_0012.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Edmund_Stoiber/Edmund_Stoiber_0010.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Edmund_Stoiber/Edmund_Stoiber_0007.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Edmund_Stoiber/Edmund_Stoiber_0009.jpg"
+      ],
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Edmund_Stoiber/Edmund_Stoiber_0005.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Edmund_Stoiber/Edmund_Stoiber_0001.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Edmund_Stoiber/Edmund_Stoiber_0003.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Edmund_Stoiber/Edmund_Stoiber_0008.jpg"
+      ]
+    },
+    "Fernando_Gonzalez": {
+      "gallery": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Fernando_Gonzalez/Fernando_Gonzalez_0004.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Fernando_Gonzalez/Fernando_Gonzalez_0001.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Fernando_Gonzalez/Fernando_Gonzalez_0007.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Fernando_Gonzalez/Fernando_Gonzalez_0003.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Fernando_Gonzalez/Fernando_Gonzalez_0005.jpg"
+      ],
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Fernando_Gonzalez/Fernando_Gonzalez_0008.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Fernando_Gonzalez/Fernando_Gonzalez_0002.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Fernando_Gonzalez/Fernando_Gonzalez_0006.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Fernando_Gonzalez/Fernando_Gonzalez_0009.jpg"
+      ]
+    },
+    "George_Robertson": {
+      "gallery": [
+        "/Users/coding/PBL6/face_auth/data/lfw/George_Robertson/George_Robertson_0009.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/George_Robertson/George_Robertson_0007.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/George_Robertson/George_Robertson_0006.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/George_Robertson/George_Robertson_0002.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/George_Robertson/George_Robertson_0010.jpg"
+      ],
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/George_Robertson/George_Robertson_0020.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/George_Robertson/George_Robertson_0014.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/George_Robertson/George_Robertson_0021.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/George_Robertson/George_Robertson_0015.jpg"
+      ]
+    },
+    "George_W_Bush": {
+      "gallery": [
+        "/Users/coding/PBL6/face_auth/data/lfw/George_W_Bush/George_W_Bush_0051.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/George_W_Bush/George_W_Bush_0259.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/George_W_Bush/George_W_Bush_0394.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/George_W_Bush/George_W_Bush_0363.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/George_W_Bush/George_W_Bush_0184.jpg"
+      ],
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/George_W_Bush/George_W_Bush_0092.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/George_W_Bush/George_W_Bush_0219.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/George_W_Bush/George_W_Bush_0344.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/George_W_Bush/George_W_Bush_0096.jpg"
+      ]
+    },
+    "Gerhard_Schroeder": {
+      "gallery": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Gerhard_Schroeder/Gerhard_Schroeder_0073.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Gerhard_Schroeder/Gerhard_Schroeder_0025.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Gerhard_Schroeder/Gerhard_Schroeder_0005.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Gerhard_Schroeder/Gerhard_Schroeder_0019.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Gerhard_Schroeder/Gerhard_Schroeder_0050.jpg"
+      ],
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Gerhard_Schroeder/Gerhard_Schroeder_0099.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Gerhard_Schroeder/Gerhard_Schroeder_0024.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Gerhard_Schroeder/Gerhard_Schroeder_0087.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Gerhard_Schroeder/Gerhard_Schroeder_0010.jpg"
+      ]
+    },
+    "Gonzalo_Sanchez_de_Lozada": {
+      "gallery": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Gonzalo_Sanchez_de_Lozada/Gonzalo_Sanchez_de_Lozada_0010.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Gonzalo_Sanchez_de_Lozada/Gonzalo_Sanchez_de_Lozada_0001.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Gonzalo_Sanchez_de_Lozada/Gonzalo_Sanchez_de_Lozada_0003.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Gonzalo_Sanchez_de_Lozada/Gonzalo_Sanchez_de_Lozada_0004.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Gonzalo_Sanchez_de_Lozada/Gonzalo_Sanchez_de_Lozada_0008.jpg"
+      ],
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Gonzalo_Sanchez_de_Lozada/Gonzalo_Sanchez_de_Lozada_0006.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Gonzalo_Sanchez_de_Lozada/Gonzalo_Sanchez_de_Lozada_0007.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Gonzalo_Sanchez_de_Lozada/Gonzalo_Sanchez_de_Lozada_0012.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Gonzalo_Sanchez_de_Lozada/Gonzalo_Sanchez_de_Lozada_0011.jpg"
+      ]
+    },
+    "Gray_Davis": {
+      "gallery": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Gray_Davis/Gray_Davis_0001.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Gray_Davis/Gray_Davis_0002.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Gray_Davis/Gray_Davis_0012.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Gray_Davis/Gray_Davis_0019.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Gray_Davis/Gray_Davis_0003.jpg"
+      ],
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Gray_Davis/Gray_Davis_0007.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Gray_Davis/Gray_Davis_0017.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Gray_Davis/Gray_Davis_0021.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Gray_Davis/Gray_Davis_0013.jpg"
+      ]
+    },
+    "Guillermo_Coria": {
+      "gallery": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Guillermo_Coria/Guillermo_Coria_0029.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Guillermo_Coria/Guillermo_Coria_0025.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Guillermo_Coria/Guillermo_Coria_0015.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Guillermo_Coria/Guillermo_Coria_0002.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Guillermo_Coria/Guillermo_Coria_0017.jpg"
+      ],
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Guillermo_Coria/Guillermo_Coria_0030.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Guillermo_Coria/Guillermo_Coria_0026.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Guillermo_Coria/Guillermo_Coria_0022.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Guillermo_Coria/Guillermo_Coria_0003.jpg"
+      ]
+    },
+    "Halle_Berry": {
+      "gallery": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Halle_Berry/Halle_Berry_0002.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Halle_Berry/Halle_Berry_0013.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Halle_Berry/Halle_Berry_0016.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Halle_Berry/Halle_Berry_0003.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Halle_Berry/Halle_Berry_0007.jpg"
+      ],
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Halle_Berry/Halle_Berry_0012.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Halle_Berry/Halle_Berry_0001.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Halle_Berry/Halle_Berry_0014.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Halle_Berry/Halle_Berry_0010.jpg"
+      ]
+    },
+    "Hans_Blix": {
+      "gallery": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Hans_Blix/Hans_Blix_0027.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Hans_Blix/Hans_Blix_0020.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Hans_Blix/Hans_Blix_0016.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Hans_Blix/Hans_Blix_0029.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Hans_Blix/Hans_Blix_0033.jpg"
+      ],
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Hans_Blix/Hans_Blix_0005.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Hans_Blix/Hans_Blix_0010.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Hans_Blix/Hans_Blix_0015.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Hans_Blix/Hans_Blix_0003.jpg"
+      ]
+    },
+    "Harrison_Ford": {
+      "gallery": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Harrison_Ford/Harrison_Ford_0008.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Harrison_Ford/Harrison_Ford_0005.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Harrison_Ford/Harrison_Ford_0010.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Harrison_Ford/Harrison_Ford_0012.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Harrison_Ford/Harrison_Ford_0007.jpg"
+      ],
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Harrison_Ford/Harrison_Ford_0011.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Harrison_Ford/Harrison_Ford_0009.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Harrison_Ford/Harrison_Ford_0001.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Harrison_Ford/Harrison_Ford_0006.jpg"
+      ]
+    },
+    "Heizo_Takenaka": {
+      "gallery": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Heizo_Takenaka/Heizo_Takenaka_0007.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Heizo_Takenaka/Heizo_Takenaka_0003.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Heizo_Takenaka/Heizo_Takenaka_0001.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Heizo_Takenaka/Heizo_Takenaka_0009.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Heizo_Takenaka/Heizo_Takenaka_0006.jpg"
+      ],
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Heizo_Takenaka/Heizo_Takenaka_0004.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Heizo_Takenaka/Heizo_Takenaka_0005.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Heizo_Takenaka/Heizo_Takenaka_0008.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Heizo_Takenaka/Heizo_Takenaka_0002.jpg"
+      ]
+    },
+    "Hillary_Clinton": {
+      "gallery": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Hillary_Clinton/Hillary_Clinton_0004.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Hillary_Clinton/Hillary_Clinton_0010.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Hillary_Clinton/Hillary_Clinton_0007.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Hillary_Clinton/Hillary_Clinton_0013.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Hillary_Clinton/Hillary_Clinton_0012.jpg"
+      ],
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Hillary_Clinton/Hillary_Clinton_0002.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Hillary_Clinton/Hillary_Clinton_0009.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Hillary_Clinton/Hillary_Clinton_0003.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Hillary_Clinton/Hillary_Clinton_0014.jpg"
+      ]
+    },
+    "Hu_Jintao": {
+      "gallery": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Hu_Jintao/Hu_Jintao_0003.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Hu_Jintao/Hu_Jintao_0005.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Hu_Jintao/Hu_Jintao_0002.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Hu_Jintao/Hu_Jintao_0013.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Hu_Jintao/Hu_Jintao_0007.jpg"
+      ],
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Hu_Jintao/Hu_Jintao_0004.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Hu_Jintao/Hu_Jintao_0010.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Hu_Jintao/Hu_Jintao_0014.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Hu_Jintao/Hu_Jintao_0012.jpg"
+      ]
+    },
+    "Hugh_Grant": {
+      "gallery": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Hugh_Grant/Hugh_Grant_0008.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Hugh_Grant/Hugh_Grant_0005.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Hugh_Grant/Hugh_Grant_0006.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Hugh_Grant/Hugh_Grant_0001.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Hugh_Grant/Hugh_Grant_0002.jpg"
+      ],
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Hugh_Grant/Hugh_Grant_0004.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Hugh_Grant/Hugh_Grant_0009.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Hugh_Grant/Hugh_Grant_0003.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Hugh_Grant/Hugh_Grant_0007.jpg"
+      ]
+    },
+    "Jackie_Chan": {
+      "gallery": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Jackie_Chan/Jackie_Chan_0002.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Jackie_Chan/Jackie_Chan_0004.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Jackie_Chan/Jackie_Chan_0010.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Jackie_Chan/Jackie_Chan_0006.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Jackie_Chan/Jackie_Chan_0001.jpg"
+      ],
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Jackie_Chan/Jackie_Chan_0003.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Jackie_Chan/Jackie_Chan_0013.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Jackie_Chan/Jackie_Chan_0007.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Jackie_Chan/Jackie_Chan_0011.jpg"
+      ]
+    },
+    "Jacques_Rogge": {
+      "gallery": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Jacques_Rogge/Jacques_Rogge_0006.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Jacques_Rogge/Jacques_Rogge_0007.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Jacques_Rogge/Jacques_Rogge_0009.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Jacques_Rogge/Jacques_Rogge_0001.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Jacques_Rogge/Jacques_Rogge_0005.jpg"
+      ],
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Jacques_Rogge/Jacques_Rogge_0010.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Jacques_Rogge/Jacques_Rogge_0002.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Jacques_Rogge/Jacques_Rogge_0003.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Jacques_Rogge/Jacques_Rogge_0008.jpg"
+      ]
+    },
+    "James_Blake": {
+      "gallery": [
+        "/Users/coding/PBL6/face_auth/data/lfw/James_Blake/James_Blake_0004.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/James_Blake/James_Blake_0013.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/James_Blake/James_Blake_0005.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/James_Blake/James_Blake_0007.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/James_Blake/James_Blake_0011.jpg"
+      ],
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/James_Blake/James_Blake_0001.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/James_Blake/James_Blake_0012.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/James_Blake/James_Blake_0010.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/James_Blake/James_Blake_0006.jpg"
+      ]
+    },
+    "James_Kelly": {
+      "gallery": [
+        "/Users/coding/PBL6/face_auth/data/lfw/James_Kelly/James_Kelly_0010.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/James_Kelly/James_Kelly_0008.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/James_Kelly/James_Kelly_0009.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/James_Kelly/James_Kelly_0004.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/James_Kelly/James_Kelly_0006.jpg"
+      ],
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/James_Kelly/James_Kelly_0007.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/James_Kelly/James_Kelly_0001.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/James_Kelly/James_Kelly_0002.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/James_Kelly/James_Kelly_0003.jpg"
+      ]
+    },
+    "Javier_Solana": {
+      "gallery": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Javier_Solana/Javier_Solana_0009.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Javier_Solana/Javier_Solana_0010.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Javier_Solana/Javier_Solana_0007.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Javier_Solana/Javier_Solana_0008.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Javier_Solana/Javier_Solana_0003.jpg"
+      ],
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Javier_Solana/Javier_Solana_0005.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Javier_Solana/Javier_Solana_0002.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Javier_Solana/Javier_Solana_0004.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Javier_Solana/Javier_Solana_0006.jpg"
+      ]
+    },
+    "Jean_Charest": {
+      "gallery": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Jean_Charest/Jean_Charest_0011.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Jean_Charest/Jean_Charest_0015.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Jean_Charest/Jean_Charest_0002.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Jean_Charest/Jean_Charest_0006.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Jean_Charest/Jean_Charest_0008.jpg"
+      ],
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Jean_Charest/Jean_Charest_0017.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Jean_Charest/Jean_Charest_0004.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Jean_Charest/Jean_Charest_0014.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Jean_Charest/Jean_Charest_0005.jpg"
+      ]
+    },
+    "Jean_Chretien": {
+      "gallery": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Jean_Chretien/Jean_Chretien_0029.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Jean_Chretien/Jean_Chretien_0041.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Jean_Chretien/Jean_Chretien_0012.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Jean_Chretien/Jean_Chretien_0023.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Jean_Chretien/Jean_Chretien_0050.jpg"
+      ],
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Jean_Chretien/Jean_Chretien_0018.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Jean_Chretien/Jean_Chretien_0021.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Jean_Chretien/Jean_Chretien_0025.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Jean_Chretien/Jean_Chretien_0030.jpg"
+      ]
+    },
+    "Jennifer_Garner": {
+      "gallery": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Jennifer_Garner/Jennifer_Garner_0003.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Jennifer_Garner/Jennifer_Garner_0012.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Jennifer_Garner/Jennifer_Garner_0010.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Jennifer_Garner/Jennifer_Garner_0009.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Jennifer_Garner/Jennifer_Garner_0005.jpg"
+      ],
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Jennifer_Garner/Jennifer_Garner_0008.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Jennifer_Garner/Jennifer_Garner_0001.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Jennifer_Garner/Jennifer_Garner_0011.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Jennifer_Garner/Jennifer_Garner_0004.jpg"
+      ]
+    },
+    "Jennifer_Lopez": {
+      "gallery": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Jennifer_Lopez/Jennifer_Lopez_0018.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Jennifer_Lopez/Jennifer_Lopez_0008.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Jennifer_Lopez/Jennifer_Lopez_0013.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Jennifer_Lopez/Jennifer_Lopez_0005.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Jennifer_Lopez/Jennifer_Lopez_0017.jpg"
+      ],
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Jennifer_Lopez/Jennifer_Lopez_0001.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Jennifer_Lopez/Jennifer_Lopez_0021.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Jennifer_Lopez/Jennifer_Lopez_0012.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Jennifer_Lopez/Jennifer_Lopez_0009.jpg"
+      ]
+    },
+    "Jeong_Se-hyun": {
+      "gallery": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Jeong_Se-hyun/Jeong_Se-hyun_0003.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Jeong_Se-hyun/Jeong_Se-hyun_0006.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Jeong_Se-hyun/Jeong_Se-hyun_0004.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Jeong_Se-hyun/Jeong_Se-hyun_0007.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Jeong_Se-hyun/Jeong_Se-hyun_0005.jpg"
+      ],
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Jeong_Se-hyun/Jeong_Se-hyun_0001.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Jeong_Se-hyun/Jeong_Se-hyun_0008.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Jeong_Se-hyun/Jeong_Se-hyun_0002.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Jeong_Se-hyun/Jeong_Se-hyun_0009.jpg"
+      ]
+    },
+    "Jesse_Jackson": {
+      "gallery": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Jesse_Jackson/Jesse_Jackson_0004.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Jesse_Jackson/Jesse_Jackson_0009.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Jesse_Jackson/Jesse_Jackson_0002.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Jesse_Jackson/Jesse_Jackson_0008.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Jesse_Jackson/Jesse_Jackson_0005.jpg"
+      ],
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Jesse_Jackson/Jesse_Jackson_0001.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Jesse_Jackson/Jesse_Jackson_0006.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Jesse_Jackson/Jesse_Jackson_0007.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Jesse_Jackson/Jesse_Jackson_0003.jpg"
+      ]
+    },
+    "Jiri_Novak": {
+      "gallery": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Jiri_Novak/Jiri_Novak_0005.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Jiri_Novak/Jiri_Novak_0011.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Jiri_Novak/Jiri_Novak_0001.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Jiri_Novak/Jiri_Novak_0008.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Jiri_Novak/Jiri_Novak_0010.jpg"
+      ],
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Jiri_Novak/Jiri_Novak_0003.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Jiri_Novak/Jiri_Novak_0006.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Jiri_Novak/Jiri_Novak_0009.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Jiri_Novak/Jiri_Novak_0004.jpg"
+      ]
+    },
+    "Joe_Lieberman": {
+      "gallery": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Joe_Lieberman/Joe_Lieberman_0004.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Joe_Lieberman/Joe_Lieberman_0006.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Joe_Lieberman/Joe_Lieberman_0005.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Joe_Lieberman/Joe_Lieberman_0001.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Joe_Lieberman/Joe_Lieberman_0011.jpg"
+      ],
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Joe_Lieberman/Joe_Lieberman_0009.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Joe_Lieberman/Joe_Lieberman_0002.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Joe_Lieberman/Joe_Lieberman_0013.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Joe_Lieberman/Joe_Lieberman_0008.jpg"
+      ]
+    },
+    "John_Allen_Muhammad": {
+      "gallery": [
+        "/Users/coding/PBL6/face_auth/data/lfw/John_Allen_Muhammad/John_Allen_Muhammad_0009.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/John_Allen_Muhammad/John_Allen_Muhammad_0007.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/John_Allen_Muhammad/John_Allen_Muhammad_0006.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/John_Allen_Muhammad/John_Allen_Muhammad_0003.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/John_Allen_Muhammad/John_Allen_Muhammad_0004.jpg"
+      ],
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/John_Allen_Muhammad/John_Allen_Muhammad_0010.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/John_Allen_Muhammad/John_Allen_Muhammad_0008.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/John_Allen_Muhammad/John_Allen_Muhammad_0011.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/John_Allen_Muhammad/John_Allen_Muhammad_0002.jpg"
+      ]
+    },
+    "John_Ashcroft": {
+      "gallery": [
+        "/Users/coding/PBL6/face_auth/data/lfw/John_Ashcroft/John_Ashcroft_0037.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/John_Ashcroft/John_Ashcroft_0047.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/John_Ashcroft/John_Ashcroft_0050.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/John_Ashcroft/John_Ashcroft_0012.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/John_Ashcroft/John_Ashcroft_0003.jpg"
+      ],
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/John_Ashcroft/John_Ashcroft_0025.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/John_Ashcroft/John_Ashcroft_0043.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/John_Ashcroft/John_Ashcroft_0015.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/John_Ashcroft/John_Ashcroft_0007.jpg"
+      ]
+    },
+    "John_Snow": {
+      "gallery": [
+        "/Users/coding/PBL6/face_auth/data/lfw/John_Snow/John_Snow_0002.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/John_Snow/John_Snow_0005.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/John_Snow/John_Snow_0009.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/John_Snow/John_Snow_0016.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/John_Snow/John_Snow_0017.jpg"
+      ],
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/John_Snow/John_Snow_0003.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/John_Snow/John_Snow_0006.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/John_Snow/John_Snow_0001.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/John_Snow/John_Snow_0004.jpg"
+      ]
+    },
+    "Jose_Maria_Aznar": {
+      "gallery": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Jose_Maria_Aznar/Jose_Maria_Aznar_0015.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Jose_Maria_Aznar/Jose_Maria_Aznar_0004.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Jose_Maria_Aznar/Jose_Maria_Aznar_0008.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Jose_Maria_Aznar/Jose_Maria_Aznar_0002.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Jose_Maria_Aznar/Jose_Maria_Aznar_0014.jpg"
+      ],
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Jose_Maria_Aznar/Jose_Maria_Aznar_0020.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Jose_Maria_Aznar/Jose_Maria_Aznar_0017.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Jose_Maria_Aznar/Jose_Maria_Aznar_0019.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Jose_Maria_Aznar/Jose_Maria_Aznar_0006.jpg"
+      ]
+    },
+    "Juan_Carlos_Ferrero": {
+      "gallery": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Juan_Carlos_Ferrero/Juan_Carlos_Ferrero_0024.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Juan_Carlos_Ferrero/Juan_Carlos_Ferrero_0010.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Juan_Carlos_Ferrero/Juan_Carlos_Ferrero_0006.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Juan_Carlos_Ferrero/Juan_Carlos_Ferrero_0018.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Juan_Carlos_Ferrero/Juan_Carlos_Ferrero_0007.jpg"
+      ],
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Juan_Carlos_Ferrero/Juan_Carlos_Ferrero_0009.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Juan_Carlos_Ferrero/Juan_Carlos_Ferrero_0002.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Juan_Carlos_Ferrero/Juan_Carlos_Ferrero_0013.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Juan_Carlos_Ferrero/Juan_Carlos_Ferrero_0008.jpg"
+      ]
+    },
+    "Julianne_Moore": {
+      "gallery": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Julianne_Moore/Julianne_Moore_0006.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Julianne_Moore/Julianne_Moore_0010.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Julianne_Moore/Julianne_Moore_0004.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Julianne_Moore/Julianne_Moore_0015.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Julianne_Moore/Julianne_Moore_0018.jpg"
+      ],
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Julianne_Moore/Julianne_Moore_0013.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Julianne_Moore/Julianne_Moore_0003.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Julianne_Moore/Julianne_Moore_0002.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Julianne_Moore/Julianne_Moore_0017.jpg"
+      ]
+    },
+    "Julie_Gerberding": {
+      "gallery": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Julie_Gerberding/Julie_Gerberding_0004.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Julie_Gerberding/Julie_Gerberding_0014.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Julie_Gerberding/Julie_Gerberding_0008.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Julie_Gerberding/Julie_Gerberding_0011.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Julie_Gerberding/Julie_Gerberding_0005.jpg"
+      ],
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Julie_Gerberding/Julie_Gerberding_0010.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Julie_Gerberding/Julie_Gerberding_0013.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Julie_Gerberding/Julie_Gerberding_0003.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Julie_Gerberding/Julie_Gerberding_0012.jpg"
+      ]
+    },
+    "Junichiro_Koizumi": {
+      "gallery": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Junichiro_Koizumi/Junichiro_Koizumi_0017.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Junichiro_Koizumi/Junichiro_Koizumi_0055.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Junichiro_Koizumi/Junichiro_Koizumi_0041.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Junichiro_Koizumi/Junichiro_Koizumi_0016.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Junichiro_Koizumi/Junichiro_Koizumi_0024.jpg"
+      ],
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Junichiro_Koizumi/Junichiro_Koizumi_0049.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Junichiro_Koizumi/Junichiro_Koizumi_0023.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Junichiro_Koizumi/Junichiro_Koizumi_0019.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Junichiro_Koizumi/Junichiro_Koizumi_0031.jpg"
+      ]
+    },
+    "Kate_Hudson": {
+      "gallery": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Kate_Hudson/Kate_Hudson_0008.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Kate_Hudson/Kate_Hudson_0009.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Kate_Hudson/Kate_Hudson_0002.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Kate_Hudson/Kate_Hudson_0001.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Kate_Hudson/Kate_Hudson_0006.jpg"
+      ],
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Kate_Hudson/Kate_Hudson_0007.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Kate_Hudson/Kate_Hudson_0005.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Kate_Hudson/Kate_Hudson_0003.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Kate_Hudson/Kate_Hudson_0004.jpg"
+      ]
+    },
+    "Keanu_Reeves": {
+      "gallery": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Keanu_Reeves/Keanu_Reeves_0009.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Keanu_Reeves/Keanu_Reeves_0005.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Keanu_Reeves/Keanu_Reeves_0007.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Keanu_Reeves/Keanu_Reeves_0004.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Keanu_Reeves/Keanu_Reeves_0003.jpg"
+      ],
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Keanu_Reeves/Keanu_Reeves_0008.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Keanu_Reeves/Keanu_Reeves_0006.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Keanu_Reeves/Keanu_Reeves_0010.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Keanu_Reeves/Keanu_Reeves_0011.jpg"
+      ]
+    },
+    "Kim_Ryong-sung": {
+      "gallery": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Kim_Ryong-sung/Kim_Ryong-sung_0010.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Kim_Ryong-sung/Kim_Ryong-sung_0011.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Kim_Ryong-sung/Kim_Ryong-sung_0006.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Kim_Ryong-sung/Kim_Ryong-sung_0007.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Kim_Ryong-sung/Kim_Ryong-sung_0008.jpg"
+      ],
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Kim_Ryong-sung/Kim_Ryong-sung_0002.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Kim_Ryong-sung/Kim_Ryong-sung_0001.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Kim_Ryong-sung/Kim_Ryong-sung_0003.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Kim_Ryong-sung/Kim_Ryong-sung_0005.jpg"
+      ]
+    },
+    "Kofi_Annan": {
+      "gallery": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Kofi_Annan/Kofi_Annan_0002.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Kofi_Annan/Kofi_Annan_0026.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Kofi_Annan/Kofi_Annan_0019.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Kofi_Annan/Kofi_Annan_0009.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Kofi_Annan/Kofi_Annan_0020.jpg"
+      ],
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Kofi_Annan/Kofi_Annan_0022.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Kofi_Annan/Kofi_Annan_0028.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Kofi_Annan/Kofi_Annan_0005.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Kofi_Annan/Kofi_Annan_0015.jpg"
+      ]
+    },
+    "Lance_Armstrong": {
+      "gallery": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Lance_Armstrong/Lance_Armstrong_0010.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Lance_Armstrong/Lance_Armstrong_0006.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Lance_Armstrong/Lance_Armstrong_0014.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Lance_Armstrong/Lance_Armstrong_0003.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Lance_Armstrong/Lance_Armstrong_0011.jpg"
+      ],
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Lance_Armstrong/Lance_Armstrong_0012.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Lance_Armstrong/Lance_Armstrong_0017.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Lance_Armstrong/Lance_Armstrong_0009.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Lance_Armstrong/Lance_Armstrong_0002.jpg"
+      ]
+    },
+    "Leonardo_DiCaprio": {
+      "gallery": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Leonardo_DiCaprio/Leonardo_DiCaprio_0006.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Leonardo_DiCaprio/Leonardo_DiCaprio_0007.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Leonardo_DiCaprio/Leonardo_DiCaprio_0003.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Leonardo_DiCaprio/Leonardo_DiCaprio_0001.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Leonardo_DiCaprio/Leonardo_DiCaprio_0009.jpg"
+      ],
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Leonardo_DiCaprio/Leonardo_DiCaprio_0002.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Leonardo_DiCaprio/Leonardo_DiCaprio_0004.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Leonardo_DiCaprio/Leonardo_DiCaprio_0008.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Leonardo_DiCaprio/Leonardo_DiCaprio_0005.jpg"
+      ]
+    },
+    "Li_Peng": {
+      "gallery": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Li_Peng/Li_Peng_0001.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Li_Peng/Li_Peng_0004.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Li_Peng/Li_Peng_0005.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Li_Peng/Li_Peng_0007.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Li_Peng/Li_Peng_0002.jpg"
+      ],
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Li_Peng/Li_Peng_0003.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Li_Peng/Li_Peng_0006.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Li_Peng/Li_Peng_0008.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Li_Peng/Li_Peng_0009.jpg"
+      ]
+    },
+    "Lindsay_Davenport": {
+      "gallery": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Lindsay_Davenport/Lindsay_Davenport_0014.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Lindsay_Davenport/Lindsay_Davenport_0020.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Lindsay_Davenport/Lindsay_Davenport_0008.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Lindsay_Davenport/Lindsay_Davenport_0021.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Lindsay_Davenport/Lindsay_Davenport_0010.jpg"
+      ],
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Lindsay_Davenport/Lindsay_Davenport_0009.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Lindsay_Davenport/Lindsay_Davenport_0019.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Lindsay_Davenport/Lindsay_Davenport_0017.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Lindsay_Davenport/Lindsay_Davenport_0002.jpg"
+      ]
+    },
+    "Lleyton_Hewitt": {
+      "gallery": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Lleyton_Hewitt/Lleyton_Hewitt_0019.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Lleyton_Hewitt/Lleyton_Hewitt_0030.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Lleyton_Hewitt/Lleyton_Hewitt_0017.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Lleyton_Hewitt/Lleyton_Hewitt_0011.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Lleyton_Hewitt/Lleyton_Hewitt_0029.jpg"
+      ],
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Lleyton_Hewitt/Lleyton_Hewitt_0022.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Lleyton_Hewitt/Lleyton_Hewitt_0023.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Lleyton_Hewitt/Lleyton_Hewitt_0034.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Lleyton_Hewitt/Lleyton_Hewitt_0040.jpg"
+      ]
+    },
+    "Luiz_Inacio_Lula_da_Silva": {
+      "gallery": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Luiz_Inacio_Lula_da_Silva/Luiz_Inacio_Lula_da_Silva_0028.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Luiz_Inacio_Lula_da_Silva/Luiz_Inacio_Lula_da_Silva_0007.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Luiz_Inacio_Lula_da_Silva/Luiz_Inacio_Lula_da_Silva_0009.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Luiz_Inacio_Lula_da_Silva/Luiz_Inacio_Lula_da_Silva_0047.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Luiz_Inacio_Lula_da_Silva/Luiz_Inacio_Lula_da_Silva_0015.jpg"
+      ],
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Luiz_Inacio_Lula_da_Silva/Luiz_Inacio_Lula_da_Silva_0023.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Luiz_Inacio_Lula_da_Silva/Luiz_Inacio_Lula_da_Silva_0043.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Luiz_Inacio_Lula_da_Silva/Luiz_Inacio_Lula_da_Silva_0031.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Luiz_Inacio_Lula_da_Silva/Luiz_Inacio_Lula_da_Silva_0034.jpg"
+      ]
+    },
+    "Mahathir_Mohamad": {
+      "gallery": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Mahathir_Mohamad/Mahathir_Mohamad_0009.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Mahathir_Mohamad/Mahathir_Mohamad_0007.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Mahathir_Mohamad/Mahathir_Mohamad_0005.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Mahathir_Mohamad/Mahathir_Mohamad_0013.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Mahathir_Mohamad/Mahathir_Mohamad_0011.jpg"
+      ],
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Mahathir_Mohamad/Mahathir_Mohamad_0002.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Mahathir_Mohamad/Mahathir_Mohamad_0014.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Mahathir_Mohamad/Mahathir_Mohamad_0003.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Mahathir_Mohamad/Mahathir_Mohamad_0010.jpg"
+      ]
+    },
+    "Mark_Philippoussis": {
+      "gallery": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Mark_Philippoussis/Mark_Philippoussis_0002.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Mark_Philippoussis/Mark_Philippoussis_0004.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Mark_Philippoussis/Mark_Philippoussis_0007.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Mark_Philippoussis/Mark_Philippoussis_0008.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Mark_Philippoussis/Mark_Philippoussis_0009.jpg"
+      ],
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Mark_Philippoussis/Mark_Philippoussis_0003.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Mark_Philippoussis/Mark_Philippoussis_0005.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Mark_Philippoussis/Mark_Philippoussis_0006.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Mark_Philippoussis/Mark_Philippoussis_0010.jpg"
+      ]
+    },
+    "Megawati_Sukarnoputri": {
+      "gallery": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Megawati_Sukarnoputri/Megawati_Sukarnoputri_0002.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Megawati_Sukarnoputri/Megawati_Sukarnoputri_0020.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Megawati_Sukarnoputri/Megawati_Sukarnoputri_0026.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Megawati_Sukarnoputri/Megawati_Sukarnoputri_0023.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Megawati_Sukarnoputri/Megawati_Sukarnoputri_0011.jpg"
+      ],
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Megawati_Sukarnoputri/Megawati_Sukarnoputri_0012.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Megawati_Sukarnoputri/Megawati_Sukarnoputri_0025.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Megawati_Sukarnoputri/Megawati_Sukarnoputri_0024.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Megawati_Sukarnoputri/Megawati_Sukarnoputri_0007.jpg"
+      ]
+    },
+    "Meryl_Streep": {
+      "gallery": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Meryl_Streep/Meryl_Streep_0009.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Meryl_Streep/Meryl_Streep_0006.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Meryl_Streep/Meryl_Streep_0010.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Meryl_Streep/Meryl_Streep_0007.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Meryl_Streep/Meryl_Streep_0012.jpg"
+      ],
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Meryl_Streep/Meryl_Streep_0003.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Meryl_Streep/Meryl_Streep_0014.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Meryl_Streep/Meryl_Streep_0015.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Meryl_Streep/Meryl_Streep_0013.jpg"
+      ]
+    },
+    "Mohammed_Al-Douri": {
+      "gallery": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Mohammed_Al-Douri/Mohammed_Al-Douri_0003.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Mohammed_Al-Douri/Mohammed_Al-Douri_0006.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Mohammed_Al-Douri/Mohammed_Al-Douri_0010.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Mohammed_Al-Douri/Mohammed_Al-Douri_0014.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Mohammed_Al-Douri/Mohammed_Al-Douri_0015.jpg"
+      ],
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Mohammed_Al-Douri/Mohammed_Al-Douri_0002.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Mohammed_Al-Douri/Mohammed_Al-Douri_0008.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Mohammed_Al-Douri/Mohammed_Al-Douri_0005.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Mohammed_Al-Douri/Mohammed_Al-Douri_0001.jpg"
+      ]
+    },
+    "Nancy_Pelosi": {
+      "gallery": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Nancy_Pelosi/Nancy_Pelosi_0006.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Nancy_Pelosi/Nancy_Pelosi_0014.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Nancy_Pelosi/Nancy_Pelosi_0003.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Nancy_Pelosi/Nancy_Pelosi_0015.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Nancy_Pelosi/Nancy_Pelosi_0002.jpg"
+      ],
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Nancy_Pelosi/Nancy_Pelosi_0011.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Nancy_Pelosi/Nancy_Pelosi_0009.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Nancy_Pelosi/Nancy_Pelosi_0001.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Nancy_Pelosi/Nancy_Pelosi_0005.jpg"
+      ]
+    },
+    "Naomi_Watts": {
+      "gallery": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Naomi_Watts/Naomi_Watts_0015.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Naomi_Watts/Naomi_Watts_0013.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Naomi_Watts/Naomi_Watts_0021.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Naomi_Watts/Naomi_Watts_0009.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Naomi_Watts/Naomi_Watts_0011.jpg"
+      ],
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Naomi_Watts/Naomi_Watts_0006.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Naomi_Watts/Naomi_Watts_0019.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Naomi_Watts/Naomi_Watts_0022.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Naomi_Watts/Naomi_Watts_0008.jpg"
+      ]
+    },
+    "Nicole_Kidman": {
+      "gallery": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Nicole_Kidman/Nicole_Kidman_0002.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Nicole_Kidman/Nicole_Kidman_0005.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Nicole_Kidman/Nicole_Kidman_0012.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Nicole_Kidman/Nicole_Kidman_0017.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Nicole_Kidman/Nicole_Kidman_0006.jpg"
+      ],
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Nicole_Kidman/Nicole_Kidman_0019.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Nicole_Kidman/Nicole_Kidman_0011.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Nicole_Kidman/Nicole_Kidman_0008.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Nicole_Kidman/Nicole_Kidman_0013.jpg"
+      ]
+    },
+    "Paradorn_Srichaphan": {
+      "gallery": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Paradorn_Srichaphan/Paradorn_Srichaphan_0007.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Paradorn_Srichaphan/Paradorn_Srichaphan_0006.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Paradorn_Srichaphan/Paradorn_Srichaphan_0010.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Paradorn_Srichaphan/Paradorn_Srichaphan_0009.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Paradorn_Srichaphan/Paradorn_Srichaphan_0001.jpg"
+      ],
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Paradorn_Srichaphan/Paradorn_Srichaphan_0004.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Paradorn_Srichaphan/Paradorn_Srichaphan_0008.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Paradorn_Srichaphan/Paradorn_Srichaphan_0003.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Paradorn_Srichaphan/Paradorn_Srichaphan_0005.jpg"
+      ]
+    },
+    "Paul_Burrell": {
+      "gallery": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Paul_Burrell/Paul_Burrell_0002.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Paul_Burrell/Paul_Burrell_0003.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Paul_Burrell/Paul_Burrell_0010.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Paul_Burrell/Paul_Burrell_0006.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Paul_Burrell/Paul_Burrell_0009.jpg"
+      ],
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Paul_Burrell/Paul_Burrell_0004.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Paul_Burrell/Paul_Burrell_0007.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Paul_Burrell/Paul_Burrell_0011.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Paul_Burrell/Paul_Burrell_0001.jpg"
+      ]
+    },
+    "Paul_ONeill": {
+      "gallery": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Paul_ONeill/Paul_ONeill_0004.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Paul_ONeill/Paul_ONeill_0002.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Paul_ONeill/Paul_ONeill_0003.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Paul_ONeill/Paul_ONeill_0005.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Paul_ONeill/Paul_ONeill_0009.jpg"
+      ],
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Paul_ONeill/Paul_ONeill_0006.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Paul_ONeill/Paul_ONeill_0007.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Paul_ONeill/Paul_ONeill_0001.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Paul_ONeill/Paul_ONeill_0008.jpg"
+      ]
+    },
+    "Paul_Wolfowitz": {
+      "gallery": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Paul_Wolfowitz/Paul_Wolfowitz_0008.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Paul_Wolfowitz/Paul_Wolfowitz_0010.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Paul_Wolfowitz/Paul_Wolfowitz_0006.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Paul_Wolfowitz/Paul_Wolfowitz_0002.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Paul_Wolfowitz/Paul_Wolfowitz_0009.jpg"
+      ],
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Paul_Wolfowitz/Paul_Wolfowitz_0005.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Paul_Wolfowitz/Paul_Wolfowitz_0007.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Paul_Wolfowitz/Paul_Wolfowitz_0004.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Paul_Wolfowitz/Paul_Wolfowitz_0001.jpg"
+      ]
+    },
+    "Pervez_Musharraf": {
+      "gallery": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Pervez_Musharraf/Pervez_Musharraf_0001.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Pervez_Musharraf/Pervez_Musharraf_0007.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Pervez_Musharraf/Pervez_Musharraf_0017.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Pervez_Musharraf/Pervez_Musharraf_0014.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Pervez_Musharraf/Pervez_Musharraf_0005.jpg"
+      ],
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Pervez_Musharraf/Pervez_Musharraf_0002.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Pervez_Musharraf/Pervez_Musharraf_0003.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Pervez_Musharraf/Pervez_Musharraf_0013.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Pervez_Musharraf/Pervez_Musharraf_0008.jpg"
+      ]
+    },
+    "Pete_Sampras": {
+      "gallery": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Pete_Sampras/Pete_Sampras_0020.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Pete_Sampras/Pete_Sampras_0012.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Pete_Sampras/Pete_Sampras_0013.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Pete_Sampras/Pete_Sampras_0016.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Pete_Sampras/Pete_Sampras_0004.jpg"
+      ],
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Pete_Sampras/Pete_Sampras_0003.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Pete_Sampras/Pete_Sampras_0010.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Pete_Sampras/Pete_Sampras_0007.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Pete_Sampras/Pete_Sampras_0001.jpg"
+      ]
+    },
+    "Pierce_Brosnan": {
+      "gallery": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Pierce_Brosnan/Pierce_Brosnan_0001.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Pierce_Brosnan/Pierce_Brosnan_0008.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Pierce_Brosnan/Pierce_Brosnan_0010.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Pierce_Brosnan/Pierce_Brosnan_0003.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Pierce_Brosnan/Pierce_Brosnan_0002.jpg"
+      ],
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Pierce_Brosnan/Pierce_Brosnan_0015.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Pierce_Brosnan/Pierce_Brosnan_0013.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Pierce_Brosnan/Pierce_Brosnan_0014.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Pierce_Brosnan/Pierce_Brosnan_0009.jpg"
+      ]
+    },
+    "Recep_Tayyip_Erdogan": {
+      "gallery": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Recep_Tayyip_Erdogan/Recep_Tayyip_Erdogan_0015.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Recep_Tayyip_Erdogan/Recep_Tayyip_Erdogan_0003.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Recep_Tayyip_Erdogan/Recep_Tayyip_Erdogan_0026.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Recep_Tayyip_Erdogan/Recep_Tayyip_Erdogan_0018.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Recep_Tayyip_Erdogan/Recep_Tayyip_Erdogan_0028.jpg"
+      ],
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Recep_Tayyip_Erdogan/Recep_Tayyip_Erdogan_0011.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Recep_Tayyip_Erdogan/Recep_Tayyip_Erdogan_0029.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Recep_Tayyip_Erdogan/Recep_Tayyip_Erdogan_0017.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Recep_Tayyip_Erdogan/Recep_Tayyip_Erdogan_0014.jpg"
+      ]
+    },
+    "Renee_Zellweger": {
+      "gallery": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Renee_Zellweger/Renee_Zellweger_0003.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Renee_Zellweger/Renee_Zellweger_0009.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Renee_Zellweger/Renee_Zellweger_0001.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Renee_Zellweger/Renee_Zellweger_0017.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Renee_Zellweger/Renee_Zellweger_0012.jpg"
+      ],
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Renee_Zellweger/Renee_Zellweger_0016.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Renee_Zellweger/Renee_Zellweger_0008.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Renee_Zellweger/Renee_Zellweger_0005.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Renee_Zellweger/Renee_Zellweger_0013.jpg"
+      ]
+    },
+    "Ricardo_Lagos": {
+      "gallery": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Ricardo_Lagos/Ricardo_Lagos_0024.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Ricardo_Lagos/Ricardo_Lagos_0023.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Ricardo_Lagos/Ricardo_Lagos_0018.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Ricardo_Lagos/Ricardo_Lagos_0010.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Ricardo_Lagos/Ricardo_Lagos_0025.jpg"
+      ],
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Ricardo_Lagos/Ricardo_Lagos_0003.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Ricardo_Lagos/Ricardo_Lagos_0017.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Ricardo_Lagos/Ricardo_Lagos_0001.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Ricardo_Lagos/Ricardo_Lagos_0020.jpg"
+      ]
+    },
+    "Richard_Armitage": {
+      "gallery": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Richard_Armitage/Richard_Armitage_0005.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Richard_Armitage/Richard_Armitage_0008.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Richard_Armitage/Richard_Armitage_0007.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Richard_Armitage/Richard_Armitage_0003.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Richard_Armitage/Richard_Armitage_0009.jpg"
+      ],
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Richard_Armitage/Richard_Armitage_0004.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Richard_Armitage/Richard_Armitage_0006.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Richard_Armitage/Richard_Armitage_0002.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Richard_Armitage/Richard_Armitage_0001.jpg"
+      ]
+    },
+    "Richard_Gere": {
+      "gallery": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Richard_Gere/Richard_Gere_0010.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Richard_Gere/Richard_Gere_0009.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Richard_Gere/Richard_Gere_0008.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Richard_Gere/Richard_Gere_0003.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Richard_Gere/Richard_Gere_0001.jpg"
+      ],
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Richard_Gere/Richard_Gere_0006.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Richard_Gere/Richard_Gere_0004.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Richard_Gere/Richard_Gere_0002.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Richard_Gere/Richard_Gere_0007.jpg"
+      ]
+    },
+    "Richard_Myers": {
+      "gallery": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Richard_Myers/Richard_Myers_0017.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Richard_Myers/Richard_Myers_0010.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Richard_Myers/Richard_Myers_0001.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Richard_Myers/Richard_Myers_0014.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Richard_Myers/Richard_Myers_0007.jpg"
+      ],
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Richard_Myers/Richard_Myers_0015.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Richard_Myers/Richard_Myers_0008.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Richard_Myers/Richard_Myers_0004.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Richard_Myers/Richard_Myers_0013.jpg"
+      ]
+    },
+    "Roger_Federer": {
+      "gallery": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Roger_Federer/Roger_Federer_0012.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Roger_Federer/Roger_Federer_0014.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Roger_Federer/Roger_Federer_0004.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Roger_Federer/Roger_Federer_0006.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Roger_Federer/Roger_Federer_0005.jpg"
+      ],
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Roger_Federer/Roger_Federer_0001.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Roger_Federer/Roger_Federer_0002.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Roger_Federer/Roger_Federer_0013.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Roger_Federer/Roger_Federer_0003.jpg"
+      ]
+    },
+    "Roh_Moo-hyun": {
+      "gallery": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Roh_Moo-hyun/Roh_Moo-hyun_0010.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Roh_Moo-hyun/Roh_Moo-hyun_0009.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Roh_Moo-hyun/Roh_Moo-hyun_0029.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Roh_Moo-hyun/Roh_Moo-hyun_0016.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Roh_Moo-hyun/Roh_Moo-hyun_0032.jpg"
+      ],
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Roh_Moo-hyun/Roh_Moo-hyun_0031.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Roh_Moo-hyun/Roh_Moo-hyun_0008.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Roh_Moo-hyun/Roh_Moo-hyun_0018.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Roh_Moo-hyun/Roh_Moo-hyun_0015.jpg"
+      ]
+    },
+    "Rubens_Barrichello": {
+      "gallery": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Rubens_Barrichello/Rubens_Barrichello_0011.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Rubens_Barrichello/Rubens_Barrichello_0002.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Rubens_Barrichello/Rubens_Barrichello_0003.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Rubens_Barrichello/Rubens_Barrichello_0012.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Rubens_Barrichello/Rubens_Barrichello_0010.jpg"
+      ],
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Rubens_Barrichello/Rubens_Barrichello_0007.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Rubens_Barrichello/Rubens_Barrichello_0008.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Rubens_Barrichello/Rubens_Barrichello_0009.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Rubens_Barrichello/Rubens_Barrichello_0004.jpg"
+      ]
+    },
+    "Saddam_Hussein": {
+      "gallery": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Saddam_Hussein/Saddam_Hussein_0015.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Saddam_Hussein/Saddam_Hussein_0016.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Saddam_Hussein/Saddam_Hussein_0009.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Saddam_Hussein/Saddam_Hussein_0003.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Saddam_Hussein/Saddam_Hussein_0023.jpg"
+      ],
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Saddam_Hussein/Saddam_Hussein_0008.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Saddam_Hussein/Saddam_Hussein_0020.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Saddam_Hussein/Saddam_Hussein_0006.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Saddam_Hussein/Saddam_Hussein_0002.jpg"
+      ]
+    },
+    "Salma_Hayek": {
+      "gallery": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Salma_Hayek/Salma_Hayek_0011.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Salma_Hayek/Salma_Hayek_0005.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Salma_Hayek/Salma_Hayek_0010.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Salma_Hayek/Salma_Hayek_0009.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Salma_Hayek/Salma_Hayek_0001.jpg"
+      ],
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Salma_Hayek/Salma_Hayek_0012.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Salma_Hayek/Salma_Hayek_0002.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Salma_Hayek/Salma_Hayek_0007.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Salma_Hayek/Salma_Hayek_0008.jpg"
+      ]
+    },
+    "Silvio_Berlusconi": {
+      "gallery": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Silvio_Berlusconi/Silvio_Berlusconi_0013.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Silvio_Berlusconi/Silvio_Berlusconi_0003.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Silvio_Berlusconi/Silvio_Berlusconi_0016.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Silvio_Berlusconi/Silvio_Berlusconi_0005.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Silvio_Berlusconi/Silvio_Berlusconi_0029.jpg"
+      ],
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Silvio_Berlusconi/Silvio_Berlusconi_0022.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Silvio_Berlusconi/Silvio_Berlusconi_0014.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Silvio_Berlusconi/Silvio_Berlusconi_0032.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Silvio_Berlusconi/Silvio_Berlusconi_0025.jpg"
+      ]
+    },
+    "Spencer_Abraham": {
+      "gallery": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Spencer_Abraham/Spencer_Abraham_0007.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Spencer_Abraham/Spencer_Abraham_0008.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Spencer_Abraham/Spencer_Abraham_0011.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Spencer_Abraham/Spencer_Abraham_0002.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Spencer_Abraham/Spencer_Abraham_0017.jpg"
+      ],
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Spencer_Abraham/Spencer_Abraham_0015.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Spencer_Abraham/Spencer_Abraham_0013.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Spencer_Abraham/Spencer_Abraham_0004.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Spencer_Abraham/Spencer_Abraham_0009.jpg"
+      ]
+    },
+    "Sylvester_Stallone": {
+      "gallery": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Sylvester_Stallone/Sylvester_Stallone_0007.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Sylvester_Stallone/Sylvester_Stallone_0003.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Sylvester_Stallone/Sylvester_Stallone_0002.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Sylvester_Stallone/Sylvester_Stallone_0006.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Sylvester_Stallone/Sylvester_Stallone_0005.jpg"
+      ],
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Sylvester_Stallone/Sylvester_Stallone_0008.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Sylvester_Stallone/Sylvester_Stallone_0009.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Sylvester_Stallone/Sylvester_Stallone_0001.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Sylvester_Stallone/Sylvester_Stallone_0004.jpg"
+      ]
+    },
+    "Thomas_OBrien": {
+      "gallery": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Thomas_OBrien/Thomas_OBrien_0009.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Thomas_OBrien/Thomas_OBrien_0006.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Thomas_OBrien/Thomas_OBrien_0004.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Thomas_OBrien/Thomas_OBrien_0001.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Thomas_OBrien/Thomas_OBrien_0008.jpg"
+      ],
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Thomas_OBrien/Thomas_OBrien_0007.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Thomas_OBrien/Thomas_OBrien_0002.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Thomas_OBrien/Thomas_OBrien_0003.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Thomas_OBrien/Thomas_OBrien_0005.jpg"
+      ]
+    },
+    "Tim_Henman": {
+      "gallery": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Tim_Henman/Tim_Henman_0013.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Tim_Henman/Tim_Henman_0001.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Tim_Henman/Tim_Henman_0005.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Tim_Henman/Tim_Henman_0015.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Tim_Henman/Tim_Henman_0009.jpg"
+      ],
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Tim_Henman/Tim_Henman_0017.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Tim_Henman/Tim_Henman_0002.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Tim_Henman/Tim_Henman_0014.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Tim_Henman/Tim_Henman_0003.jpg"
+      ]
+    },
+    "Tom_Cruise": {
+      "gallery": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Tom_Cruise/Tom_Cruise_0008.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Tom_Cruise/Tom_Cruise_0002.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Tom_Cruise/Tom_Cruise_0009.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Tom_Cruise/Tom_Cruise_0004.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Tom_Cruise/Tom_Cruise_0010.jpg"
+      ],
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Tom_Cruise/Tom_Cruise_0006.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Tom_Cruise/Tom_Cruise_0003.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Tom_Cruise/Tom_Cruise_0007.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Tom_Cruise/Tom_Cruise_0001.jpg"
+      ]
+    },
+    "Tommy_Franks": {
+      "gallery": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Tommy_Franks/Tommy_Franks_0009.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Tommy_Franks/Tommy_Franks_0004.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Tommy_Franks/Tommy_Franks_0011.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Tommy_Franks/Tommy_Franks_0015.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Tommy_Franks/Tommy_Franks_0001.jpg"
+      ],
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Tommy_Franks/Tommy_Franks_0005.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Tommy_Franks/Tommy_Franks_0006.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Tommy_Franks/Tommy_Franks_0008.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Tommy_Franks/Tommy_Franks_0007.jpg"
+      ]
+    },
+    "Tony_Blair": {
+      "gallery": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Tony_Blair/Tony_Blair_0139.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Tony_Blair/Tony_Blair_0047.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Tony_Blair/Tony_Blair_0024.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Tony_Blair/Tony_Blair_0129.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Tony_Blair/Tony_Blair_0127.jpg"
+      ],
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Tony_Blair/Tony_Blair_0096.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Tony_Blair/Tony_Blair_0042.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Tony_Blair/Tony_Blair_0002.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Tony_Blair/Tony_Blair_0128.jpg"
+      ]
+    },
+    "Trent_Lott": {
+      "gallery": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Trent_Lott/Trent_Lott_0013.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Trent_Lott/Trent_Lott_0003.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Trent_Lott/Trent_Lott_0015.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Trent_Lott/Trent_Lott_0012.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Trent_Lott/Trent_Lott_0011.jpg"
+      ],
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Trent_Lott/Trent_Lott_0010.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Trent_Lott/Trent_Lott_0005.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Trent_Lott/Trent_Lott_0002.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Trent_Lott/Trent_Lott_0004.jpg"
+      ]
+    },
+    "Tung_Chee-hwa": {
+      "gallery": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Tung_Chee-hwa/Tung_Chee-hwa_0004.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Tung_Chee-hwa/Tung_Chee-hwa_0003.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Tung_Chee-hwa/Tung_Chee-hwa_0001.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Tung_Chee-hwa/Tung_Chee-hwa_0008.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Tung_Chee-hwa/Tung_Chee-hwa_0009.jpg"
+      ],
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Tung_Chee-hwa/Tung_Chee-hwa_0007.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Tung_Chee-hwa/Tung_Chee-hwa_0002.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Tung_Chee-hwa/Tung_Chee-hwa_0005.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Tung_Chee-hwa/Tung_Chee-hwa_0006.jpg"
+      ]
+    },
+    "Vaclav_Havel": {
+      "gallery": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Vaclav_Havel/Vaclav_Havel_0009.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Vaclav_Havel/Vaclav_Havel_0007.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Vaclav_Havel/Vaclav_Havel_0006.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Vaclav_Havel/Vaclav_Havel_0001.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Vaclav_Havel/Vaclav_Havel_0004.jpg"
+      ],
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Vaclav_Havel/Vaclav_Havel_0002.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Vaclav_Havel/Vaclav_Havel_0008.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Vaclav_Havel/Vaclav_Havel_0005.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Vaclav_Havel/Vaclav_Havel_0003.jpg"
+      ]
+    },
+    "Venus_Williams": {
+      "gallery": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Venus_Williams/Venus_Williams_0010.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Venus_Williams/Venus_Williams_0007.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Venus_Williams/Venus_Williams_0004.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Venus_Williams/Venus_Williams_0015.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Venus_Williams/Venus_Williams_0017.jpg"
+      ],
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Venus_Williams/Venus_Williams_0002.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Venus_Williams/Venus_Williams_0009.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Venus_Williams/Venus_Williams_0013.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Venus_Williams/Venus_Williams_0011.jpg"
+      ]
+    },
+    "Vladimir_Putin": {
+      "gallery": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Vladimir_Putin/Vladimir_Putin_0022.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Vladimir_Putin/Vladimir_Putin_0012.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Vladimir_Putin/Vladimir_Putin_0006.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Vladimir_Putin/Vladimir_Putin_0009.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Vladimir_Putin/Vladimir_Putin_0033.jpg"
+      ],
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Vladimir_Putin/Vladimir_Putin_0013.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Vladimir_Putin/Vladimir_Putin_0023.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Vladimir_Putin/Vladimir_Putin_0031.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Vladimir_Putin/Vladimir_Putin_0005.jpg"
+      ]
+    },
+    "Zhu_Rongji": {
+      "gallery": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Zhu_Rongji/Zhu_Rongji_0008.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Zhu_Rongji/Zhu_Rongji_0009.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Zhu_Rongji/Zhu_Rongji_0005.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Zhu_Rongji/Zhu_Rongji_0003.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Zhu_Rongji/Zhu_Rongji_0004.jpg"
+      ],
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Zhu_Rongji/Zhu_Rongji_0007.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Zhu_Rongji/Zhu_Rongji_0001.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Zhu_Rongji/Zhu_Rongji_0002.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Zhu_Rongji/Zhu_Rongji_0006.jpg"
+      ]
+    }
+  },
+  "impostor": {
+    "Abdoulaye_Wade": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Abdoulaye_Wade/Abdoulaye_Wade_0001.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Abdoulaye_Wade/Abdoulaye_Wade_0004.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Abdoulaye_Wade/Abdoulaye_Wade_0002.jpg"
+      ]
+    },
+    "Abdullah": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Abdullah/Abdullah_0001.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Abdullah/Abdullah_0003.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Abdullah/Abdullah_0004.jpg"
+      ]
+    },
+    "Abel_Pacheco": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Abel_Pacheco/Abel_Pacheco_0003.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Abel_Pacheco/Abel_Pacheco_0001.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Abel_Pacheco/Abel_Pacheco_0004.jpg"
+      ]
+    },
+    "Ahmed_Chalabi": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Ahmed_Chalabi/Ahmed_Chalabi_0001.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Ahmed_Chalabi/Ahmed_Chalabi_0005.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Ahmed_Chalabi/Ahmed_Chalabi_0003.jpg"
+      ]
+    },
+    "Aicha_El_Ouafi": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Aicha_El_Ouafi/Aicha_El_Ouafi_0002.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Aicha_El_Ouafi/Aicha_El_Ouafi_0001.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Aicha_El_Ouafi/Aicha_El_Ouafi_0003.jpg"
+      ]
+    },
+    "Al_Gore": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Al_Gore/Al_Gore_0006.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Al_Gore/Al_Gore_0002.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Al_Gore/Al_Gore_0004.jpg"
+      ]
+    },
+    "Alan_Greenspan": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Alan_Greenspan/Alan_Greenspan_0001.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Alan_Greenspan/Alan_Greenspan_0003.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Alan_Greenspan/Alan_Greenspan_0004.jpg"
+      ]
+    },
+    "Albert_Costa": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Albert_Costa/Albert_Costa_0002.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Albert_Costa/Albert_Costa_0003.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Albert_Costa/Albert_Costa_0005.jpg"
+      ]
+    },
+    "Alejandro_Avila": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Alejandro_Avila/Alejandro_Avila_0002.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Alejandro_Avila/Alejandro_Avila_0001.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Alejandro_Avila/Alejandro_Avila_0003.jpg"
+      ]
+    },
+    "Alex_Sink": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Alex_Sink/Alex_Sink_0003.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Alex_Sink/Alex_Sink_0002.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Alex_Sink/Alex_Sink_0001.jpg"
+      ]
+    },
+    "Alexandra_Stevenson": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Alexandra_Stevenson/Alexandra_Stevenson_0003.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Alexandra_Stevenson/Alexandra_Stevenson_0001.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Alexandra_Stevenson/Alexandra_Stevenson_0002.jpg"
+      ]
+    },
+    "Allyson_Felix": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Allyson_Felix/Allyson_Felix_0002.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Allyson_Felix/Allyson_Felix_0005.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Allyson_Felix/Allyson_Felix_0004.jpg"
+      ]
+    },
+    "Alvaro_Uribe": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Alvaro_Uribe/Alvaro_Uribe_0024.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Alvaro_Uribe/Alvaro_Uribe_0034.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Alvaro_Uribe/Alvaro_Uribe_0010.jpg"
+      ]
+    },
+    "Amanda_Bynes": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Amanda_Bynes/Amanda_Bynes_0002.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Amanda_Bynes/Amanda_Bynes_0003.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Amanda_Bynes/Amanda_Bynes_0004.jpg"
+      ]
+    },
+    "Amelie_Mauresmo": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Amelie_Mauresmo/Amelie_Mauresmo_0003.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Amelie_Mauresmo/Amelie_Mauresmo_0019.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Amelie_Mauresmo/Amelie_Mauresmo_0017.jpg"
+      ]
+    },
+    "Amer_al-Saadi": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Amer_al-Saadi/Amer_al-Saadi_0004.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Amer_al-Saadi/Amer_al-Saadi_0002.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Amer_al-Saadi/Amer_al-Saadi_0003.jpg"
+      ]
+    },
+    "Angela_Merkel": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Angela_Merkel/Angela_Merkel_0001.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Angela_Merkel/Angela_Merkel_0005.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Angela_Merkel/Angela_Merkel_0004.jpg"
+      ]
+    },
+    "Angelo_Reyes": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Angelo_Reyes/Angelo_Reyes_0001.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Angelo_Reyes/Angelo_Reyes_0004.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Angelo_Reyes/Angelo_Reyes_0003.jpg"
+      ]
+    },
+    "Anibal_Ibarra": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Anibal_Ibarra/Anibal_Ibarra_0002.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Anibal_Ibarra/Anibal_Ibarra_0001.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Anibal_Ibarra/Anibal_Ibarra_0003.jpg"
+      ]
+    },
+    "Ann_Veneman": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Ann_Veneman/Ann_Veneman_0003.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Ann_Veneman/Ann_Veneman_0004.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Ann_Veneman/Ann_Veneman_0005.jpg"
+      ]
+    },
+    "Anne_Krueger": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Anne_Krueger/Anne_Krueger_0002.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Anne_Krueger/Anne_Krueger_0003.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Anne_Krueger/Anne_Krueger_0001.jpg"
+      ]
+    },
+    "Anne_McLellan": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Anne_McLellan/Anne_McLellan_0002.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Anne_McLellan/Anne_McLellan_0001.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Anne_McLellan/Anne_McLellan_0003.jpg"
+      ]
+    },
+    "Annette_Lu": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Annette_Lu/Annette_Lu_0002.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Annette_Lu/Annette_Lu_0003.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Annette_Lu/Annette_Lu_0001.jpg"
+      ]
+    },
+    "Antonio_Banderas": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Antonio_Banderas/Antonio_Banderas_0002.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Antonio_Banderas/Antonio_Banderas_0005.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Antonio_Banderas/Antonio_Banderas_0004.jpg"
+      ]
+    },
+    "Antonio_Trillanes": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Antonio_Trillanes/Antonio_Trillanes_0001.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Antonio_Trillanes/Antonio_Trillanes_0002.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Antonio_Trillanes/Antonio_Trillanes_0003.jpg"
+      ]
+    },
+    "Arnoldo_Aleman": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Arnoldo_Aleman/Arnoldo_Aleman_0005.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Arnoldo_Aleman/Arnoldo_Aleman_0004.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Arnoldo_Aleman/Arnoldo_Aleman_0001.jpg"
+      ]
+    },
+    "Art_Howe": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Art_Howe/Art_Howe_0003.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Art_Howe/Art_Howe_0004.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Art_Howe/Art_Howe_0001.jpg"
+      ]
+    },
+    "Atal_Bihari_Vajpayee": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Atal_Bihari_Vajpayee/Atal_Bihari_Vajpayee_0001.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Atal_Bihari_Vajpayee/Atal_Bihari_Vajpayee_0004.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Atal_Bihari_Vajpayee/Atal_Bihari_Vajpayee_0011.jpg"
+      ]
+    },
+    "Azra_Akin": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Azra_Akin/Azra_Akin_0002.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Azra_Akin/Azra_Akin_0003.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Azra_Akin/Azra_Akin_0001.jpg"
+      ]
+    },
+    "Barbra_Streisand": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Barbra_Streisand/Barbra_Streisand_0001.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Barbra_Streisand/Barbra_Streisand_0003.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Barbra_Streisand/Barbra_Streisand_0002.jpg"
+      ]
+    },
+    "Ben_Affleck": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Ben_Affleck/Ben_Affleck_0001.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Ben_Affleck/Ben_Affleck_0004.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Ben_Affleck/Ben_Affleck_0003.jpg"
+      ]
+    },
+    "Ben_Curtis": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Ben_Curtis/Ben_Curtis_0002.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Ben_Curtis/Ben_Curtis_0001.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Ben_Curtis/Ben_Curtis_0003.jpg"
+      ]
+    },
+    "Benazir_Bhutto": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Benazir_Bhutto/Benazir_Bhutto_0002.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Benazir_Bhutto/Benazir_Bhutto_0005.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Benazir_Bhutto/Benazir_Bhutto_0001.jpg"
+      ]
+    },
+    "Benjamin_Netanyahu": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Benjamin_Netanyahu/Benjamin_Netanyahu_0001.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Benjamin_Netanyahu/Benjamin_Netanyahu_0005.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Benjamin_Netanyahu/Benjamin_Netanyahu_0002.jpg"
+      ]
+    },
+    "Bernard_Law": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Bernard_Law/Bernard_Law_0003.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Bernard_Law/Bernard_Law_0002.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Bernard_Law/Bernard_Law_0004.jpg"
+      ]
+    },
+    "Bill_Graham": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Bill_Graham/Bill_Graham_0006.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Bill_Graham/Bill_Graham_0008.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Bill_Graham/Bill_Graham_0002.jpg"
+      ]
+    },
+    "Branko_Crvenkovski": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Branko_Crvenkovski/Branko_Crvenkovski_0003.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Branko_Crvenkovski/Branko_Crvenkovski_0001.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Branko_Crvenkovski/Branko_Crvenkovski_0002.jpg"
+      ]
+    },
+    "Bridgette_Wilson-Sampras": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Bridgette_Wilson-Sampras/Bridgette_Wilson-Sampras_0003.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Bridgette_Wilson-Sampras/Bridgette_Wilson-Sampras_0002.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Bridgette_Wilson-Sampras/Bridgette_Wilson-Sampras_0001.jpg"
+      ]
+    },
+    "Britney_Spears": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Britney_Spears/Britney_Spears_0012.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Britney_Spears/Britney_Spears_0008.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Britney_Spears/Britney_Spears_0001.jpg"
+      ]
+    },
+    "Bruce_Springsteen": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Bruce_Springsteen/Bruce_Springsteen_0002.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Bruce_Springsteen/Bruce_Springsteen_0004.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Bruce_Springsteen/Bruce_Springsteen_0001.jpg"
+      ]
+    },
+    "Bulent_Ecevit": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Bulent_Ecevit/Bulent_Ecevit_0003.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Bulent_Ecevit/Bulent_Ecevit_0001.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Bulent_Ecevit/Bulent_Ecevit_0004.jpg"
+      ]
+    },
+    "Calista_Flockhart": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Calista_Flockhart/Calista_Flockhart_0003.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Calista_Flockhart/Calista_Flockhart_0002.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Calista_Flockhart/Calista_Flockhart_0004.jpg"
+      ]
+    },
+    "Cameron_Diaz": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Cameron_Diaz/Cameron_Diaz_0005.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Cameron_Diaz/Cameron_Diaz_0006.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Cameron_Diaz/Cameron_Diaz_0002.jpg"
+      ]
+    },
+    "Carlos_Ortega": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Carlos_Ortega/Carlos_Ortega_0001.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Carlos_Ortega/Carlos_Ortega_0003.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Carlos_Ortega/Carlos_Ortega_0002.jpg"
+      ]
+    },
+    "Carlos_Ruiz": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Carlos_Ruiz/Carlos_Ruiz_0003.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Carlos_Ruiz/Carlos_Ruiz_0002.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Carlos_Ruiz/Carlos_Ruiz_0001.jpg"
+      ]
+    },
+    "Carly_Fiorina": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Carly_Fiorina/Carly_Fiorina_0002.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Carly_Fiorina/Carly_Fiorina_0001.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Carly_Fiorina/Carly_Fiorina_0003.jpg"
+      ]
+    },
+    "Carolina_Kluft": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Carolina_Kluft/Carolina_Kluft_0001.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Carolina_Kluft/Carolina_Kluft_0003.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Carolina_Kluft/Carolina_Kluft_0002.jpg"
+      ]
+    },
+    "Carolyn_Dawn_Johnson": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Carolyn_Dawn_Johnson/Carolyn_Dawn_Johnson_0003.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Carolyn_Dawn_Johnson/Carolyn_Dawn_Johnson_0002.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Carolyn_Dawn_Johnson/Carolyn_Dawn_Johnson_0001.jpg"
+      ]
+    },
+    "Carson_Palmer": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Carson_Palmer/Carson_Palmer_0001.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Carson_Palmer/Carson_Palmer_0004.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Carson_Palmer/Carson_Palmer_0002.jpg"
+      ]
+    },
+    "Cate_Blanchett": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Cate_Blanchett/Cate_Blanchett_0003.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Cate_Blanchett/Cate_Blanchett_0004.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Cate_Blanchett/Cate_Blanchett_0001.jpg"
+      ]
+    },
+    "Catherine_Deneuve": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Catherine_Deneuve/Catherine_Deneuve_0001.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Catherine_Deneuve/Catherine_Deneuve_0004.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Catherine_Deneuve/Catherine_Deneuve_0002.jpg"
+      ]
+    },
+    "Cecilia_Bolocco": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Cecilia_Bolocco/Cecilia_Bolocco_0003.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Cecilia_Bolocco/Cecilia_Bolocco_0002.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Cecilia_Bolocco/Cecilia_Bolocco_0001.jpg"
+      ]
+    },
+    "Celine_Dion": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Celine_Dion/Celine_Dion_0001.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Celine_Dion/Celine_Dion_0008.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Celine_Dion/Celine_Dion_0002.jpg"
+      ]
+    },
+    "Chanda_Rubin": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Chanda_Rubin/Chanda_Rubin_0001.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Chanda_Rubin/Chanda_Rubin_0002.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Chanda_Rubin/Chanda_Rubin_0005.jpg"
+      ]
+    },
+    "Charles_Bronson": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Charles_Bronson/Charles_Bronson_0001.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Charles_Bronson/Charles_Bronson_0002.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Charles_Bronson/Charles_Bronson_0003.jpg"
+      ]
+    },
+    "Cherie_Blair": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Cherie_Blair/Cherie_Blair_0004.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Cherie_Blair/Cherie_Blair_0001.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Cherie_Blair/Cherie_Blair_0002.jpg"
+      ]
+    },
+    "Chick_Hearn": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Chick_Hearn/Chick_Hearn_0002.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Chick_Hearn/Chick_Hearn_0003.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Chick_Hearn/Chick_Hearn_0001.jpg"
+      ]
+    },
+    "Christine_Baumgartner": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Christine_Baumgartner/Christine_Baumgartner_0003.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Christine_Baumgartner/Christine_Baumgartner_0001.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Christine_Baumgartner/Christine_Baumgartner_0002.jpg"
+      ]
+    },
+    "Christopher_Walken": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Christopher_Walken/Christopher_Walken_0004.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Christopher_Walken/Christopher_Walken_0002.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Christopher_Walken/Christopher_Walken_0003.jpg"
+      ]
+    },
+    "Ciro_Gomes": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Ciro_Gomes/Ciro_Gomes_0004.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Ciro_Gomes/Ciro_Gomes_0002.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Ciro_Gomes/Ciro_Gomes_0005.jpg"
+      ]
+    },
+    "Claudia_Pechstein": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Claudia_Pechstein/Claudia_Pechstein_0005.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Claudia_Pechstein/Claudia_Pechstein_0002.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Claudia_Pechstein/Claudia_Pechstein_0003.jpg"
+      ]
+    },
+    "Claudia_Schiffer": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Claudia_Schiffer/Claudia_Schiffer_0003.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Claudia_Schiffer/Claudia_Schiffer_0001.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Claudia_Schiffer/Claudia_Schiffer_0002.jpg"
+      ]
+    },
+    "Clay_Aiken": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Clay_Aiken/Clay_Aiken_0005.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Clay_Aiken/Clay_Aiken_0002.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Clay_Aiken/Clay_Aiken_0003.jpg"
+      ]
+    },
+    "Colin_Montgomerie": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Colin_Montgomerie/Colin_Montgomerie_0001.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Colin_Montgomerie/Colin_Montgomerie_0005.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Colin_Montgomerie/Colin_Montgomerie_0004.jpg"
+      ]
+    },
+    "Colin_Powell": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Colin_Powell/Colin_Powell_0196.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Colin_Powell/Colin_Powell_0003.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Colin_Powell/Colin_Powell_0089.jpg"
+      ]
+    },
+    "Condoleezza_Rice": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Condoleezza_Rice/Condoleezza_Rice_0008.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Condoleezza_Rice/Condoleezza_Rice_0005.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Condoleezza_Rice/Condoleezza_Rice_0007.jpg"
+      ]
+    },
+    "Daniel_Radcliffe": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Daniel_Radcliffe/Daniel_Radcliffe_0003.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Daniel_Radcliffe/Daniel_Radcliffe_0002.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Daniel_Radcliffe/Daniel_Radcliffe_0001.jpg"
+      ]
+    },
+    "David_Beckham": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/David_Beckham/David_Beckham_0018.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/David_Beckham/David_Beckham_0011.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/David_Beckham/David_Beckham_0022.jpg"
+      ]
+    },
+    "David_Trimble": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/David_Trimble/David_Trimble_0003.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/David_Trimble/David_Trimble_0004.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/David_Trimble/David_Trimble_0002.jpg"
+      ]
+    },
+    "David_Wells": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/David_Wells/David_Wells_0003.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/David_Wells/David_Wells_0002.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/David_Wells/David_Wells_0005.jpg"
+      ]
+    },
+    "Dean_Barkley": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Dean_Barkley/Dean_Barkley_0004.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Dean_Barkley/Dean_Barkley_0003.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Dean_Barkley/Dean_Barkley_0002.jpg"
+      ]
+    },
+    "Demi_Moore": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Demi_Moore/Demi_Moore_0001.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Demi_Moore/Demi_Moore_0003.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Demi_Moore/Demi_Moore_0002.jpg"
+      ]
+    },
+    "Dennis_Hastert": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Dennis_Hastert/Dennis_Hastert_0006.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Dennis_Hastert/Dennis_Hastert_0004.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Dennis_Hastert/Dennis_Hastert_0002.jpg"
+      ]
+    },
+    "Denzel_Washington": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Denzel_Washington/Denzel_Washington_0003.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Denzel_Washington/Denzel_Washington_0001.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Denzel_Washington/Denzel_Washington_0004.jpg"
+      ]
+    },
+    "Dick_Clark": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Dick_Clark/Dick_Clark_0003.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Dick_Clark/Dick_Clark_0002.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Dick_Clark/Dick_Clark_0001.jpg"
+      ]
+    },
+    "Donald_Fehr": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Donald_Fehr/Donald_Fehr_0003.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Donald_Fehr/Donald_Fehr_0001.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Donald_Fehr/Donald_Fehr_0002.jpg"
+      ]
+    },
+    "Donald_Pettit": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Donald_Pettit/Donald_Pettit_0001.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Donald_Pettit/Donald_Pettit_0002.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Donald_Pettit/Donald_Pettit_0003.jpg"
+      ]
+    },
+    "Donatella_Versace": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Donatella_Versace/Donatella_Versace_0002.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Donatella_Versace/Donatella_Versace_0001.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Donatella_Versace/Donatella_Versace_0003.jpg"
+      ]
+    },
+    "Doug_Melvin": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Doug_Melvin/Doug_Melvin_0001.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Doug_Melvin/Doug_Melvin_0002.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Doug_Melvin/Doug_Melvin_0003.jpg"
+      ]
+    },
+    "Ed_Rosenthal": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Ed_Rosenthal/Ed_Rosenthal_0003.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Ed_Rosenthal/Ed_Rosenthal_0001.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Ed_Rosenthal/Ed_Rosenthal_0002.jpg"
+      ]
+    },
+    "Ed_Smart": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Ed_Smart/Ed_Smart_0001.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Ed_Smart/Ed_Smart_0002.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Ed_Smart/Ed_Smart_0003.jpg"
+      ]
+    },
+    "Edmund_Hillary": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Edmund_Hillary/Edmund_Hillary_0002.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Edmund_Hillary/Edmund_Hillary_0001.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Edmund_Hillary/Edmund_Hillary_0003.jpg"
+      ]
+    },
+    "Edwin_Edwards": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Edwin_Edwards/Edwin_Edwards_0001.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Edwin_Edwards/Edwin_Edwards_0003.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Edwin_Edwards/Edwin_Edwards_0002.jpg"
+      ]
+    },
+    "Eileen_Coparropa": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Eileen_Coparropa/Eileen_Coparropa_0003.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Eileen_Coparropa/Eileen_Coparropa_0001.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Eileen_Coparropa/Eileen_Coparropa_0002.jpg"
+      ]
+    },
+    "Elena_Bovina": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Elena_Bovina/Elena_Bovina_0002.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Elena_Bovina/Elena_Bovina_0001.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Elena_Bovina/Elena_Bovina_0003.jpg"
+      ]
+    },
+    "Elizabeth_Hurley": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Elizabeth_Hurley/Elizabeth_Hurley_0001.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Elizabeth_Hurley/Elizabeth_Hurley_0003.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Elizabeth_Hurley/Elizabeth_Hurley_0005.jpg"
+      ]
+    },
+    "Elton_John": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Elton_John/Elton_John_0007.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Elton_John/Elton_John_0006.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Elton_John/Elton_John_0002.jpg"
+      ]
+    },
+    "Emmanuelle_Beart": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Emmanuelle_Beart/Emmanuelle_Beart_0001.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Emmanuelle_Beart/Emmanuelle_Beart_0002.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Emmanuelle_Beart/Emmanuelle_Beart_0003.jpg"
+      ]
+    },
+    "Enrique_Bolanos": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Enrique_Bolanos/Enrique_Bolanos_0003.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Enrique_Bolanos/Enrique_Bolanos_0004.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Enrique_Bolanos/Enrique_Bolanos_0002.jpg"
+      ]
+    },
+    "Eric_Robert_Rudolph": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Eric_Robert_Rudolph/Eric_Robert_Rudolph_0003.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Eric_Robert_Rudolph/Eric_Robert_Rudolph_0002.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Eric_Robert_Rudolph/Eric_Robert_Rudolph_0001.jpg"
+      ]
+    },
+    "Ernie_Els": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Ernie_Els/Ernie_Els_0002.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Ernie_Els/Ernie_Els_0003.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Ernie_Els/Ernie_Els_0004.jpg"
+      ]
+    },
+    "Evan_Rachel_Wood": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Evan_Rachel_Wood/Evan_Rachel_Wood_0001.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Evan_Rachel_Wood/Evan_Rachel_Wood_0003.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Evan_Rachel_Wood/Evan_Rachel_Wood_0002.jpg"
+      ]
+    },
+    "Fernando_Vargas": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Fernando_Vargas/Fernando_Vargas_0001.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Fernando_Vargas/Fernando_Vargas_0004.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Fernando_Vargas/Fernando_Vargas_0003.jpg"
+      ]
+    },
+    "Fidel_Castro": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Fidel_Castro/Fidel_Castro_0017.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Fidel_Castro/Fidel_Castro_0009.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Fidel_Castro/Fidel_Castro_0002.jpg"
+      ]
+    },
+    "Francisco_Flores": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Francisco_Flores/Francisco_Flores_0001.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Francisco_Flores/Francisco_Flores_0003.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Francisco_Flores/Francisco_Flores_0002.jpg"
+      ]
+    },
+    "Frank_Solich": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Frank_Solich/Frank_Solich_0004.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Frank_Solich/Frank_Solich_0003.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Frank_Solich/Frank_Solich_0001.jpg"
+      ]
+    },
+    "Fred_Thompson": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Fred_Thompson/Fred_Thompson_0002.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Fred_Thompson/Fred_Thompson_0001.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Fred_Thompson/Fred_Thompson_0003.jpg"
+      ]
+    },
+    "Gary_Doer": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Gary_Doer/Gary_Doer_0003.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Gary_Doer/Gary_Doer_0002.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Gary_Doer/Gary_Doer_0001.jpg"
+      ]
+    },
+    "Gene_Robinson": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Gene_Robinson/Gene_Robinson_0001.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Gene_Robinson/Gene_Robinson_0002.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Gene_Robinson/Gene_Robinson_0003.jpg"
+      ]
+    },
+    "George_Galloway": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/George_Galloway/George_Galloway_0001.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/George_Galloway/George_Galloway_0003.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/George_Galloway/George_Galloway_0004.jpg"
+      ]
+    },
+    "George_Papandreou": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/George_Papandreou/George_Papandreou_0001.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/George_Papandreou/George_Papandreou_0004.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/George_Papandreou/George_Papandreou_0003.jpg"
+      ]
+    },
+    "George_Ryan": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/George_Ryan/George_Ryan_0003.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/George_Ryan/George_Ryan_0002.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/George_Ryan/George_Ryan_0001.jpg"
+      ]
+    },
+    "Gian_Marco": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Gian_Marco/Gian_Marco_0001.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Gian_Marco/Gian_Marco_0003.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Gian_Marco/Gian_Marco_0002.jpg"
+      ]
+    },
+    "Gianna_Angelopoulos-Daskalaki": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Gianna_Angelopoulos-Daskalaki/Gianna_Angelopoulos-Daskalaki_0001.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Gianna_Angelopoulos-Daskalaki/Gianna_Angelopoulos-Daskalaki_0002.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Gianna_Angelopoulos-Daskalaki/Gianna_Angelopoulos-Daskalaki_0003.jpg"
+      ]
+    },
+    "Gilberto_Rodriguez_Orejuela": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Gilberto_Rodriguez_Orejuela/Gilberto_Rodriguez_Orejuela_0004.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Gilberto_Rodriguez_Orejuela/Gilberto_Rodriguez_Orejuela_0003.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Gilberto_Rodriguez_Orejuela/Gilberto_Rodriguez_Orejuela_0001.jpg"
+      ]
+    },
+    "Goldie_Hawn": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Goldie_Hawn/Goldie_Hawn_0001.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Goldie_Hawn/Goldie_Hawn_0005.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Goldie_Hawn/Goldie_Hawn_0004.jpg"
+      ]
+    },
+    "Grant_Hackett": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Grant_Hackett/Grant_Hackett_0002.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Grant_Hackett/Grant_Hackett_0004.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Grant_Hackett/Grant_Hackett_0001.jpg"
+      ]
+    },
+    "Gustavo_Kuerten": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Gustavo_Kuerten/Gustavo_Kuerten_0003.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Gustavo_Kuerten/Gustavo_Kuerten_0002.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Gustavo_Kuerten/Gustavo_Kuerten_0001.jpg"
+      ]
+    },
+    "Hans_Eichel": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Hans_Eichel/Hans_Eichel_0002.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Hans_Eichel/Hans_Eichel_0003.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Hans_Eichel/Hans_Eichel_0001.jpg"
+      ]
+    },
+    "Heath_Ledger": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Heath_Ledger/Heath_Ledger_0001.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Heath_Ledger/Heath_Ledger_0004.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Heath_Ledger/Heath_Ledger_0003.jpg"
+      ]
+    },
+    "Heather_Mills": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Heather_Mills/Heather_Mills_0002.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Heather_Mills/Heather_Mills_0004.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Heather_Mills/Heather_Mills_0003.jpg"
+      ]
+    },
+    "Heidi_Klum": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Heidi_Klum/Heidi_Klum_0002.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Heidi_Klum/Heidi_Klum_0004.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Heidi_Klum/Heidi_Klum_0003.jpg"
+      ]
+    },
+    "Heinz_Feldmann": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Heinz_Feldmann/Heinz_Feldmann_0003.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Heinz_Feldmann/Heinz_Feldmann_0002.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Heinz_Feldmann/Heinz_Feldmann_0001.jpg"
+      ]
+    },
+    "Hipolito_Mejia": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Hipolito_Mejia/Hipolito_Mejia_0003.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Hipolito_Mejia/Hipolito_Mejia_0004.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Hipolito_Mejia/Hipolito_Mejia_0002.jpg"
+      ]
+    },
+    "Holly_Hunter": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Holly_Hunter/Holly_Hunter_0003.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Holly_Hunter/Holly_Hunter_0002.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Holly_Hunter/Holly_Hunter_0006.jpg"
+      ]
+    },
+    "Horst_Koehler": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Horst_Koehler/Horst_Koehler_0001.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Horst_Koehler/Horst_Koehler_0003.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Horst_Koehler/Horst_Koehler_0002.jpg"
+      ]
+    },
+    "Hosni_Mubarak": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Hosni_Mubarak/Hosni_Mubarak_0002.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Hosni_Mubarak/Hosni_Mubarak_0003.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Hosni_Mubarak/Hosni_Mubarak_0007.jpg"
+      ]
+    },
+    "Howard_Dean": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Howard_Dean/Howard_Dean_0002.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Howard_Dean/Howard_Dean_0009.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Howard_Dean/Howard_Dean_0010.jpg"
+      ]
+    },
+    "Hun_Sen": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Hun_Sen/Hun_Sen_0002.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Hun_Sen/Hun_Sen_0001.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Hun_Sen/Hun_Sen_0003.jpg"
+      ]
+    },
+    "Isabella_Rossellini": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Isabella_Rossellini/Isabella_Rossellini_0001.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Isabella_Rossellini/Isabella_Rossellini_0002.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Isabella_Rossellini/Isabella_Rossellini_0003.jpg"
+      ]
+    },
+    "JK_Rowling": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/JK_Rowling/JK_Rowling_0001.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/JK_Rowling/JK_Rowling_0004.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/JK_Rowling/JK_Rowling_0005.jpg"
+      ]
+    },
+    "Jack_Nicholson": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Jack_Nicholson/Jack_Nicholson_0001.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Jack_Nicholson/Jack_Nicholson_0002.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Jack_Nicholson/Jack_Nicholson_0003.jpg"
+      ]
+    },
+    "James_Caan": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/James_Caan/James_Caan_0001.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/James_Caan/James_Caan_0002.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/James_Caan/James_Caan_0003.jpg"
+      ]
+    },
+    "James_Gandolfini": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/James_Gandolfini/James_Gandolfini_0002.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/James_Gandolfini/James_Gandolfini_0001.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/James_Gandolfini/James_Gandolfini_0003.jpg"
+      ]
+    },
+    "James_Wolfensohn": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/James_Wolfensohn/James_Wolfensohn_0001.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/James_Wolfensohn/James_Wolfensohn_0003.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/James_Wolfensohn/James_Wolfensohn_0004.jpg"
+      ]
+    },
+    "Jason_Kidd": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Jason_Kidd/Jason_Kidd_0006.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Jason_Kidd/Jason_Kidd_0004.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Jason_Kidd/Jason_Kidd_0002.jpg"
+      ]
+    },
+    "Jean-Pierre_Raffarin": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Jean-Pierre_Raffarin/Jean-Pierre_Raffarin_0002.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Jean-Pierre_Raffarin/Jean-Pierre_Raffarin_0003.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Jean-Pierre_Raffarin/Jean-Pierre_Raffarin_0006.jpg"
+      ]
+    },
+    "Jelena_Dokic": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Jelena_Dokic/Jelena_Dokic_0007.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Jelena_Dokic/Jelena_Dokic_0005.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Jelena_Dokic/Jelena_Dokic_0001.jpg"
+      ]
+    },
+    "Jeremy_Greenstock": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Jeremy_Greenstock/Jeremy_Greenstock_0009.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Jeremy_Greenstock/Jeremy_Greenstock_0003.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Jeremy_Greenstock/Jeremy_Greenstock_0005.jpg"
+      ]
+    },
+    "Jerry_Springer": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Jerry_Springer/Jerry_Springer_0001.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Jerry_Springer/Jerry_Springer_0003.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Jerry_Springer/Jerry_Springer_0004.jpg"
+      ]
+    },
+    "Jiang_Zemin": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Jiang_Zemin/Jiang_Zemin_0019.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Jiang_Zemin/Jiang_Zemin_0015.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Jiang_Zemin/Jiang_Zemin_0011.jpg"
+      ]
+    },
+    "Jim_Hahn": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Jim_Hahn/Jim_Hahn_0003.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Jim_Hahn/Jim_Hahn_0004.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Jim_Hahn/Jim_Hahn_0001.jpg"
+      ]
+    },
+    "Jodie_Foster": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Jodie_Foster/Jodie_Foster_0003.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Jodie_Foster/Jodie_Foster_0001.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Jodie_Foster/Jodie_Foster_0002.jpg"
+      ]
+    },
+    "John_Manley": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/John_Manley/John_Manley_0006.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/John_Manley/John_Manley_0002.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/John_Manley/John_Manley_0001.jpg"
+      ]
+    },
+    "John_Mayer": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/John_Mayer/John_Mayer_0001.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/John_Mayer/John_Mayer_0003.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/John_Mayer/John_Mayer_0002.jpg"
+      ]
+    },
+    "John_Paul_II": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/John_Paul_II/John_Paul_II_0005.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/John_Paul_II/John_Paul_II_0009.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/John_Paul_II/John_Paul_II_0010.jpg"
+      ]
+    },
+    "John_Reid": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/John_Reid/John_Reid_0003.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/John_Reid/John_Reid_0002.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/John_Reid/John_Reid_0001.jpg"
+      ]
+    },
+    "John_Stockton": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/John_Stockton/John_Stockton_0003.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/John_Stockton/John_Stockton_0001.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/John_Stockton/John_Stockton_0002.jpg"
+      ]
+    },
+    "John_Swofford": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/John_Swofford/John_Swofford_0003.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/John_Swofford/John_Swofford_0001.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/John_Swofford/John_Swofford_0002.jpg"
+      ]
+    },
+    "John_Warner": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/John_Warner/John_Warner_0001.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/John_Warner/John_Warner_0002.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/John_Warner/John_Warner_0003.jpg"
+      ]
+    },
+    "Johnny_Tapia": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Johnny_Tapia/Johnny_Tapia_0002.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Johnny_Tapia/Johnny_Tapia_0001.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Johnny_Tapia/Johnny_Tapia_0003.jpg"
+      ]
+    },
+    "Jon_Gruden": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Jon_Gruden/Jon_Gruden_0002.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Jon_Gruden/Jon_Gruden_0001.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Jon_Gruden/Jon_Gruden_0004.jpg"
+      ]
+    },
+    "Jon_Voight": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Jon_Voight/Jon_Voight_0003.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Jon_Voight/Jon_Voight_0002.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Jon_Voight/Jon_Voight_0001.jpg"
+      ]
+    },
+    "Jonathan_Edwards": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Jonathan_Edwards/Jonathan_Edwards_0005.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Jonathan_Edwards/Jonathan_Edwards_0001.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Jonathan_Edwards/Jonathan_Edwards_0006.jpg"
+      ]
+    },
+    "Joschka_Fischer": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Joschka_Fischer/Joschka_Fischer_0008.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Joschka_Fischer/Joschka_Fischer_0006.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Joschka_Fischer/Joschka_Fischer_0012.jpg"
+      ]
+    },
+    "Jose_Manuel_Durao_Barroso": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Jose_Manuel_Durao_Barroso/Jose_Manuel_Durao_Barroso_0005.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Jose_Manuel_Durao_Barroso/Jose_Manuel_Durao_Barroso_0003.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Jose_Manuel_Durao_Barroso/Jose_Manuel_Durao_Barroso_0004.jpg"
+      ]
+    },
+    "Jose_Serra": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Jose_Serra/Jose_Serra_0002.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Jose_Serra/Jose_Serra_0004.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Jose_Serra/Jose_Serra_0009.jpg"
+      ]
+    },
+    "Joseph_Estrada": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Joseph_Estrada/Joseph_Estrada_0004.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Joseph_Estrada/Joseph_Estrada_0003.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Joseph_Estrada/Joseph_Estrada_0001.jpg"
+      ]
+    },
+    "Julia_Tymoshenko": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Julia_Tymoshenko/Julia_Tymoshenko_0003.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Julia_Tymoshenko/Julia_Tymoshenko_0002.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Julia_Tymoshenko/Julia_Tymoshenko_0001.jpg"
+      ]
+    },
+    "Justine_Pasek": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Justine_Pasek/Justine_Pasek_0004.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Justine_Pasek/Justine_Pasek_0007.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Justine_Pasek/Justine_Pasek_0006.jpg"
+      ]
+    },
+    "Kalpana_Chawla": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Kalpana_Chawla/Kalpana_Chawla_0004.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Kalpana_Chawla/Kalpana_Chawla_0002.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Kalpana_Chawla/Kalpana_Chawla_0003.jpg"
+      ]
+    },
+    "Kate_Winslet": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Kate_Winslet/Kate_Winslet_0003.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Kate_Winslet/Kate_Winslet_0002.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Kate_Winslet/Kate_Winslet_0004.jpg"
+      ]
+    },
+    "Katherine_Harris": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Katherine_Harris/Katherine_Harris_0004.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Katherine_Harris/Katherine_Harris_0001.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Katherine_Harris/Katherine_Harris_0003.jpg"
+      ]
+    },
+    "Kemal_Dervis": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Kemal_Dervis/Kemal_Dervis_0002.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Kemal_Dervis/Kemal_Dervis_0003.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Kemal_Dervis/Kemal_Dervis_0001.jpg"
+      ]
+    },
+    "Kenneth_Bowersox": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Kenneth_Bowersox/Kenneth_Bowersox_0002.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Kenneth_Bowersox/Kenneth_Bowersox_0001.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Kenneth_Bowersox/Kenneth_Bowersox_0003.jpg"
+      ]
+    },
+    "Kevin_Costner": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Kevin_Costner/Kevin_Costner_0004.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Kevin_Costner/Kevin_Costner_0002.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Kevin_Costner/Kevin_Costner_0005.jpg"
+      ]
+    },
+    "Kim_Clijsters": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Kim_Clijsters/Kim_Clijsters_0007.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Kim_Clijsters/Kim_Clijsters_0012.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Kim_Clijsters/Kim_Clijsters_0006.jpg"
+      ]
+    },
+    "Kim_Jong-Il": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Kim_Jong-Il/Kim_Jong-Il_0003.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Kim_Jong-Il/Kim_Jong-Il_0001.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Kim_Jong-Il/Kim_Jong-Il_0002.jpg"
+      ]
+    },
+    "Kimi_Raikkonen": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Kimi_Raikkonen/Kimi_Raikkonen_0003.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Kimi_Raikkonen/Kimi_Raikkonen_0001.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Kimi_Raikkonen/Kimi_Raikkonen_0002.jpg"
+      ]
+    },
+    "Kirk_Johnson": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Kirk_Johnson/Kirk_Johnson_0002.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Kirk_Johnson/Kirk_Johnson_0001.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Kirk_Johnson/Kirk_Johnson_0003.jpg"
+      ]
+    },
+    "Kobe_Bryant": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Kobe_Bryant/Kobe_Bryant_0002.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Kobe_Bryant/Kobe_Bryant_0001.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Kobe_Bryant/Kobe_Bryant_0003.jpg"
+      ]
+    },
+    "Kristanna_Loken": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Kristanna_Loken/Kristanna_Loken_0002.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Kristanna_Loken/Kristanna_Loken_0003.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Kristanna_Loken/Kristanna_Loken_0001.jpg"
+      ]
+    },
+    "Kristen_Breitweiser": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Kristen_Breitweiser/Kristen_Breitweiser_0002.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Kristen_Breitweiser/Kristen_Breitweiser_0003.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Kristen_Breitweiser/Kristen_Breitweiser_0001.jpg"
+      ]
+    },
+    "Kwon_Yang-sook": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Kwon_Yang-sook/Kwon_Yang-sook_0002.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Kwon_Yang-sook/Kwon_Yang-sook_0001.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Kwon_Yang-sook/Kwon_Yang-sook_0003.jpg"
+      ]
+    },
+    "Lars_Von_Trier": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Lars_Von_Trier/Lars_Von_Trier_0003.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Lars_Von_Trier/Lars_Von_Trier_0002.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Lars_Von_Trier/Lars_Von_Trier_0001.jpg"
+      ]
+    },
+    "LeBron_James": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/LeBron_James/LeBron_James_0002.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/LeBron_James/LeBron_James_0005.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/LeBron_James/LeBron_James_0001.jpg"
+      ]
+    },
+    "Lee_Hoi-chang": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Lee_Hoi-chang/Lee_Hoi-chang_0001.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Lee_Hoi-chang/Lee_Hoi-chang_0003.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Lee_Hoi-chang/Lee_Hoi-chang_0004.jpg"
+      ]
+    },
+    "Liza_Minnelli": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Liza_Minnelli/Liza_Minnelli_0006.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Liza_Minnelli/Liza_Minnelli_0003.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Liza_Minnelli/Liza_Minnelli_0002.jpg"
+      ]
+    },
+    "Lucy_Liu": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Lucy_Liu/Lucy_Liu_0005.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Lucy_Liu/Lucy_Liu_0003.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Lucy_Liu/Lucy_Liu_0004.jpg"
+      ]
+    },
+    "Ludivine_Sagnier": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Ludivine_Sagnier/Ludivine_Sagnier_0002.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Ludivine_Sagnier/Ludivine_Sagnier_0004.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Ludivine_Sagnier/Ludivine_Sagnier_0001.jpg"
+      ]
+    },
+    "Luis_Ernesto_Derbez_Bautista": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Luis_Ernesto_Derbez_Bautista/Luis_Ernesto_Derbez_Bautista_0003.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Luis_Ernesto_Derbez_Bautista/Luis_Ernesto_Derbez_Bautista_0002.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Luis_Ernesto_Derbez_Bautista/Luis_Ernesto_Derbez_Bautista_0004.jpg"
+      ]
+    },
+    "Luis_Gonzalez_Macchi": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Luis_Gonzalez_Macchi/Luis_Gonzalez_Macchi_0004.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Luis_Gonzalez_Macchi/Luis_Gonzalez_Macchi_0002.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Luis_Gonzalez_Macchi/Luis_Gonzalez_Macchi_0003.jpg"
+      ]
+    },
+    "Madeleine_Albright": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Madeleine_Albright/Madeleine_Albright_0001.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Madeleine_Albright/Madeleine_Albright_0003.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Madeleine_Albright/Madeleine_Albright_0002.jpg"
+      ]
+    },
+    "Madonna": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Madonna/Madonna_0003.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Madonna/Madonna_0002.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Madonna/Madonna_0004.jpg"
+      ]
+    },
+    "Magdalena_Maleeva": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Magdalena_Maleeva/Magdalena_Maleeva_0001.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Magdalena_Maleeva/Magdalena_Maleeva_0003.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Magdalena_Maleeva/Magdalena_Maleeva_0002.jpg"
+      ]
+    },
+    "Makhdoom_Amin_Fahim": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Makhdoom_Amin_Fahim/Makhdoom_Amin_Fahim_0003.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Makhdoom_Amin_Fahim/Makhdoom_Amin_Fahim_0001.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Makhdoom_Amin_Fahim/Makhdoom_Amin_Fahim_0002.jpg"
+      ]
+    },
+    "Marcelo_Ebrard": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Marcelo_Ebrard/Marcelo_Ebrard_0002.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Marcelo_Ebrard/Marcelo_Ebrard_0001.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Marcelo_Ebrard/Marcelo_Ebrard_0003.jpg"
+      ]
+    },
+    "Marco_Antonio_Barrera": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Marco_Antonio_Barrera/Marco_Antonio_Barrera_0001.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Marco_Antonio_Barrera/Marco_Antonio_Barrera_0004.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Marco_Antonio_Barrera/Marco_Antonio_Barrera_0006.jpg"
+      ]
+    },
+    "Maria_Shriver": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Maria_Shriver/Maria_Shriver_0005.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Maria_Shriver/Maria_Shriver_0008.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Maria_Shriver/Maria_Shriver_0007.jpg"
+      ]
+    },
+    "Mariana_Pollack": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Mariana_Pollack/Mariana_Pollack_0002.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Mariana_Pollack/Mariana_Pollack_0003.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Mariana_Pollack/Mariana_Pollack_0001.jpg"
+      ]
+    },
+    "Martin_Verkerk": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Martin_Verkerk/Martin_Verkerk_0001.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Martin_Verkerk/Martin_Verkerk_0002.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Martin_Verkerk/Martin_Verkerk_0003.jpg"
+      ]
+    },
+    "Martina_McBride": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Martina_McBride/Martina_McBride_0005.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Martina_McBride/Martina_McBride_0002.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Martina_McBride/Martina_McBride_0001.jpg"
+      ]
+    },
+    "Mary-Kate_Olsen": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Mary-Kate_Olsen/Mary-Kate_Olsen_0003.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Mary-Kate_Olsen/Mary-Kate_Olsen_0001.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Mary-Kate_Olsen/Mary-Kate_Olsen_0002.jpg"
+      ]
+    },
+    "Mary_Carey": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Mary_Carey/Mary_Carey_0001.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Mary_Carey/Mary_Carey_0002.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Mary_Carey/Mary_Carey_0004.jpg"
+      ]
+    },
+    "Mathias_Reichhold": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Mathias_Reichhold/Mathias_Reichhold_0001.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Mathias_Reichhold/Mathias_Reichhold_0003.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Mathias_Reichhold/Mathias_Reichhold_0002.jpg"
+      ]
+    },
+    "Matthew_Broderick": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Matthew_Broderick/Matthew_Broderick_0001.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Matthew_Broderick/Matthew_Broderick_0004.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Matthew_Broderick/Matthew_Broderick_0003.jpg"
+      ]
+    },
+    "Melanie_Griffith": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Melanie_Griffith/Melanie_Griffith_0002.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Melanie_Griffith/Melanie_Griffith_0003.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Melanie_Griffith/Melanie_Griffith_0001.jpg"
+      ]
+    },
+    "Mian_Khursheed_Mehmood_Kasuri": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Mian_Khursheed_Mehmood_Kasuri/Mian_Khursheed_Mehmood_Kasuri_0003.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Mian_Khursheed_Mehmood_Kasuri/Mian_Khursheed_Mehmood_Kasuri_0002.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Mian_Khursheed_Mehmood_Kasuri/Mian_Khursheed_Mehmood_Kasuri_0004.jpg"
+      ]
+    },
+    "Michael_Caine": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Michael_Caine/Michael_Caine_0003.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Michael_Caine/Michael_Caine_0004.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Michael_Caine/Michael_Caine_0002.jpg"
+      ]
+    },
+    "Michael_Chang": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Michael_Chang/Michael_Chang_0006.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Michael_Chang/Michael_Chang_0001.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Michael_Chang/Michael_Chang_0002.jpg"
+      ]
+    },
+    "Michael_Moore": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Michael_Moore/Michael_Moore_0002.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Michael_Moore/Michael_Moore_0003.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Michael_Moore/Michael_Moore_0001.jpg"
+      ]
+    },
+    "Michael_Phelps": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Michael_Phelps/Michael_Phelps_0002.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Michael_Phelps/Michael_Phelps_0005.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Michael_Phelps/Michael_Phelps_0001.jpg"
+      ]
+    },
+    "Michael_Schumacher": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Michael_Schumacher/Michael_Schumacher_0011.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Michael_Schumacher/Michael_Schumacher_0014.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Michael_Schumacher/Michael_Schumacher_0005.jpg"
+      ]
+    },
+    "Michael_Winterbottom": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Michael_Winterbottom/Michael_Winterbottom_0002.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Michael_Winterbottom/Michael_Winterbottom_0003.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Michael_Winterbottom/Michael_Winterbottom_0001.jpg"
+      ]
+    },
+    "Mike_Myers": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Mike_Myers/Mike_Myers_0006.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Mike_Myers/Mike_Myers_0007.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Mike_Myers/Mike_Myers_0001.jpg"
+      ]
+    },
+    "Mitchell_Daniels": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Mitchell_Daniels/Mitchell_Daniels_0004.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Mitchell_Daniels/Mitchell_Daniels_0002.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Mitchell_Daniels/Mitchell_Daniels_0003.jpg"
+      ]
+    },
+    "Mohammad_Khatami": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Mohammad_Khatami/Mohammad_Khatami_0001.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Mohammad_Khatami/Mohammad_Khatami_0003.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Mohammad_Khatami/Mohammad_Khatami_0004.jpg"
+      ]
+    },
+    "Mohammed_Baqir_al-Hakim": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Mohammed_Baqir_al-Hakim/Mohammed_Baqir_al-Hakim_0003.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Mohammed_Baqir_al-Hakim/Mohammed_Baqir_al-Hakim_0002.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Mohammed_Baqir_al-Hakim/Mohammed_Baqir_al-Hakim_0001.jpg"
+      ]
+    },
+    "Monica_Bellucci": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Monica_Bellucci/Monica_Bellucci_0001.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Monica_Bellucci/Monica_Bellucci_0004.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Monica_Bellucci/Monica_Bellucci_0002.jpg"
+      ]
+    },
+    "Monica_Lewinsky": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Monica_Lewinsky/Monica_Lewinsky_0001.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Monica_Lewinsky/Monica_Lewinsky_0002.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Monica_Lewinsky/Monica_Lewinsky_0003.jpg"
+      ]
+    },
+    "Muhammad_Ali": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Muhammad_Ali/Muhammad_Ali_0010.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Muhammad_Ali/Muhammad_Ali_0009.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Muhammad_Ali/Muhammad_Ali_0001.jpg"
+      ]
+    },
+    "Mukesh_Ambani": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Mukesh_Ambani/Mukesh_Ambani_0001.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Mukesh_Ambani/Mukesh_Ambani_0003.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Mukesh_Ambani/Mukesh_Ambani_0002.jpg"
+      ]
+    },
+    "Natalie_Coughlin": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Natalie_Coughlin/Natalie_Coughlin_0006.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Natalie_Coughlin/Natalie_Coughlin_0004.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Natalie_Coughlin/Natalie_Coughlin_0005.jpg"
+      ]
+    },
+    "Nathalie_Baye": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Nathalie_Baye/Nathalie_Baye_0004.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Nathalie_Baye/Nathalie_Baye_0003.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Nathalie_Baye/Nathalie_Baye_0002.jpg"
+      ]
+    },
+    "Nelson_Mandela": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Nelson_Mandela/Nelson_Mandela_0004.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Nelson_Mandela/Nelson_Mandela_0001.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Nelson_Mandela/Nelson_Mandela_0002.jpg"
+      ]
+    },
+    "Nia_Vardalos": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Nia_Vardalos/Nia_Vardalos_0004.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Nia_Vardalos/Nia_Vardalos_0005.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Nia_Vardalos/Nia_Vardalos_0003.jpg"
+      ]
+    },
+    "Nicolas_Cage": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Nicolas_Cage/Nicolas_Cage_0003.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Nicolas_Cage/Nicolas_Cage_0004.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Nicolas_Cage/Nicolas_Cage_0002.jpg"
+      ]
+    },
+    "Noah_Wyle": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Noah_Wyle/Noah_Wyle_0002.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Noah_Wyle/Noah_Wyle_0001.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Noah_Wyle/Noah_Wyle_0003.jpg"
+      ]
+    },
+    "Norm_Coleman": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Norm_Coleman/Norm_Coleman_0003.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Norm_Coleman/Norm_Coleman_0001.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Norm_Coleman/Norm_Coleman_0005.jpg"
+      ]
+    },
+    "Osama_bin_Laden": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Osama_bin_Laden/Osama_bin_Laden_0003.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Osama_bin_Laden/Osama_bin_Laden_0001.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Osama_bin_Laden/Osama_bin_Laden_0002.jpg"
+      ]
+    },
+    "Oscar_De_La_Hoya": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Oscar_De_La_Hoya/Oscar_De_La_Hoya_0003.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Oscar_De_La_Hoya/Oscar_De_La_Hoya_0004.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Oscar_De_La_Hoya/Oscar_De_La_Hoya_0005.jpg"
+      ]
+    },
+    "Oswaldo_Paya": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Oswaldo_Paya/Oswaldo_Paya_0005.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Oswaldo_Paya/Oswaldo_Paya_0002.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Oswaldo_Paya/Oswaldo_Paya_0001.jpg"
+      ]
+    },
+    "Pamela_Anderson": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Pamela_Anderson/Pamela_Anderson_0002.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Pamela_Anderson/Pamela_Anderson_0004.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Pamela_Anderson/Pamela_Anderson_0003.jpg"
+      ]
+    },
+    "Pascal_Quignard": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Pascal_Quignard/Pascal_Quignard_0003.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Pascal_Quignard/Pascal_Quignard_0002.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Pascal_Quignard/Pascal_Quignard_0001.jpg"
+      ]
+    },
+    "Patti_Labelle": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Patti_Labelle/Patti_Labelle_0003.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Patti_Labelle/Patti_Labelle_0002.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Patti_Labelle/Patti_Labelle_0001.jpg"
+      ]
+    },
+    "Paul-Henri_Mathieu": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Paul-Henri_Mathieu/Paul-Henri_Mathieu_0002.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Paul-Henri_Mathieu/Paul-Henri_Mathieu_0001.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Paul-Henri_Mathieu/Paul-Henri_Mathieu_0003.jpg"
+      ]
+    },
+    "Paul_Sarbanes": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Paul_Sarbanes/Paul_Sarbanes_0003.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Paul_Sarbanes/Paul_Sarbanes_0002.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Paul_Sarbanes/Paul_Sarbanes_0001.jpg"
+      ]
+    },
+    "Paul_Tagliabue": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Paul_Tagliabue/Paul_Tagliabue_0004.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Paul_Tagliabue/Paul_Tagliabue_0003.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Paul_Tagliabue/Paul_Tagliabue_0002.jpg"
+      ]
+    },
+    "Paul_Wellstone": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Paul_Wellstone/Paul_Wellstone_0002.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Paul_Wellstone/Paul_Wellstone_0001.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Paul_Wellstone/Paul_Wellstone_0003.jpg"
+      ]
+    },
+    "Pedro_Almodovar": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Pedro_Almodovar/Pedro_Almodovar_0006.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Pedro_Almodovar/Pedro_Almodovar_0001.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Pedro_Almodovar/Pedro_Almodovar_0004.jpg"
+      ]
+    },
+    "Peter_Arnett": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Peter_Arnett/Peter_Arnett_0002.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Peter_Arnett/Peter_Arnett_0003.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Peter_Arnett/Peter_Arnett_0001.jpg"
+      ]
+    },
+    "Phan_Van_Khai": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Phan_Van_Khai/Phan_Van_Khai_0002.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Phan_Van_Khai/Phan_Van_Khai_0003.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Phan_Van_Khai/Phan_Van_Khai_0001.jpg"
+      ]
+    },
+    "Prince_Harry": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Prince_Harry/Prince_Harry_0002.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Prince_Harry/Prince_Harry_0003.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Prince_Harry/Prince_Harry_0001.jpg"
+      ]
+    },
+    "Prince_Naruhito": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Prince_Naruhito/Prince_Naruhito_0001.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Prince_Naruhito/Prince_Naruhito_0003.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Prince_Naruhito/Prince_Naruhito_0002.jpg"
+      ]
+    },
+    "Princess_Caroline": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Princess_Caroline/Princess_Caroline_0003.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Princess_Caroline/Princess_Caroline_0004.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Princess_Caroline/Princess_Caroline_0002.jpg"
+      ]
+    },
+    "Queen_Rania": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Queen_Rania/Queen_Rania_0005.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Queen_Rania/Queen_Rania_0003.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Queen_Rania/Queen_Rania_0004.jpg"
+      ]
+    },
+    "Rachel_Griffiths": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Rachel_Griffiths/Rachel_Griffiths_0001.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Rachel_Griffiths/Rachel_Griffiths_0002.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Rachel_Griffiths/Rachel_Griffiths_0003.jpg"
+      ]
+    },
+    "Ranil_Wickremasinghe": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Ranil_Wickremasinghe/Ranil_Wickremasinghe_0002.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Ranil_Wickremasinghe/Ranil_Wickremasinghe_0001.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Ranil_Wickremasinghe/Ranil_Wickremasinghe_0003.jpg"
+      ]
+    },
+    "Ray_Allen": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Ray_Allen/Ray_Allen_0002.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Ray_Allen/Ray_Allen_0003.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Ray_Allen/Ray_Allen_0001.jpg"
+      ]
+    },
+    "Rebecca_Romijn-Stamos": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Rebecca_Romijn-Stamos/Rebecca_Romijn-Stamos_0002.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Rebecca_Romijn-Stamos/Rebecca_Romijn-Stamos_0004.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Rebecca_Romijn-Stamos/Rebecca_Romijn-Stamos_0003.jpg"
+      ]
+    },
+    "Richard_Gephardt": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Richard_Gephardt/Richard_Gephardt_0004.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Richard_Gephardt/Richard_Gephardt_0010.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Richard_Gephardt/Richard_Gephardt_0002.jpg"
+      ]
+    },
+    "Richard_Krajicek": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Richard_Krajicek/Richard_Krajicek_0002.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Richard_Krajicek/Richard_Krajicek_0003.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Richard_Krajicek/Richard_Krajicek_0001.jpg"
+      ]
+    },
+    "Rick_Dinse": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Rick_Dinse/Rick_Dinse_0002.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Rick_Dinse/Rick_Dinse_0003.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Rick_Dinse/Rick_Dinse_0001.jpg"
+      ]
+    },
+    "Rick_Perry": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Rick_Perry/Rick_Perry_0003.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Rick_Perry/Rick_Perry_0005.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Rick_Perry/Rick_Perry_0002.jpg"
+      ]
+    },
+    "Rick_Pitino": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Rick_Pitino/Rick_Pitino_0002.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Rick_Pitino/Rick_Pitino_0001.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Rick_Pitino/Rick_Pitino_0004.jpg"
+      ]
+    },
+    "Rick_Romley": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Rick_Romley/Rick_Romley_0001.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Rick_Romley/Rick_Romley_0002.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Rick_Romley/Rick_Romley_0003.jpg"
+      ]
+    },
+    "Rob_Lowe": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Rob_Lowe/Rob_Lowe_0003.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Rob_Lowe/Rob_Lowe_0004.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Rob_Lowe/Rob_Lowe_0001.jpg"
+      ]
+    },
+    "Rob_Marshall": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Rob_Marshall/Rob_Marshall_0001.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Rob_Marshall/Rob_Marshall_0005.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Rob_Marshall/Rob_Marshall_0004.jpg"
+      ]
+    },
+    "Robert_Evans": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Robert_Evans/Robert_Evans_0001.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Robert_Evans/Robert_Evans_0002.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Robert_Evans/Robert_Evans_0003.jpg"
+      ]
+    },
+    "Robert_Kocharian": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Robert_Kocharian/Robert_Kocharian_0001.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Robert_Kocharian/Robert_Kocharian_0003.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Robert_Kocharian/Robert_Kocharian_0002.jpg"
+      ]
+    },
+    "Robert_Mueller": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Robert_Mueller/Robert_Mueller_0003.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Robert_Mueller/Robert_Mueller_0001.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Robert_Mueller/Robert_Mueller_0005.jpg"
+      ]
+    },
+    "Robert_Torricelli": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Robert_Torricelli/Robert_Torricelli_0002.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Robert_Torricelli/Robert_Torricelli_0001.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Robert_Torricelli/Robert_Torricelli_0003.jpg"
+      ]
+    },
+    "Roger_Moore": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Roger_Moore/Roger_Moore_0005.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Roger_Moore/Roger_Moore_0004.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Roger_Moore/Roger_Moore_0002.jpg"
+      ]
+    },
+    "Romano_Prodi": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Romano_Prodi/Romano_Prodi_0004.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Romano_Prodi/Romano_Prodi_0002.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Romano_Prodi/Romano_Prodi_0001.jpg"
+      ]
+    },
+    "Ronaldo_Luis_Nazario_de_Lima": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Ronaldo_Luis_Nazario_de_Lima/Ronaldo_Luis_Nazario_de_Lima_0002.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Ronaldo_Luis_Nazario_de_Lima/Ronaldo_Luis_Nazario_de_Lima_0003.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Ronaldo_Luis_Nazario_de_Lima/Ronaldo_Luis_Nazario_de_Lima_0001.jpg"
+      ]
+    },
+    "Roy_Moore": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Roy_Moore/Roy_Moore_0004.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Roy_Moore/Roy_Moore_0002.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Roy_Moore/Roy_Moore_0003.jpg"
+      ]
+    },
+    "Roy_Williams": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Roy_Williams/Roy_Williams_0001.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Roy_Williams/Roy_Williams_0003.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Roy_Williams/Roy_Williams_0002.jpg"
+      ]
+    },
+    "Rupert_Grint": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Rupert_Grint/Rupert_Grint_0002.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Rupert_Grint/Rupert_Grint_0001.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Rupert_Grint/Rupert_Grint_0003.jpg"
+      ]
+    },
+    "Sachiko_Yamada": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Sachiko_Yamada/Sachiko_Yamada_0003.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Sachiko_Yamada/Sachiko_Yamada_0004.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Sachiko_Yamada/Sachiko_Yamada_0001.jpg"
+      ]
+    },
+    "Sadie_Frost": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Sadie_Frost/Sadie_Frost_0002.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Sadie_Frost/Sadie_Frost_0003.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Sadie_Frost/Sadie_Frost_0001.jpg"
+      ]
+    },
+    "Sam_Bith": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Sam_Bith/Sam_Bith_0002.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Sam_Bith/Sam_Bith_0003.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Sam_Bith/Sam_Bith_0001.jpg"
+      ]
+    },
+    "Sam_Torrance": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Sam_Torrance/Sam_Torrance_0003.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Sam_Torrance/Sam_Torrance_0002.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Sam_Torrance/Sam_Torrance_0001.jpg"
+      ]
+    },
+    "Sandra_Bullock": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Sandra_Bullock/Sandra_Bullock_0002.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Sandra_Bullock/Sandra_Bullock_0003.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Sandra_Bullock/Sandra_Bullock_0001.jpg"
+      ]
+    },
+    "Scott_McClellan": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Scott_McClellan/Scott_McClellan_0001.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Scott_McClellan/Scott_McClellan_0002.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Scott_McClellan/Scott_McClellan_0003.jpg"
+      ]
+    },
+    "Scott_Peterson": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Scott_Peterson/Scott_Peterson_0002.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Scott_Peterson/Scott_Peterson_0004.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Scott_Peterson/Scott_Peterson_0003.jpg"
+      ]
+    },
+    "Sean_OKeefe": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Sean_OKeefe/Sean_OKeefe_0005.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Sean_OKeefe/Sean_OKeefe_0001.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Sean_OKeefe/Sean_OKeefe_0002.jpg"
+      ]
+    },
+    "Sebastian_Saja": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Sebastian_Saja/Sebastian_Saja_0002.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Sebastian_Saja/Sebastian_Saja_0001.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Sebastian_Saja/Sebastian_Saja_0003.jpg"
+      ]
+    },
+    "Serena_Williams": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Serena_Williams/Serena_Williams_0037.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Serena_Williams/Serena_Williams_0016.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Serena_Williams/Serena_Williams_0044.jpg"
+      ]
+    },
+    "Sergei_Ivanov": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Sergei_Ivanov/Sergei_Ivanov_0003.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Sergei_Ivanov/Sergei_Ivanov_0002.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Sergei_Ivanov/Sergei_Ivanov_0004.jpg"
+      ]
+    },
+    "Sergey_Lavrov": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Sergey_Lavrov/Sergey_Lavrov_0004.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Sergey_Lavrov/Sergey_Lavrov_0005.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Sergey_Lavrov/Sergey_Lavrov_0001.jpg"
+      ]
+    },
+    "Sergio_Vieira_De_Mello": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Sergio_Vieira_De_Mello/Sergio_Vieira_De_Mello_0006.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Sergio_Vieira_De_Mello/Sergio_Vieira_De_Mello_0003.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Sergio_Vieira_De_Mello/Sergio_Vieira_De_Mello_0002.jpg"
+      ]
+    },
+    "Shaul_Mofaz": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Shaul_Mofaz/Shaul_Mofaz_0003.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Shaul_Mofaz/Shaul_Mofaz_0002.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Shaul_Mofaz/Shaul_Mofaz_0001.jpg"
+      ]
+    },
+    "Sheila_Copps": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Sheila_Copps/Sheila_Copps_0004.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Sheila_Copps/Sheila_Copps_0003.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Sheila_Copps/Sheila_Copps_0001.jpg"
+      ]
+    },
+    "Silvia_Farina_Elia": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Silvia_Farina_Elia/Silvia_Farina_Elia_0001.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Silvia_Farina_Elia/Silvia_Farina_Elia_0003.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Silvia_Farina_Elia/Silvia_Farina_Elia_0002.jpg"
+      ]
+    },
+    "Slobodan_Milosevic": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Slobodan_Milosevic/Slobodan_Milosevic_0004.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Slobodan_Milosevic/Slobodan_Milosevic_0001.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Slobodan_Milosevic/Slobodan_Milosevic_0002.jpg"
+      ]
+    },
+    "Sonia_Gandhi": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Sonia_Gandhi/Sonia_Gandhi_0003.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Sonia_Gandhi/Sonia_Gandhi_0004.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Sonia_Gandhi/Sonia_Gandhi_0001.jpg"
+      ]
+    },
+    "Sophia_Loren": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Sophia_Loren/Sophia_Loren_0005.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Sophia_Loren/Sophia_Loren_0001.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Sophia_Loren/Sophia_Loren_0003.jpg"
+      ]
+    },
+    "Steve_Mariucci": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Steve_Mariucci/Steve_Mariucci_0003.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Steve_Mariucci/Steve_Mariucci_0002.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Steve_Mariucci/Steve_Mariucci_0001.jpg"
+      ]
+    },
+    "Stockard_Channing": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Stockard_Channing/Stockard_Channing_0001.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Stockard_Channing/Stockard_Channing_0002.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Stockard_Channing/Stockard_Channing_0003.jpg"
+      ]
+    },
+    "Susan_Sarandon": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Susan_Sarandon/Susan_Sarandon_0002.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Susan_Sarandon/Susan_Sarandon_0003.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Susan_Sarandon/Susan_Sarandon_0001.jpg"
+      ]
+    },
+    "Susilo_Bambang_Yudhoyono": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Susilo_Bambang_Yudhoyono/Susilo_Bambang_Yudhoyono_0004.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Susilo_Bambang_Yudhoyono/Susilo_Bambang_Yudhoyono_0003.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Susilo_Bambang_Yudhoyono/Susilo_Bambang_Yudhoyono_0002.jpg"
+      ]
+    },
+    "Taha_Yassin_Ramadan": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Taha_Yassin_Ramadan/Taha_Yassin_Ramadan_0014.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Taha_Yassin_Ramadan/Taha_Yassin_Ramadan_0002.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Taha_Yassin_Ramadan/Taha_Yassin_Ramadan_0004.jpg"
+      ]
+    },
+    "Tang_Jiaxuan": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Tang_Jiaxuan/Tang_Jiaxuan_0011.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Tang_Jiaxuan/Tang_Jiaxuan_0009.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Tang_Jiaxuan/Tang_Jiaxuan_0002.jpg"
+      ]
+    },
+    "Taufik_Hidayat": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Taufik_Hidayat/Taufik_Hidayat_0001.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Taufik_Hidayat/Taufik_Hidayat_0003.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Taufik_Hidayat/Taufik_Hidayat_0002.jpg"
+      ]
+    },
+    "Thabo_Mbeki": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Thabo_Mbeki/Thabo_Mbeki_0005.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Thabo_Mbeki/Thabo_Mbeki_0002.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Thabo_Mbeki/Thabo_Mbeki_0003.jpg"
+      ]
+    },
+    "Thaksin_Shinawatra": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Thaksin_Shinawatra/Thaksin_Shinawatra_0005.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Thaksin_Shinawatra/Thaksin_Shinawatra_0003.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Thaksin_Shinawatra/Thaksin_Shinawatra_0004.jpg"
+      ]
+    },
+    "Tim_Conway": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Tim_Conway/Tim_Conway_0003.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Tim_Conway/Tim_Conway_0001.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Tim_Conway/Tim_Conway_0002.jpg"
+      ]
+    },
+    "Todd_Haynes": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Todd_Haynes/Todd_Haynes_0001.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Todd_Haynes/Todd_Haynes_0002.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Todd_Haynes/Todd_Haynes_0003.jpg"
+      ]
+    },
+    "Tom_Reilly": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Tom_Reilly/Tom_Reilly_0003.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Tom_Reilly/Tom_Reilly_0002.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Tom_Reilly/Tom_Reilly_0001.jpg"
+      ]
+    },
+    "Tony_Bennett": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Tony_Bennett/Tony_Bennett_0001.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Tony_Bennett/Tony_Bennett_0004.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Tony_Bennett/Tony_Bennett_0002.jpg"
+      ]
+    },
+    "Valery_Giscard_dEstaing": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Valery_Giscard_dEstaing/Valery_Giscard_dEstaing_0005.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Valery_Giscard_dEstaing/Valery_Giscard_dEstaing_0006.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Valery_Giscard_dEstaing/Valery_Giscard_dEstaing_0002.jpg"
+      ]
+    },
+    "Vanessa_Redgrave": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Vanessa_Redgrave/Vanessa_Redgrave_0001.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Vanessa_Redgrave/Vanessa_Redgrave_0003.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Vanessa_Redgrave/Vanessa_Redgrave_0005.jpg"
+      ]
+    },
+    "Vicente_Fernandez": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Vicente_Fernandez/Vicente_Fernandez_0002.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Vicente_Fernandez/Vicente_Fernandez_0001.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Vicente_Fernandez/Vicente_Fernandez_0004.jpg"
+      ]
+    },
+    "Victoria_Beckham": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Victoria_Beckham/Victoria_Beckham_0001.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Victoria_Beckham/Victoria_Beckham_0003.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Victoria_Beckham/Victoria_Beckham_0002.jpg"
+      ]
+    },
+    "Vincent_Brooks": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Vincent_Brooks/Vincent_Brooks_0004.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Vincent_Brooks/Vincent_Brooks_0002.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Vincent_Brooks/Vincent_Brooks_0003.jpg"
+      ]
+    },
+    "Vincent_Gallo": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Vincent_Gallo/Vincent_Gallo_0001.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Vincent_Gallo/Vincent_Gallo_0002.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Vincent_Gallo/Vincent_Gallo_0003.jpg"
+      ]
+    },
+    "Walter_Mondale": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Walter_Mondale/Walter_Mondale_0010.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Walter_Mondale/Walter_Mondale_0007.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Walter_Mondale/Walter_Mondale_0005.jpg"
+      ]
+    },
+    "Warren_Buffett": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Warren_Buffett/Warren_Buffett_0003.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Warren_Buffett/Warren_Buffett_0001.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Warren_Buffett/Warren_Buffett_0002.jpg"
+      ]
+    },
+    "William_Bulger": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/William_Bulger/William_Bulger_0001.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/William_Bulger/William_Bulger_0002.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/William_Bulger/William_Bulger_0003.jpg"
+      ]
+    },
+    "William_Donaldson": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/William_Donaldson/William_Donaldson_0003.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/William_Donaldson/William_Donaldson_0004.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/William_Donaldson/William_Donaldson_0002.jpg"
+      ]
+    },
+    "William_Macy": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/William_Macy/William_Macy_0004.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/William_Macy/William_Macy_0002.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/William_Macy/William_Macy_0005.jpg"
+      ]
+    },
+    "Win_Aung": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Win_Aung/Win_Aung_0001.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Win_Aung/Win_Aung_0003.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Win_Aung/Win_Aung_0004.jpg"
+      ]
+    },
+    "Woody_Allen": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Woody_Allen/Woody_Allen_0005.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Woody_Allen/Woody_Allen_0002.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Woody_Allen/Woody_Allen_0003.jpg"
+      ]
+    },
+    "Xavier_Malisse": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Xavier_Malisse/Xavier_Malisse_0005.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Xavier_Malisse/Xavier_Malisse_0003.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Xavier_Malisse/Xavier_Malisse_0004.jpg"
+      ]
+    },
+    "Yasar_Yakis": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Yasar_Yakis/Yasar_Yakis_0002.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Yasar_Yakis/Yasar_Yakis_0001.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Yasar_Yakis/Yasar_Yakis_0003.jpg"
+      ]
+    },
+    "Yasser_Arafat": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Yasser_Arafat/Yasser_Arafat_0007.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Yasser_Arafat/Yasser_Arafat_0008.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Yasser_Arafat/Yasser_Arafat_0004.jpg"
+      ]
+    },
+    "Yevgeny_Kafelnikov": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Yevgeny_Kafelnikov/Yevgeny_Kafelnikov_0004.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Yevgeny_Kafelnikov/Yevgeny_Kafelnikov_0002.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Yevgeny_Kafelnikov/Yevgeny_Kafelnikov_0001.jpg"
+      ]
+    },
+    "Yu_Shyi-kun": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Yu_Shyi-kun/Yu_Shyi-kun_0004.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Yu_Shyi-kun/Yu_Shyi-kun_0002.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Yu_Shyi-kun/Yu_Shyi-kun_0003.jpg"
+      ]
+    },
+    "Zhang_Ziyi": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Zhang_Ziyi/Zhang_Ziyi_0004.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Zhang_Ziyi/Zhang_Ziyi_0001.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Zhang_Ziyi/Zhang_Ziyi_0003.jpg"
+      ]
+    },
+    "Zinedine_Zidane": {
+      "calib": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Zinedine_Zidane/Zinedine_Zidane_0005.jpg"
+      ],
+      "test": [
+        "/Users/coding/PBL6/face_auth/data/lfw/Zinedine_Zidane/Zinedine_Zidane_0004.jpg",
+        "/Users/coding/PBL6/face_auth/data/lfw/Zinedine_Zidane/Zinedine_Zidane_0002.jpg"
+      ]
+    }
+  }
+}

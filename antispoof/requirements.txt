@@ -1,0 +1,9 @@
+# Anti-Spoofing Module Minimal Requirements (ONNX Inference)
+numpy>=1.20.0
+opencv-python>=4.5.0
+onnxruntime>=1.14.0
+
+# Optional system info overlay utilities
+psutil>=5.8.0
+py-cpuinfo>=9.0.0
+GPUtil>=1.4.0

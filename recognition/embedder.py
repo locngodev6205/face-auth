@@ -44,7 +44,7 @@ class FaceEmbedder:
         if aligned_face is None:
             return None
 
-        feat = self._model.get_feat(aligned_face)
+        feat = self._model.get_feat(aligned_face)   # vector 512 chiều đại diện cho các nét sinh trắc học
         embedding = np.asarray(feat).flatten()
 
         norm = np.linalg.norm(embedding)

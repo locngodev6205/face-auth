@@ -1,6 +1,7 @@
 from insightface.app import FaceAnalysis
 
 
+# state 1
 class FaceDetector:
     """
     Dùng detector SCRFD có sẵn trong insightface model pack thay vì
@@ -24,9 +25,9 @@ class FaceDetector:
     def __init__(
         self,
         model_name: str = "buffalo_s",
-        ctx_id: int = -1,
-        det_size=(640, 640),
-        conf_thresh: float = 0.5,
+        ctx_id: int = -1, # chạy trên cpu
+        det_size=(640, 640),    # kích thước ảnh đầu vào chuẩn để resize
+        conf_thresh: float = 0.5,   # ngưỡng tự tin
     ):
         app = FaceAnalysis(
             name=model_name,
@@ -42,6 +43,7 @@ class FaceDetector:
             )
 
     def detect(self, frame):
+        # có thẻ detect nhiều khuôn mặt
         bboxes, kpss = self._model.detect(frame, max_num=0, metric="default")
 
         detections = []

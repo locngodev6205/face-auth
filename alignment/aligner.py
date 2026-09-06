@@ -1,6 +1,8 @@
 import cv2
 import numpy as np
 
+# state 2
+
 # Template 5 điểm chuẩn của ArcFace cho input 112x112, thứ tự:
 # mắt trái, mắt phải, mũi, khóe miệng trái, khóe miệng phải.
 # Đây là template gốc insightface (arcface_dst) — khớp với thứ tự landmark
@@ -18,6 +20,7 @@ def align_face(image, landmarks, target_points=ARCFACE_DST_112, output_size=(112
     src = np.asarray(landmarks, dtype=np.float32)
     dst = np.asarray(target_points, dtype=np.float32)
 
+    # tính toán một ma trận biến đổi hình học
     matrix, _ = cv2.estimateAffinePartial2D(src, dst)
 
     if matrix is None:
@@ -49,6 +52,7 @@ def get_input_face(frame, bbox, landmarks, output_size=(112, 112), crop_margin=0
     if landmarks is not None and len(landmarks) == 5:
         return align_face(frame, landmarks, ARCFACE_DST_112, output_size)
 
+    # dựa vào bbox
     x1, y1, x2, y2 = bbox
     h, w = frame.shape[:2]
     bw, bh = x2 - x1, y2 - y1

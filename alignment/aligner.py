@@ -38,22 +38,25 @@ def align_face(image, landmarks, target_points=ARCFACE_DST_112, output_size=(112
 
 def get_input_face(frame, bbox, landmarks, output_size=(112, 112), crop_margin=0.2):
     """
-    Trả về ảnh khuôn mặt sẵn sàng đưa vào recognition model.
+    Trả về ảnh khuôn mặt sẵn sàng đưa vào recognition hoặc anti-spoofing model.
 
-    - Có landmarks (5 điểm): align chuẩn theo template ArcFace.
-    - Không có landmarks: fallback crop theo bbox (có thêm margin nhỏ để tránh
-      cắt sát mất chi tiết mặt) rồi resize thẳng về output_size. Đây chỉ là
-      phương án dự phòng, độ chính xác nhận diện sẽ thấp hơn align chuẩn.
-
-    Lưu ý: landmarks phải là tọa độ tuyệt đối trên `frame` gốc (không phải
-    tọa độ tương đối trong ảnh đã crop), vì align_face cần warp trực tiếp
-    từ frame gốc.
+    - Có landmarks (5 điểm): align chuẩn theo template ArcFace (tự động scale target_points theo output_size).
+    - Không có landmarks: fallback crop theo bbox với margin.
     """
     if landmarks is not None and len(landmarks) == 5:
-        return align_face(frame, landmarks, ARCFACE_DST_112, output_size)
+        try:
+            scale = output_size[0] / 112.0
+            target_pts = ARCFACE_DST_112 * scale
+            return align_face(frame, landmarks, target_pts, output_size)
+        except Exception:
+            pass
 
     # dựa vào bbox
     x1, y1, x2, y2 = bbox
+    # Hỗ trợ tự động chuyển đổi nếu bbox có dạng (x, y, w, h)
+    if x2 < x1 or y2 < y1:
+        x1, y1, x2, y2 = bbox[0], bbox[1], bbox[0] + bbox[2], bbox[1] + bbox[3]
+
     h, w = frame.shape[:2]
     bw, bh = x2 - x1, y2 - y1
 

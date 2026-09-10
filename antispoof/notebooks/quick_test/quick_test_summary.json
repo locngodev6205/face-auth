@@ -1,0 +1,34 @@
+{
+    "model_path": "/kaggle/input/datasets/takasugi1303/pbl6-antispoof-models/mnv3_large_3class_best.onnx",
+    "test_subset_size": 10000,
+    "sample_seed": 42,
+    "roc_auc": 0.9733592888869801,
+    "latency_ms_per_image": 17.532657575607303,
+    "fps": 57.03641879091235,
+    "default_threshold_0": {
+        "threshold": 0.0,
+        "acc": 0.8986,
+        "apcer": 0.141882286039238,
+        "bpcer": 0.005394470667565745,
+        "acer": 0.07363837835340187,
+        "n_fa": 998.0,
+        "n_fr": 16.0
+    },
+    "best_acer_threshold": {
+        "threshold": 2.7294583332275817,
+        "acc": 0.9483,
+        "apcer": 0.06681831106056298,
+        "bpcer": 0.015846257585974376,
+        "acer": 0.04133228432326867,
+        "n_fa": 470.0,
+        "n_fr": 47.0
+    },
+    "breakdown": {
+        "physical_spoof_samples": 5284,
+        "physical_apcer_pct": 8.76230128690386,
+        "digital_spoof_samples": 1750,
+        "digital_apcer_pct": 0.4,
+        "real_samples": 2966,
+        "real_bpcer_pct": 1.5846257585974375
+    }
+}

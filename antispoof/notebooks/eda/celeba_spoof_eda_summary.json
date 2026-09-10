@@ -1,0 +1,50 @@
+{
+    "dataset": "CelebA-Spoof (Intra-test Protocol)",
+    "total_images": {
+        "train": 494405,
+        "test": 67170,
+        "sum": 561575
+    },
+    "subjects": {
+        "train_subjects": 8192,
+        "test_subjects": 1004,
+        "overlap_subjects": 3,
+        "is_subject_disjoint": false
+    },
+    "class_distribution_train": {
+        "0: Real Face": 162462,
+        "1: Physical Spoof": 226715,
+        "2: Digital Spoof": 105228
+    },
+    "class_distribution_test": {
+        "0: Real Face": 19923,
+        "1: Physical Spoof": 35495,
+        "2: Digital Spoof": 11752
+    },
+    "attack_distribution_train": {
+        "0: Live (Real)": 162462,
+        "6: PC Screen": 33285,
+        "7: Tablet/Pad Screen": 31072,
+        "5: Region Mask": 30167,
+        "9: 3D Mask": 31527,
+        "3: Face Mask": 31776,
+        "8: Phone Screen": 33085,
+        "10": 40616,
+        "2: A4 Paper": 31221,
+        "4: Upper Body Mask": 33647,
+        "1: Poster": 35547
+    },
+    "attack_distribution_test": {
+        "4: Upper Body Mask": 4287,
+        "9: 3D Mask": 4483,
+        "8: Phone Screen": 3659,
+        "6: PC Screen": 3530,
+        "2: A4 Paper": 5421,
+        "0: Live (Real)": 19923,
+        "3: Face Mask": 6083,
+        "1: Poster": 3600,
+        "5: Region Mask": 6097,
+        "10": 3610,
+        "7: Tablet/Pad Screen": 6477
+    }
+}

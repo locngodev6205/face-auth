@@ -7,7 +7,7 @@ import argparse
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 import config
-from detection.detector import FaceDetector
+from detection.yunnet_detector import FaceDetector
 from recognition.embedder import FaceEmbedder
 from alignment.aligner import get_input_face
 from database.vector_db import VectorDB
@@ -31,10 +31,12 @@ def main():
 
     print("Đang khởi tạo model và kết nối database...")
     detector = FaceDetector(
-        config.MODEL_PACK_NAME,
-        ctx_id=config.MODEL_CTX_ID,
-        det_size=config.DETECTOR_DET_SIZE,
+        model_path=config.DETECTOR_MODEL_PATH,
         conf_thresh=config.DETECTOR_CONF_THRESH,
+        nms_thresh=config.DETECTOR_NMS_THRESH,
+        top_k=config.DETECTOR_TOP_K,
+        min_face_size=config.DETECTOR_MIN_FACE_SIZE,
+        margin=config.DETECTOR_MARGIN,
     )
     embedder = FaceEmbedder(config.MODEL_PACK_NAME, ctx_id=config.MODEL_CTX_ID)
     db = VectorDB(

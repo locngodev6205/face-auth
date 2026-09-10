@@ -1,8 +1,25 @@
 """
 Module phát hiện khuôn mặt YunNet (YunNet Face Detector Module).
 
-Sử dụng API cv2.FaceDetectorYN tích hợp sẵn trong OpenCV kết hợp với mô hình ONNX siêu nhẹ (detector_quantized.onnx ~122 KB).
-Được bọc thành lớp YunNetFaceDetector độc lập trong bộ module face_auth.detection.
+Sử dụng API cv2.FaceDetectorYN tích hợp sẵn trong OpenCV kết hợp với mô hình ONNX siêu nhẹ
+(detector_quantized.onnx ~122 KB). Được bọc thành lớp FaceDetector độc lập trong bộ module
+face_auth.detection, có cùng interface với bản SCRFD (detection/detector.py):
+
+    Output format detect():
+        list[dict] với các trường:
+            - "bbox"      : (x1, y1, x2, y2)  — xyxy, giống SCRFD
+            - "score"     : float              — độ tin cậy confidence
+            - "landmarks" : list[list[float]]  — 5 điểm [[x,y],...] dạng float, giống SCRFD
+
+    Thứ tự 5 điểm landmark khớp quy ước ArcFace:
+        0: mắt bên trái ảnh  (right eye)
+        1: mắt bên phải ảnh  (left eye)
+        2: đỉnh mũi
+        3: khóe miệng trái ảnh
+        4: khóe miệng phải ảnh
+
+    → Tương thích trực tiếp với alignment/aligner.py (ARCFACE_DST_112) và
+      tracking/tracker.py (compute_iou dùng xyxy).
 """
 
 import cv2
@@ -14,31 +31,61 @@ from typing import List, Dict, Tuple, Optional
 DEFAULT_MODEL_PATH = Path(__file__).parent / "models" / "detector_quantized.onnx"
 
 
-class YunNetFaceDetector:
-    """
-    Lớp phát hiện khuôn mặt YunNet (YunNet Face Detector Wrapper).
+try:
+    import config
+    _DEFAULT_CONF_THRESH   = getattr(config, "DETECTOR_CONF_THRESH", 0.5)
+    _DEFAULT_NMS_THRESH    = getattr(config, "DETECTOR_NMS_THRESH", 0.3)
+    _DEFAULT_TOP_K         = getattr(config, "DETECTOR_TOP_K", 5000)
+    _DEFAULT_MIN_FACE_SIZE = getattr(config, "DETECTOR_MIN_FACE_SIZE", 60)
+    _DEFAULT_MARGIN        = getattr(config, "DETECTOR_MARGIN", 5)
+    _DEFAULT_INPUT_SIZE    = getattr(config, "DETECTOR_INPUT_SIZE", (320, 320))
+except Exception:
+    _DEFAULT_CONF_THRESH   = 0.5
+    _DEFAULT_NMS_THRESH    = 0.3
+    _DEFAULT_TOP_K         = 5000
+    _DEFAULT_MIN_FACE_SIZE = 60
+    _DEFAULT_MARGIN        = 5
+    _DEFAULT_INPUT_SIZE    = (320, 320)
 
-    Cung cấp khả năng phát hiện vị trí khuôn mặt và trích xuất 5 điểm landmark
-    (2 mắt, 1 mũi, 2 khóe miệng) với tốc độ siêu nhanh trên CPU.
+
+class FaceDetector:
+    """
+    Lớp phát hiện khuôn mặt YunNet — thay thế trực tiếp cho FaceDetector (SCRFD).
+
+    Sử dụng cv2.FaceDetectorYN với model ONNX siêu nhẹ (~122 KB), hoạt động
+    hoàn toàn trên CPU mà không cần insightface, phù hợp cho thiết bị Edge
+    (Raspberry Pi, Jetson Nano…).
+
+    Interface detect() giữ nguyên quy ước giống SCRFD:
+        bbox      → (x1, y1, x2, y2)  xyxy
+        landmarks → list[list[float]]  5 điểm float
+    để không cần thay đổi gì ở aligner.py, tracker.py hay app.py.
     """
 
     def __init__(
         self,
         model_path: Optional[str] = None,
-        input_size: Tuple[int, int] = (320, 320),
-        conf_thresh: float = 0.8,
-        nms_thresh: float = 0.3,
-        top_k: int = 5000,
+        input_size: Optional[Tuple[int, int]] = None,
+        conf_thresh: Optional[float] = None,
+        nms_thresh: Optional[float] = None,
+        top_k: Optional[int] = None,
+        min_face_size: Optional[int] = None,
+        margin: Optional[int] = None,
     ):
         """
-        Khởi tạo YunNet Detector:
+        Khởi tạo YunNet Detector. Mặc định tự động lấy các giá trị từ config.py (nếu có).
 
         Tham số:
-            model_path (Optional[str]): Đường dẫn file .onnx (mặc định dùng detector_quantized.onnx trong models/).
-            input_size (Tuple[int, int]): Kích thước ảnh khung hình chuẩn ban đầu (mặc định (320, 320)).
-            conf_thresh (float): Ngưỡng độ tin cậy confidence để chấp nhận một khuôn mặt (mặc định 0.8).
-            nms_thresh (float): Ngưỡng NMS (Non-Maximum Suppression) lọc khung bao trùng lặp (mặc định 0.3).
-            top_k (int): Số lượng khuôn mặt tối đa giữ lại trước NMS (mặc định 5000).
+            model_path    (Optional[str])        : Đường dẫn file .onnx. Mặc định dùng
+                                                   detector_quantized.onnx trong models/.
+            input_size    (Optional[Tuple[int]]): Kích thước đầu vào khởi tạo (mặc định (320, 320)).
+                                                   Sẽ được ghi đè tự động theo kích thước ảnh thực tế
+                                                   mỗi khi gọi detect().
+            conf_thresh   (Optional[float])      : Ngưỡng confidence để chấp nhận khuôn mặt.
+            nms_thresh    (Optional[float])      : Ngưỡng NMS loại bỏ bbox trùng lặp.
+            top_k         (Optional[int])        : Số khuôn mặt tối đa giữ lại trước NMS.
+            min_face_size (Optional[int])        : Kích thước khuôn mặt tối thiểu (px) để nhận diện.
+            margin        (Optional[int])        : Khoảng cách tối thiểu (px) tới 4 cạnh ảnh.
         """
         self.model_path = Path(model_path) if model_path else DEFAULT_MODEL_PATH
         if not self.model_path.exists():
@@ -46,46 +93,57 @@ class YunNetFaceDetector:
                 f"Không tìm thấy file trọng số YunNet tại: '{self.model_path}'"
             )
 
-        self.input_size = input_size
-        self.conf_thresh = conf_thresh
-        self.nms_thresh = nms_thresh
-        self.top_k = top_k
+        self.input_size = input_size if input_size is not None else _DEFAULT_INPUT_SIZE
+        self.conf_thresh = conf_thresh if conf_thresh is not None else _DEFAULT_CONF_THRESH
+        self.nms_thresh = nms_thresh if nms_thresh is not None else _DEFAULT_NMS_THRESH
+        self.top_k = top_k if top_k is not None else _DEFAULT_TOP_K
+        self.min_face_size = min_face_size if min_face_size is not None else _DEFAULT_MIN_FACE_SIZE
+        self.margin = margin if margin is not None else _DEFAULT_MARGIN
 
         # Khởi tạo đối tượng FaceDetectorYN của OpenCV
         self._detector = cv2.FaceDetectorYN.create(
             str(self.model_path),
-            "",
-            input_size,
-            conf_thresh,
-            nms_thresh,
-            top_k,
+            "",             # config path — không cần thiết với file ONNX
+            self.input_size,
+            self.conf_thresh,
+            self.nms_thresh,
+            self.top_k,
         )
 
     def detect(
-        self, image: np.ndarray, min_face_size: int = 60, margin: int = 5
+        self,
+        image: np.ndarray,
+        min_face_size: Optional[int] = None,
+        margin: Optional[int] = None,
     ) -> List[Dict]:
         """
-        Phát hiện danh sách các khuôn mặt trong khung hình ảnh truyền vào.
+        Phát hiện khuôn mặt trong ảnh và trả về list theo quy ước chuẩn.
 
         Tham số:
-            image (np.ndarray): Mảng ảnh đầu vào (BGR hoặc RGB).
-            min_face_size (int): Kích thước nhỏ nhất (rộng & cao) của khuôn mặt được coi là hợp lệ (mặc định 60px).
-            margin (int): Khoảng cách tối thiểu từ khuôn mặt tới mép viền ảnh để tránh cắt lẹm mặt (mặc định 5px).
+            image         (np.ndarray)   : Ảnh đầu vào BGR hoặc RGB.
+            min_face_size (Optional[int]): Kích thước bbox tối thiểu (px). Nếu None, dùng self.min_face_size.
+            margin        (Optional[int]): Khoảng cách tối thiểu tới 4 cạnh ảnh (px). Nếu None, dùng self.margin.
 
         Trả về:
-            List[Dict]: Danh sách các từ điển kết quả chứa:
-                - 'bbox': Tọa độ khung bao dạng (x, y, width, height).
-                - 'score': Độ tin cậy confidence (float).
-                - 'landmarks': Danh sách 5 tọa độ điểm đặc trưng [(x1, y1), ..., (x5, y5)].
+            List[Dict]: Mỗi phần tử gồm:
+                - "bbox"      : (x1, y1, x2, y2)        — xyxy, kiểu int
+                - "score"     : float                    — confidence
+                - "landmarks" : list[list[float]]        — 5 điểm [[x,y],...] kiểu float
         """
         if self._detector is None or image is None or image.size == 0:
             return []
 
-        # Tự động điều chỉnh kích thước đầu vào của detector theo kích thước thật của ảnh
+        min_size = self.min_face_size if min_face_size is None else min_face_size
+        edge_margin = self.margin if margin is None else margin
+
+        # Tự động điều chỉnh input size theo kích thước ảnh thực tế
         img_h, img_w = image.shape[:2]
         self._detector.setInputSize((img_w, img_h))
 
-        # Gọi hàm detect của OpenCV FaceDetectorYN
+        # Gọi OpenCV FaceDetectorYN — kết quả shape: [num_faces, 15]
+        # Cột 0-3 : x, y, w, h (xywh)
+        # Cột 4-13: 5 landmark (x0,y0, x1,y1, ..., x4,y4)
+        # Cột 14  : confidence score
         _, faces = self._detector.detect(image)
 
         if faces is None or len(faces) == 0:
@@ -93,33 +151,37 @@ class YunNetFaceDetector:
 
         detections = []
         for face in faces:
-            # 4 tham số đầu: Tọa độ x, y, width, height
-            x, y, w, h = face[:4].astype(int)
-            # Tham số thứ 15 (index 14): Độ tin cậy confidence
+            # Lấy bbox dạng xywh rồi chuyển sang xyxy để đồng nhất với SCRFD
+            x, y, w, h = face[:4].astype(float)
+            x1, y1, x2, y2 = int(x), int(y), int(x + w), int(y + h)
+
             conf = float(face[14])
 
-            # Bỏ qua các bbox vượt ra ngoài khung hình
-            if x < 0 or y < 0 or x + w > img_w or y + h > img_h:
+            # Bỏ qua bbox vượt ra ngoài khung hình
+            if x1 < 0 or y1 < 0 or x2 > img_w or y2 > img_h:
                 continue
 
-            # Kiểm tra khoảng cách tới 4 mép viền ảnh (margin)
-            dist_left = x
-            dist_right = img_w - (x + w)
-            dist_top = y
-            dist_bottom = img_h - (y + h)
-            if min(dist_left, dist_right, dist_top, dist_bottom) < margin:
+            # Lọc theo khoảng cách tới mép ảnh (margin)
+            if edge_margin > 0:
+                if min(x1, y1, img_w - x2, img_h - y2) < edge_margin:
+                    continue
+
+            # Lọc khuôn mặt quá nhỏ
+            if (x2 - x1) < min_size or (y2 - y1) < min_size:
                 continue
 
-            # Lọc các khuôn mặt đạt kích thước tối thiểu min_face_size
-            if w >= min_face_size and h >= min_face_size:
-                # 10 tham số tiếp theo (index 4-13): 5 tọa độ điểm landmark (x, y)
-                landmarks = face[4:14].reshape(5, 2).astype(int)
-                detections.append(
-                    {
-                        "bbox": (int(x), int(y), int(w), int(h)),
-                        "score": conf,
-                        "landmarks": [(int(lx), int(ly)) for lx, ly in landmarks],
-                    }
-                )
+            # 5 landmark: index 4-13, shape (5, 2), giữ dạng float để khớp với SCRFD
+            landmarks = face[4:14].reshape(5, 2).astype(float).tolist()
+
+            detections.append({
+                "bbox": (x1, y1, x2, y2),
+                "score": conf,
+                "landmarks": landmarks,
+            })
 
         return detections
+
+
+# Alias tương thích ngược với code cũ
+YunNetFaceDetector = FaceDetector
+

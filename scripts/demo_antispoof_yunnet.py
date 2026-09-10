@@ -27,8 +27,9 @@ for p in [str(_HERE), str(_FACE_AUTH), str(_SMARTFACE_ROOT)]:
     if p not in sys.path:
         sys.path.insert(0, p)
 
-from detection.yunnet_detector import YunNetFaceDetector
+from detection.yunnet_detector import FaceDetector
 from alignment.aligner import get_input_face
+import config
 from antispoof import (
     AntiSpoofPredictor,
     crop,
@@ -158,7 +159,7 @@ def get_face_crop(image_rgb: np.ndarray, face: dict, predictor: AntiSpoofPredict
     return crop(image_rgb, bbox, predictor.bbox_expansion_factor)
 
 
-def process_camera(args, detector: YunNetFaceDetector, predictor: AntiSpoofPredictor):
+def process_camera(args, detector: FaceDetector, predictor: AntiSpoofPredictor):
     cap = cv2.VideoCapture(args.camera)
     if not cap.isOpened():
         print(f"Error: Could not open camera index {args.camera}", file=sys.stderr)
@@ -213,8 +214,9 @@ def process_camera(args, detector: YunNetFaceDetector, predictor: AntiSpoofPredi
                 for face, result in zip(valid_faces, results):
                     color = COLOR_REAL if result["is_real"] else COLOR_SPOOF
                     bbox = face["bbox"]
-                    x, y, w, h = bbox[0], bbox[1], bbox[2], bbox[3]
-                    cv2.rectangle(frame, (x, y), (x + w, y + h), color, 2)
+                    # bbox đã là xyxy (x1, y1, x2, y2) sau khi chuẩn hóa
+                    x1, y1, x2, y2 = bbox
+                    cv2.rectangle(frame, (x1, y1), (x2, y2), color, 2)
 
                     # Draw 5 landmarks
                     if "landmarks" in face:
@@ -226,7 +228,7 @@ def process_camera(args, detector: YunNetFaceDetector, predictor: AntiSpoofPredi
                     cv2.putText(
                         frame,
                         label,
-                        (x, max(0, y - 10)),
+                        (x1, max(0, y1 - 10)),
                         FONT,
                         0.6,
                         color,
@@ -257,7 +259,7 @@ def process_camera(args, detector: YunNetFaceDetector, predictor: AntiSpoofPredi
     cv2.destroyAllWindows()
 
 
-def process_image(args, detector: YunNetFaceDetector, predictor: AntiSpoofPredictor):
+def process_image(args, detector: FaceDetector, predictor: AntiSpoofPredictor):
     image = cv2.imread(args.image)
     if image is None:
         print(f"Error: Could not load image from '{args.image}'", file=sys.stderr)
@@ -290,8 +292,9 @@ def process_image(args, detector: YunNetFaceDetector, predictor: AntiSpoofPredic
         for face, result in zip(valid_faces, results):
             color = COLOR_REAL if result["is_real"] else COLOR_SPOOF
             bbox = face["bbox"]
-            x, y, w, h = bbox[0], bbox[1], bbox[2], bbox[3]
-            cv2.rectangle(image, (x, y), (x + w, y + h), color, 2)
+            # bbox đã là xyxy (x1, y1, x2, y2) sau khi chuẩn hóa
+            x1, y1, x2, y2 = bbox
+            cv2.rectangle(image, (x1, y1), (x2, y2), color, 2)
 
             if "landmarks" in face:
                 for pt in face["landmarks"]:
@@ -299,7 +302,7 @@ def process_image(args, detector: YunNetFaceDetector, predictor: AntiSpoofPredic
 
             align_str = " (Aligned)" if args.align and face.get("landmarks") else ""
             label = f"{result.get('detailed_status', result['status'].upper())}{align_str}: {result['logit_diff']:.2f}"
-            cv2.putText(image, label, (x, max(0, y - 10)), FONT, 0.6, color, 2)
+            cv2.putText(image, label, (x1, max(0, y1 - 10)), FONT, 0.6, color, 2)
 
     cv2.imshow("Result", image)
     cv2.waitKey(0)
@@ -310,19 +313,24 @@ def main():
     # định nghĩa tham số dòng lệnh cho chương trình
     parser = argparse.ArgumentParser(description="SmartFace Anti-Spoofing Demo (YunNet + AntiSpoof ONNX)")
     parser.add_argument("--image", type=str, default=None, help="Path to image file (if omitted, opens camera)")
-    parser.add_argument("--camera", type=int, default=0, help="Camera device index (default: 0)")   # mặc định camera của máy 
-    parser.add_argument("--threshold", type=float, default=0.5, help="Real/Spoof threshold (default: 0.5)") # ngưỡng phân loại
-    parser.add_argument("--margin", type=int, default=5, help="Face edge margin (default: 5)")  # biên mở rộng
-    parser.add_argument("--detector-model", type=str, default=None, help="Path to YunNet ONNX detector model")  # đường dẫn tới model detect
-    parser.add_argument("--liveness-model", type=str, default=None, help="Path to AntiSpoof ONNX model")    # đường dẫn tới model antiproof
+    parser.add_argument("--camera", type=int, default=getattr(config, "CAMERA_INDEX", 0), help=f"Camera device index (default: {getattr(config, 'CAMERA_INDEX', 0)})")
+    parser.add_argument("--threshold", type=float, default=getattr(config, "LIVENESS_THRESHOLD", 0.5), help="Real/Spoof threshold (default: 0.5)")
+    parser.add_argument("--margin", type=int, default=getattr(config, "DETECTOR_MARGIN", 5), help=f"Face edge margin in px (default: {getattr(config, 'DETECTOR_MARGIN', 5)})")
+    parser.add_argument("--min-face-size", type=int, default=getattr(config, "DETECTOR_MIN_FACE_SIZE", 60), help=f"Minimum face width/height in px (default: {getattr(config, 'DETECTOR_MIN_FACE_SIZE', 60)})")
+    parser.add_argument("--detector-model", type=str, default=getattr(config, "DETECTOR_MODEL_PATH", None), help="Path to YunNet ONNX detector model")
+    parser.add_argument("--liveness-model", type=str, default=getattr(config, "LIVENESS_MODEL_PATH", None), help="Path to AntiSpoof ONNX model")
     parser.add_argument("--align", action="store_true", default=True, help="Enable face alignment using 5 landmarks (default: True)")
     parser.add_argument("--no-align", action="store_false", dest="align", help="Disable face alignment, fallback to 1.5x bbox crop")
-    parser.add_argument("--verbose", action="store_true", help="Enable verbose error logging")  # true: log lỗi chi tiết
+    parser.add_argument("--verbose", action="store_true", help="Enable verbose error logging")
 
     # đọc tham số lưu vào args
     args = parser.parse_args()
 
-    detector = YunNetFaceDetector(model_path=args.detector_model)
+    detector = FaceDetector(
+        model_path=args.detector_model,
+        margin=args.margin,
+        min_face_size=args.min_face_size,
+    )
     predictor = AntiSpoofPredictor(model_path=args.liveness_model, threshold=args.threshold)
 
     if args.image is None:

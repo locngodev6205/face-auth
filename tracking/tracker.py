@@ -1,4 +1,5 @@
 import time
+from collections import deque
 from typing import List, Dict, Tuple, Optional
 
 
@@ -29,7 +30,13 @@ def compute_iou(bbox1: Tuple[int, int, int, int], bbox2: Tuple[int, int, int, in
 class Track:
     """Đối tượng theo dõi một khuôn mặt qua các frame."""
 
-    def __init__(self, track_id: int, bbox: Tuple[int, int, int, int]):
+    def __init__(
+        self,
+        track_id: int,
+        bbox: Tuple[int, int, int, int],
+        pad_smooth_window: int = 8,
+        pad_spoof_min_ratio: float = 0.6,
+    ):
         self.track_id = track_id
         self.bbox = bbox
         self.name = "UNKNOWN"
@@ -38,6 +45,34 @@ class Track:
         self.frames_since_recognition = 0
         self.missing_frames = 0
         self.recognized_once = False  # True sau lần update_result() đầu tiên
+
+        # PAD temporal smoothing: lưu N verdict gần nhất (True=real, False=spoof)
+        self._pad_window: deque = deque(maxlen=pad_smooth_window)
+        self._pad_spoof_min_ratio = pad_spoof_min_ratio
+        self.last_pad_time: Optional[float] = None  # None = chưa chạy PAD lần nào
+
+    def update_pad(self, is_real: bool) -> None:
+        """Ghi nhận verdict PAD của frame hiện tại vào rolling window và cập nhật timestamp."""
+        self._pad_window.append(is_real)
+        self.last_pad_time = time.time()
+
+    def needs_pad(self, interval_seconds: float = 1.0) -> bool:
+        """Kiểm tra xem track có cần chạy PAD inference lại hay không (giống needs_recognition)."""
+        if self.last_pad_time is None:
+            return True
+        return (time.time() - self.last_pad_time) >= interval_seconds
+
+    @property
+    def is_spoof(self) -> bool:
+        """
+        Trả về True nếu tỉ lệ frame SPOOF trong rolling window ≥ pad_spoof_min_ratio.
+        Khi window chưa đủ frame (track mới tạo), mặc định coi là REAL để tránh
+        hiện đỏ ngay lập tức trước khi có đủ dữ liệu.
+        """
+        if not self._pad_window:
+            return False
+        spoof_ratio = self._pad_window.count(False) / len(self._pad_window)
+        return spoof_ratio >= self._pad_spoof_min_ratio
 
     def needs_recognition(self, interval_seconds: float = 1.0) -> bool:
         """Kiểm tra xem track có cần re-verify/nhận diện lại hay không (tính theo giây)."""
@@ -69,10 +104,16 @@ class FaceTracker:
         recognize_interval_seconds: float = 1.0,
         iou_threshold: float = 0.3,
         max_missing_frames: int = 10,
+        pad_smooth_window: int = 8,
+        pad_spoof_min_ratio: float = 0.6,
+        pad_interval_seconds: float = 1.0,
     ):
         self.recognize_interval_seconds = recognize_interval_seconds
         self.iou_threshold = iou_threshold
         self.max_missing_frames = max_missing_frames
+        self.pad_smooth_window = pad_smooth_window
+        self.pad_spoof_min_ratio = pad_spoof_min_ratio
+        self.pad_interval_seconds = pad_interval_seconds
         self.tracks: List[Track] = []
         self._next_track_id = 1
 
@@ -128,7 +169,12 @@ class FaceTracker:
         # Tạo track mới cho các detection chưa match
         for d_idx in unmatched_detections:
             det = detections[d_idx]
-            new_track = Track(track_id=self._next_track_id, bbox=det["bbox"])
+            new_track = Track(
+                track_id=self._next_track_id,
+                bbox=det["bbox"],
+                pad_smooth_window=self.pad_smooth_window,
+                pad_spoof_min_ratio=self.pad_spoof_min_ratio,
+            )
             self._next_track_id += 1
             new_track.missing_frames = 0
             self.tracks.append(new_track)

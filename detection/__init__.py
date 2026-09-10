@@ -1,4 +1,3 @@
-from .detector import FaceDetector
-from .yunnet_detector import YunNetFaceDetector
+from .yunnet_detector import FaceDetector, FaceDetector as YunNetFaceDetector
 
 __all__ = ["FaceDetector", "YunNetFaceDetector"]

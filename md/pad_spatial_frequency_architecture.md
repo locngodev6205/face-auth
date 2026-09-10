@@ -832,3 +832,11 @@ Những thứ này có thể là future work.
 > **Spatial features tell the model what the face looks like; frequency features provide complementary information about how image patterns vary across space.**
 
 Trong project này, frequency branch là một giả thuyết nghiên cứu có thể kiểm chứng, không phải một đảm bảo rằng mọi spoof attack đều có đặc trưng tần số riêng.
+
+---
+
+## 23. Tài liệu tham khảo liên quan
+
+Chi tiết phân tích các bài báo khoa học chứng minh hiệu quả của đặc trưng miền tần số và mẫu trích dẫn BibTeX / IEEE:
+- [pad_frequency_domain_references.md](file:///Users/coding/PBL6/face_auth/md/pad_frequency_domain_references.md)
+

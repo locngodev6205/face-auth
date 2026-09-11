@@ -74,6 +74,24 @@ ONNX export
 >
 > **[DISCREPANCY — critical]** Trong `antispoof/antiproof.ipynb` Cell 5, biến `VAL_JSON` đang trỏ thẳng vào `metas/intra_test/test_label.json`. Tập test chính thức đang bị dùng làm validation loader để chọn `best_model_state` mỗi epoch (Cell 16) và đánh giá lại ở Cell 20. Cần tách rõ: stratified subset từ train để làm validation (không overlap), còn `test_label.json` giữ làm held-out test set (có thể lấy subset nếu muốn test nhanh). Xem chi tiết mục 17.
 
+> **[NOTE — Detector Selection Policy]**
+>
+> Pipeline training/eval CelebA-Spoof đọc trực tiếp từ file ảnh tĩnh (không qua camera), nên **không bị ảnh hưởng bởi lựa chọn detector runtime**. Tuy nhiên, cần lưu ý sự khác biệt giữa hai detector khi đánh giá consistency inference:
+>
+> | Context | Detector | Lý do |
+> |---------|----------|--------|
+> | Training/eval notebook | **Không dùng detector** — crop từ GT bbox trong `train_label.json` | Dataset đã có bbox |
+> | `run_enroll.py` (offline) | **SCRFD** | Ảnh gallery bất kỳ kích thước, SCRFD resize nội bộ qua `det_size` |
+> | `app.py` (real-time edge) | **YunNet** hoặc **SCRFD** | Chọn qua `APP_DETECTOR` trong `.env` |
+>
+> **Vấn đề YunNet với ảnh lớn:** `cv2.FaceDetectorYN` hoạt động kém với frame lớn nếu không resize trước.
+> - Khi `APP_DETECTOR=yunnet`: app.py giới hạn camera qua `cap.set(FRAME_WIDTH/HEIGHT)`.
+> - Khi `APP_DETECTOR=scrfd`: camera chạy full native resolution; SCRFD tự resize nội bộ qua `DETECTOR_DET_SIZE=(640,640)`.
+>
+> **Ảnh hưởng tới PAD pipeline:** Detector khác nhau → bbox chất lượng khác nhau → crop PAD khác nhau → score PAD có thể lệch nhẹ giữa runtime và offline eval. Để đánh giá PAD chính xác nhất trên ảnh thực tế, nên dùng cùng detector ở cả hai ngữ cảnh.
+
+
+
 ---
 
 # 3. Các vấn đề hiện tại

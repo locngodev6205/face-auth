@@ -4,7 +4,7 @@ Script kiểm tra nhanh Face Detection trên các ảnh trong thư mục gallery
 
 Tính năng:
     - Quét tự động toàn bộ ảnh trong thư mục gallery (hỗ trợ thư mục con theo tên người).
-    - Hỗ trợ cả 2 bộ detector: YunNet (mặc định siêu nhẹ ~122KB) và SCRFD (insightface).
+    - Hỗ trợ cả 2 bộ detector: SCRFD (mặc định, insightface) và YunNet (nhẹ hơn, dành cho edge).
     - Đo lường và thống kê thời gian inference (ms) từng ảnh và trung bình.
     - Báo cáo chi tiết vị trí bbox, kích thước (WxH), độ tin cậy (score), landmark 5 điểm.
     - Cảnh báo các ảnh không tìm thấy khuôn mặt (0 face) hoặc có nhiều hơn 1 khuôn mặt (>1 faces).
@@ -149,7 +149,7 @@ def main():
     parser = argparse.ArgumentParser(description="Kiểm tra nhanh Face Detection trên ảnh trong thư mục gallery")
     parser.add_argument("--gallery", type=str, default="gallery", help="Đường dẫn tới thư mục gallery (mặc định: gallery)")
     parser.add_argument("--image", type=str, default=None, help="Đường dẫn tới 1 ảnh duy nhất để test")
-    parser.add_argument("--detector", type=str, choices=["yunnet", "scrfd"], default="yunnet", help="Chọn model detector (yunnet hoặc scrfd, mặc định: yunnet)")
+    parser.add_argument("--detector", type=str, choices=["yunnet", "scrfd"], default="scrfd", help="Chọn model detector (scrfd hoặc yunnet, mặc định: scrfd)")
     parser.add_argument("--conf-thresh", type=float, default=config.DETECTOR_CONF_THRESH, help=f"Ngưỡng confidence (mặc định: {config.DETECTOR_CONF_THRESH})")
     parser.add_argument("--nms-thresh", type=float, default=config.DETECTOR_NMS_THRESH, help=f"Ngưỡng NMS IoU (mặc định: {config.DETECTOR_NMS_THRESH})")
     parser.add_argument("--min-face-size", type=int, default=config.DETECTOR_MIN_FACE_SIZE, help=f"Kích thước khuôn mặt tối thiểu tính bằng px (mặc định: {config.DETECTOR_MIN_FACE_SIZE})")

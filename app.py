@@ -18,11 +18,18 @@ import cv2
 import config
 from pathlib import Path
 from collections import deque
-from detection.yunnet_detector import FaceDetector
 from recognition.embedder import FaceEmbedder
 from alignment.aligner import get_input_face
 from database.vector_db import VectorDB, decide_identity
 from tracking.tracker import FaceTracker
+
+# ── Chọn detector theo APP_DETECTOR trong config / .env ────────────────────
+if config.APP_DETECTOR == "scrfd":
+    from detection.detector import FaceDetector
+    _DETECTOR_BACKEND = "scrfd"
+else:
+    from detection.yunnet_detector import FaceDetector
+    _DETECTOR_BACKEND = "yunnet"
 
 
 # ── Màu sắc cho các trạng thái track ────────────────────────────────────────
@@ -143,15 +150,23 @@ def parse_args():
 def main():
     args = parse_args()
 
-    # ── LOAD ONCE ────────────────────────────────────────────────────────────
-    detector = FaceDetector(
-        model_path=config.DETECTOR_MODEL_PATH,
-        conf_thresh=config.DETECTOR_CONF_THRESH,
-        nms_thresh=config.DETECTOR_NMS_THRESH,
-        top_k=config.DETECTOR_TOP_K,
-        min_face_size=config.DETECTOR_MIN_FACE_SIZE,
-        margin=config.DETECTOR_MARGIN,
-    )
+    # ── LOAD ONCE ──────────────────────────────────────────────────────────────
+    if _DETECTOR_BACKEND == "scrfd":
+        detector = FaceDetector(
+            model_name=config.MODEL_PACK_NAME,
+            ctx_id=config.MODEL_CTX_ID,
+            det_size=config.DETECTOR_DET_SIZE,
+            conf_thresh=config.DETECTOR_CONF_THRESH,
+        )
+    else:  # yunnet
+        detector = FaceDetector(
+            model_path=config.DETECTOR_MODEL_PATH,
+            conf_thresh=config.DETECTOR_CONF_THRESH,
+            nms_thresh=config.DETECTOR_NMS_THRESH,
+            top_k=config.DETECTOR_TOP_K,
+            min_face_size=config.DETECTOR_MIN_FACE_SIZE,
+            margin=config.DETECTOR_MARGIN,
+        )
     embedder = FaceEmbedder(config.MODEL_PACK_NAME, ctx_id=config.MODEL_CTX_ID)
     db = VectorDB(
         conninfo=config.DB_CONN_INFO,
@@ -178,21 +193,27 @@ def main():
             pad_predictor = AntiSpoofPredictor(
                 model_path=_pad_model_path,
                 threshold=args.pad_threshold,
+                apply_gamma=config.PAD_GAMMA_ENABLED,
             )
             print(f"  PAD              = ON  ({args.pad_model}, threshold={args.pad_threshold})")
+            print(f"  PAD_GAMMA        = {'ON' if config.PAD_GAMMA_ENABLED else 'OFF'}  (target luma={config.PAD_GAMMA_TARGET:.0f})")
         except Exception as e:
             print(f"[Warning] Không thể tải model PAD: {e}. Tiếp tục không có PAD.")
             pad_predictor = None
     else:
         print("  PAD              = OFF")
 
-    # ── Camera ────────────────────────────────────────────────────────────────
+    # ── Camera ──────────────────────────────────────────────────────────────
     cap = cv2.VideoCapture(args.camera)
-    cap.set(cv2.CAP_PROP_FRAME_WIDTH,  config.CAMERA_WIDTH)
-    cap.set(cv2.CAP_PROP_FRAME_HEIGHT, config.CAMERA_HEIGHT)
-    cap.set(cv2.CAP_PROP_FPS,          config.CAMERA_FPS)
+    if _DETECTOR_BACKEND == "yunnet":
+        # YunNet hoạt động tốt hơn với ảnh nhỏ — giới hạn frame size qua cap.set()
+        cap.set(cv2.CAP_PROP_FRAME_WIDTH,  config.CAMERA_WIDTH)
+        cap.set(cv2.CAP_PROP_FRAME_HEIGHT, config.CAMERA_HEIGHT)
+    # SCRFD tự resize nội bộ qua det_size — để camera chạy full resolution
+    cap.set(cv2.CAP_PROP_FPS, config.CAMERA_FPS)
 
     print("Starting face authentication system...")
+    print(f"  DETECTOR         = {_DETECTOR_BACKEND.upper()}")
     print(f"  MATCH_THRESHOLD  = {config.MATCH_THRESHOLD}")
     print(f"  RECOGNIZE_EVERY  = {config.RECOGNIZE_INTERVAL_SECONDS}s")
     print(f"  PAD_EVERY        = {config.PAD_INTERVAL_SECONDS}s")

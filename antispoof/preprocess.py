@@ -4,14 +4,80 @@ Module xử lý ảnh tiền xử lý (Preprocessing) cho mô hình Anti-Spoofin
 Chức năng chính:
     1. crop(): Cắt vùng khuôn mặt vuông từ ảnh gốc với tỉ lệ mở rộng (mặc định 1.5x).
        - Thêm viền theo thuật toán BORDER_REFLECT_101 để tránh viền đen giả tạo gây nhận diện nhầm Spoof.
-    2. preprocess(): Resize ảnh mặt vuông về kích thước đầu vào mô hình (128x128),
+    2. adaptive_gamma(): Điều chỉnh gamma động theo độ sáng thực tế của ảnh crop.
+       - Target luma ~110/255; gamma được clamp trong [0.4, 2.5] để tránh diverge.
+    3. preprocess(): Resize ảnh mặt vuông về kích thước đầu vào mô hình (128x128),
        - Chuẩn hóa giá trị điểm ảnh về dải [0, 1] và chuyển đổi thứ tự kênh từ HWC sang CHW.
-    3. preprocess_batch(): Xử lý hàng loạt (Batch Processing) cho danh sách nhiều khuôn mặt.
+       - Tùy chọn áp adaptive gamma trước khi normalize (``apply_gamma=True``).
+    4. preprocess_batch(): Xử lý hàng loạt (Batch Processing) cho danh sách nhiều khuôn mặt.
 """
 
 import cv2
 import numpy as np
 from typing import List, Tuple, Optional
+
+try:
+    import config as _cfg
+    _GAMMA_TARGET_LUMA: float = float(_cfg.PAD_GAMMA_TARGET)
+except Exception:
+    _GAMMA_TARGET_LUMA: float = 110.0
+# Giới hạn gamma để tránh diverge khi ảnh quá tối (gamma → ∞) hoặc quá sáng (gamma → 0)
+_GAMMA_MIN: float = 0.4
+_GAMMA_MAX: float = 2.5
+
+# LUT cache: tránh tính lại mảng 256 phần tử mỗi frame
+_lut_cache: dict = {}
+
+
+def adaptive_gamma(img: np.ndarray) -> np.ndarray:
+    """
+    Điều chỉnh gamma của ảnh BGR dựa trên độ sáng trung bình thực tế.
+
+    Cách tính:
+        luma = mean(kênh V trong HSV)          # đại diện cho perceived brightness
+        gamma = log(TARGET / 255) / log(luma / 255)   # solved from: luma^gamma = TARGET
+        gamma = clamp(gamma, GAMMA_MIN, GAMMA_MAX)
+
+    Áp dụng qua LUT 256-entry (nhanh hơn pixelwise pow() ~10x).
+    LUT được cache theo giá trị gamma đã làm tròn 2 chữ số thập phân.
+
+    Tham số:
+        img (np.ndarray): Ảnh BGR uint8.
+
+    Trả về:
+        np.ndarray: Ảnh BGR uint8 sau khi hiệu chỉnh gamma.
+    """
+    if img is None or img.size == 0:
+        return img
+
+    # Tính luma qua kênh V của HSV (nhanh, đúng với perceived brightness)
+    hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
+    mean_luma = float(np.mean(hsv[:, :, 2]))
+
+    # Tránh log(0) khi ảnh quá tối
+    if mean_luma < 1.0:
+        mean_luma = 1.0
+
+    # Giải g từ: (luma/255)^g = (TARGET/255)  =>  g = log(TARGET/255) / log(luma/255)
+    # LUT áp: pixel_out = (pixel_in/255)^g * 255
+    # - luma < target → g < 1 → brightening (đường cong lõm lên)
+    # - luma > target → g > 1 → darkening   (đường cong lõm xuống)
+    gamma = np.log(_GAMMA_TARGET_LUMA / 255.0) / np.log(mean_luma / 255.0)
+    gamma = float(np.clip(gamma, _GAMMA_MIN, _GAMMA_MAX))
+
+    # Ảnh đã đủ sáng (gamma ≈ 1) → bỏ qua để tiết kiệm tài nguyên
+    if abs(gamma - 1.0) < 0.05:
+        return img
+
+    # Tra LUT từ cache (key làm tròn 2 chữ số để gộp gamma gần nhau)
+    key = round(gamma, 2)
+    if key not in _lut_cache:
+        lut = np.array(
+            [(i / 255.0) ** gamma * 255.0 for i in range(256)],
+            dtype=np.uint8,
+        )
+        _lut_cache[key] = lut
+    return cv2.LUT(img, _lut_cache[key])
 
 
 def preprocess(
@@ -19,9 +85,11 @@ def preprocess(
     model_img_size: int,
     mean: Optional[List[float]] = None,
     std: Optional[List[float]] = None,
+    apply_gamma: bool = True,
 ) -> np.ndarray:
     """
     Tiền xử lý 1 ảnh khuôn mặt:
+        - (Tùy chọn) Adaptive gamma correction để robust với điều kiện ánh sáng khác nhau.
         - Resize theo đúng tỉ lệ (letterboxing).
         - Đệm viền BORDER_REFLECT_101 để đảm bảo ảnh vuông kích thước model_img_size x model_img_size.
         - Chuyển dải điểm ảnh từ [0, 255] sang [0.0, 1.0].
@@ -29,14 +97,19 @@ def preprocess(
         - Đổi định dạng từ OpenCV HWC (Height, Width, Channel) sang PyTorch/ONNX CHW (Channel, Height, Width).
 
     Tham số:
-        img (np.ndarray): Ảnh crop khuôn mặt (RGB/BGR).
+        img (np.ndarray): Ảnh crop khuôn mặt (BGR uint8).
         model_img_size (int): Kích thước cạnh ảnh vuông đầu vào của mô hình (ví dụ: 128).
         mean (Optional[List[float]]): Giá trị trung bình để chuẩn hóa kênh màu [R, G, B].
         std (Optional[List[float]]): Độ lệch chuẩn để chuẩn hóa kênh màu [R, G, B].
+        apply_gamma (bool): Nếu True, áp adaptive gamma trước khi normalize (mặc định: True).
 
     Trả về:
         np.ndarray: Mảng 3D float32 kích thước (3, model_img_size, model_img_size).
     """
+    # Adaptive gamma trên ảnh uint8 trước khi normalize — tránh double-scale
+    if apply_gamma:
+        img = adaptive_gamma(img)
+
     new_size = model_img_size
     old_size = img.shape[:2]
 
@@ -75,6 +148,7 @@ def preprocess_batch(
     model_img_size: int,
     mean: Optional[List[float]] = None,
     std: Optional[List[float]] = None,
+    apply_gamma: bool = True,
 ) -> np.ndarray:
     """
     Tiền xử lý đồng thời một danh sách nhiều ảnh crop khuôn mặt (Batching).
@@ -84,6 +158,7 @@ def preprocess_batch(
         model_img_size (int): Kích thước đầu vào mô hình (ví dụ: 128).
         mean (Optional[List[float]]): Giá trị mean chuẩn hóa.
         std (Optional[List[float]]): Giá trị std chuẩn hóa.
+        apply_gamma (bool): Nếu True, áp adaptive gamma cho từng crop (mặc định: True).
 
     Trả về:
         np.ndarray: Mảng 4D float32 kích thước (batch_size, 3, model_img_size, model_img_size).
@@ -96,7 +171,7 @@ def preprocess_batch(
         (len(face_crops), 3, model_img_size, model_img_size), dtype=np.float32
     )
     for i, face_crop in enumerate(face_crops):
-        batch[i] = preprocess(face_crop, model_img_size, mean=mean, std=std)
+        batch[i] = preprocess(face_crop, model_img_size, mean=mean, std=std, apply_gamma=apply_gamma)
 
     return batch
 

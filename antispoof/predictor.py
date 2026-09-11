@@ -35,6 +35,7 @@ class AntiSpoofPredictor:
         bbox_expansion_factor: float = 1.5,
         mean: Optional[List[float]] = None,
         std: Optional[List[float]] = None,
+        apply_gamma: bool = True,
     ):
         """
         Khởi tạo Predictor:
@@ -46,6 +47,7 @@ class AntiSpoofPredictor:
             bbox_expansion_factor (float): Tỷ lệ mở rộng khung bao bbox khi crop mặt (mặc định 1.5x).
             mean (Optional[List[float]]): Giá trị mean chuẩn hóa kênh màu [R, G, B].
             std (Optional[List[float]]): Giá trị std chuẩn hóa kênh màu [R, G, B].
+            apply_gamma (bool): Bật adaptive gamma correction trước khi normalize (mặc định: True).
         """
         self.model_path = Path(model_path) if model_path else DEFAULT_MODEL_PATH    # lấy đường dẫn model
 
@@ -57,6 +59,7 @@ class AntiSpoofPredictor:
         self.threshold = threshold
         self.model_img_size = model_img_size
         self.bbox_expansion_factor = bbox_expansion_factor
+        self.apply_gamma = apply_gamma
 
         # Quy đổi ngưỡng xác xuất threshold sang ngưỡng logit difference (logit_threshold) bằng hàm Logit/Sigmoid ngược
         p = max(1e-6, min(1 - 1e-6, threshold)) # ép không chạm biên gây lỗi
@@ -167,7 +170,8 @@ class AntiSpoofPredictor:
         try:
             # 1. Chạy tiền xử lý hình ảnh thành Tensor đầu vào (Batch, 3, H, W)
             batch_input = preprocess_batch(
-                face_crops, self.model_img_size, mean=self.mean, std=self.std
+                face_crops, self.model_img_size, mean=self.mean, std=self.std,
+                apply_gamma=self.apply_gamma,
             )
 
             # 2. Suy luận bằng ONNX Runtime Session

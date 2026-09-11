@@ -7,7 +7,9 @@ import argparse
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 import config
-from detection.yunnet_detector import FaceDetector
+# Dùng SCRFD (InsightFace) cho enroll — xử lý ảnh lớn tốt hơn YunNet
+# (YunNet cần resize thủ công trước detect; SCRFD tự resize nội bộ qua det_size)
+from detection.detector import FaceDetector
 from recognition.embedder import FaceEmbedder
 from alignment.aligner import get_input_face
 from database.vector_db import VectorDB
@@ -30,13 +32,12 @@ def main():
         return
 
     print("Đang khởi tạo model và kết nối database...")
+    # SCRFD: det_size kiểm soát độ phân giải inference nội bộ; conf_thresh tương đương DETECTOR_CONF_THRESH
     detector = FaceDetector(
-        model_path=config.DETECTOR_MODEL_PATH,
+        model_name=config.MODEL_PACK_NAME,
+        ctx_id=config.MODEL_CTX_ID,
+        det_size=config.DETECTOR_DET_SIZE,
         conf_thresh=config.DETECTOR_CONF_THRESH,
-        nms_thresh=config.DETECTOR_NMS_THRESH,
-        top_k=config.DETECTOR_TOP_K,
-        min_face_size=config.DETECTOR_MIN_FACE_SIZE,
-        margin=config.DETECTOR_MARGIN,
     )
     embedder = FaceEmbedder(config.MODEL_PACK_NAME, ctx_id=config.MODEL_CTX_ID)
     db = VectorDB(

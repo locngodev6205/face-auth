@@ -60,6 +60,13 @@ CAMERA_WIDTH  = int(os.getenv("CAMERA_WIDTH", "640"))
 CAMERA_HEIGHT = int(os.getenv("CAMERA_HEIGHT", "480"))
 CAMERA_FPS    = int(os.getenv("CAMERA_FPS", "30"))
 
+# Detector cho app.py (real-time inference).
+# - "yunnet": cv2.FaceDetectorYN, ~122 KB, nhanh trên edge, nhưng cần resize frame nhỏ trước khi detect.
+#             App.py sẽ set CAMERA_WIDTH × CAMERA_HEIGHT qua cap.set() để giới hạn frame size.
+# - "scrfd" : InsightFace SCRFD (buffalo_s), xử lý ảnh bất kỳ kích thước via det_size nội bộ,
+#             không cần giới hạn frame size — camera sẽ dùng full resolution nếu muốn.
+APP_DETECTOR = os.getenv("APP_DETECTOR", "yunnet").lower().strip()
+
 # Anti-Spoofing / PAD (Presentation Attack Detection) Config
 # PAD_ENABLED: bật/tắt module kiểm tra liveness. Cũng có thể bật/tắt qua CLI --pad / --no-pad.
 # Set "true"/"1" để bật mặc định, "false"/"0" để tắt mặc định.
@@ -70,6 +77,16 @@ PAD_ENABLED = os.getenv("PAD_ENABLED", "true").lower() in ("true", "1")
 # File có sẵn: best_model_quantized.onnx (128px), mnv4_best_224.onnx (224px), mnv3_large_3class_best.onnx (224px)
 PAD_MODEL_FILENAME  = os.getenv("PAD_MODEL_FILENAME",  "mnv3_large_3class_best.onnx")
 PAD_THRESHOLD       = float(os.getenv("PAD_THRESHOLD",  "0.5"))
+
+# Adaptive Gamma Correction cho face crop của PAD.
+# Bật để robust hơn với điều kiện ánh sáng khác nhau (tối / sáng quá).
+# Gamma được tính động theo perceived luma (kênh V của HSV), target về ~110/255.
+# Set "true"/"1" để bật, "false"/"0" để tắt.
+PAD_GAMMA_ENABLED = os.getenv("PAD_GAMMA_ENABLED", "true").lower() in ("true", "1")
+
+# Target luma (kênh V, [0-255]) mà adaptive gamma hướng đến.
+# 110 ≈ 43% — đủ sáng để model học texture, không bị over-expose.
+PAD_GAMMA_TARGET  = float(os.getenv("PAD_GAMMA_TARGET", "110.0"))
 
 # Đường dẫn thư mục chứa tất cả model anti-spoofing
 _ANTISPOOF_MODELS_DIR = os.path.join(os.path.dirname(__file__), "antispoof", "models")

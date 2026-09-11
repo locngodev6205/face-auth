@@ -74,9 +74,10 @@ def main():
                 continue
 
             if len(detections) > 1:
-                print(f"  [!] Cảnh báo: Tìm thấy {len(detections)} khuôn mặt trong {filename}. Sẽ chỉ dùng khuôn mặt đầu tiên.")
-
-            det = detections[0]
+                det = max(detections, key=lambda d: d.get("score", 0.0))
+                print(f"  [!] Cảnh báo: Tìm thấy {len(detections)} khuôn mặt trong {filename}. Đã chọn khuôn mặt có confidence cao nhất ({det['score']:.2f}).")
+            else:
+                det = detections[0]
             aligned_face = get_input_face(frame, det["bbox"], det.get("landmarks"), embedder.input_size)
 
             if aligned_face is None:

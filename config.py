@@ -107,7 +107,7 @@ FPS_AVG_WINDOW = int(os.getenv("FPS_AVG_WINDOW", "30"))
 # thay vì đếm số frame. Đặt theo thời gian (1.0s) giúp hệ thống hoạt động
 # hoàn toàn nhất quán bất kể chạy trên thiết bị có FPS cao (Mac 30-60 FPS)
 # hay thiết bị Edge có FPS thấp (Raspberry Pi 5-15 FPS).
-RECOGNIZE_INTERVAL_SECONDS = float(os.getenv("RECOGNIZE_INTERVAL_SECONDS", "1.0"))
+RECOGNIZE_INTERVAL_SECONDS = float(os.getenv("RECOGNIZE_INTERVAL_SECONDS", "0.5"))
 RECOGNIZE_INTERVAL = RECOGNIZE_INTERVAL_SECONDS  # Alias tương thích ngược
 
 # PAD Temporal Smoothing — chống nhấp nháy SPOOF/REAL khi mặt di chuyển.
@@ -158,3 +158,8 @@ RECOMMENDED_GALLERY_SIZE = int(os.getenv("RECOMMENDED_GALLERY_SIZE", "3"))
 # - Ngưỡng tối ưu thực nghiệm trên tập calibration LFW là ~0.31.
 # - Nâng lên 0.35 cho môi trường production để siết chặt bảo mật (giảm FAR/chặn người lạ tốt hơn).
 MATCH_THRESHOLD = float(os.getenv("MATCH_THRESHOLD", "0.35"))
+
+# Attendance Tracking
+ATTENDANCE_MODE = os.getenv("ATTENDANCE_MODE", "checkin").lower()
+ATTENDANCE_GAP_MINUTES = int(os.getenv("ATTENDANCE_GAP_MINUTES", "15"))
+ATTENDANCE_STABLE_COUNT = int(os.getenv("ATTENDANCE_STABLE_COUNT", "3"))

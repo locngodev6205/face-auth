@@ -51,6 +51,12 @@ class Track:
         self._pad_spoof_min_ratio = pad_spoof_min_ratio
         self.last_pad_time: Optional[float] = None  # None = chưa chạy PAD lần nào
 
+        # Attendance tracking
+        self.user_id: Optional[str] = None
+        self.stable_recognitions = 0
+        self.last_attendance_time: Optional[float] = None
+        self._unknown_streak = 0
+
     def update_pad(self, is_real: bool) -> None:
         """Ghi nhận verdict PAD của frame hiện tại vào rolling window và cập nhật timestamp."""
         self._pad_window.append(is_real)
@@ -85,8 +91,33 @@ class Track:
         """True khi track chưa được nhận diện lần nào (frame đầu tiên sau tạo mới)."""
         return not self.recognized_once
 
-    def update_result(self, name: str, score: float):
+    def can_log_attendance(self, gap_minutes: float) -> bool:
+        """Kiểm tra xem đã hết cooldown (gap_minutes) để điểm danh lại chưa."""
+        if self.last_attendance_time is None:
+            return True
+        return (time.time() - self.last_attendance_time) >= (gap_minutes * 60)
+
+    def update_result(self, user_id: Optional[str], name: str, score: float):
         """Cập nhật kết quả nhận diện và ghi nhận mốc thời gian hoàn tất."""
+        if user_id is not None:
+            self._unknown_streak = 0
+            if self.user_id == user_id:
+                self.stable_recognitions += 1
+            else:
+                self.stable_recognitions = 1
+                # Reset cooldown điểm danh nếu đổi sang một user_id khác
+                if self.user_id is not None and self.user_id != user_id:
+                    self.last_attendance_time = None
+            self.user_id = user_id
+        else:
+            self.stable_recognitions = 0
+            self._unknown_streak += 1
+            # Chỉ xoá user_id và cooldown nếu liên tục UNKNOWN > 3 chu kỳ (~1.5s)
+            # Giúp tránh nháy frame UNKNOWN làm mất timer cooldown của người vừa điểm danh
+            if self._unknown_streak > 3:
+                self.user_id = None
+                self.last_attendance_time = None
+
         self.name = name
         self.score = score
         self.last_recognition_time = time.time()
@@ -165,6 +196,10 @@ class FaceTracker:
 
             unmatched_detections = [i for i in range(len(detections)) if i not in used_dets]
             unmatched_tracks = [i for i in range(len(self.tracks)) if i not in used_tracks]
+
+        # Reset chuỗi ổn định nếu track bị mất dấu ở frame này (mất focus / quay mặt)
+        for t_idx in unmatched_tracks:
+            self.tracks[t_idx].stable_recognitions = 0
 
         # Tạo track mới cho các detection chưa match
         for d_idx in unmatched_detections:

@@ -90,7 +90,25 @@ ONNX export
 >
 > **Ảnh hưởng tới PAD pipeline:** Detector khác nhau → bbox chất lượng khác nhau → crop PAD khác nhau → score PAD có thể lệch nhẹ giữa runtime và offline eval. Để đánh giá PAD chính xác nhất trên ảnh thực tế, nên dùng cùng detector ở cả hai ngữ cảnh.
 
-
+> **[ARCHITECTURAL NOTE — Tách riêng Adaptive Gamma cho nhánh Spatial khi tích hợp nhánh DCT Frequency]**
+>
+> Trong tiền xử lý PAD, cơ chế **Adaptive Gamma Correction** (`preprocess.py::adaptive_gamma()`) được giữ lại để tăng độ ổn định của nhánh Spatial trước biến động ánh sáng (quá tối hoặc quá chói). Tuy nhiên, cần tuân thủ nguyên tắc kiến trúc sau khi mở rộng hệ thống sang mô hình 2 nhánh (Dual-Branch Spatial + Frequency):
+>
+> 1. **Nhánh Spatial (Spatial Branch — MobileNetV3):**
+>    - **Áp dụng Adaptive Gamma (`apply_gamma=True`):** Gamma giúp nén hoặc giãn dynamic range phi tuyến tính theo độ sáng thực tế ($I_{out} = I_{in}^\gamma$), kéo luma trung bình về mức chuẩn (~110/255). Điều này giúp backbone trích xuất đặc trưng không gian (skin texture, mép viền, cấu trúc hình học) ổn định hơn dưới điều kiện ánh sáng khắc nghiệt.
+>
+> 2. **Nhánh Frequency (DCT Frequency Branch — Stage 3):**
+>    - **BẮT BUỘC KHÔNG áp dụng Gamma (`apply_gamma=False`):** Phép biến đổi gamma là hàm phi tuyến ($x^\gamma$), làm thay đổi nghiêm trọng phân bố phổ tần số tự nhiên (Fourier/DCT spectrum), sinh ra các sóng hài bậc cao nhân tạo (spurious high-frequency harmonics), đồng thời làm méo hoặc triệt tiêu các artifact tần số đặc trưng của spoof (như vân moiré màn hình, lưới in halftone print dot pitch, tần số quét hiển thị, hay vết mờ làm mịn).
+>    - Nếu áp gamma vào đầu vào nhánh tần số, các đặc trưng DCT sẽ bị ô nhiễm bởi artifact của thuật toán gamma thay vì phản ánh bản chất bề mặt tấn công.
+>
+> 3. **Luồng dữ liệu Dual-Branch khi tích hợp:**
+>    ```text
+>    Face Crop 1.5× (Raw RGB)
+>        ├── [Nhánh Spatial]   ──> adaptive_gamma() ──> Resize & Normalize ──> Spatial CNN (MobileNetV3) ──┐
+>        │                                                                                                  ├──> Feature Fusion ──> Classifier
+>        └── [Nhánh Frequency] ──> Giữ nguyên raw   ──> Resize / Patches   ──> 2D-DCT Transform   ──────┘
+>    ```
+>    *Quy tắc triển khai code:* Hàm tiền xử lý `antispoof/preprocess.py::preprocess()` đã hỗ trợ cờ `apply_gamma`. Nhánh Spatial truyền `apply_gamma=True`, còn nhánh Frequency gọi với `apply_gamma=False`.
 
 ---
 
@@ -1605,7 +1623,7 @@ Cost                    baseline     modest increase
 
 ## 🟢 Giai đoạn research sau
 
-- [ ] DCT frequency branch.
+- [ ] DCT frequency branch (lưu ý: tách nhánh tiền xử lý với `apply_gamma=False`, giữ nguyên raw RGB cho DCT transform).
 - [ ] Spatial-only vs spatial+frequency ablation.
 - [ ] Official cross-dataset evaluation.
 - [ ] OULU-NPU / SiW.

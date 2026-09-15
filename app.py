@@ -142,6 +142,11 @@ def parse_args():
         "--camera", type=int, default=config.CAMERA_INDEX,
         help=f"Chỉ số camera (mặc định: {config.CAMERA_INDEX})"
     )
+    # App Mode (Attendance)
+    parser.add_argument(
+        "--mode", type=str, default=config.ATTENDANCE_MODE, choices=["checkin", "checkout", "none"],
+        help=f"Chế độ ứng dụng: checkin, checkout hoặc none (mặc định: {config.ATTENDANCE_MODE})"
+    )
     return parser.parse_args()
 
 
@@ -218,11 +223,16 @@ def main():
     print(f"  RECOGNIZE_EVERY  = {config.RECOGNIZE_INTERVAL_SECONDS}s")
     print(f"  PAD_EVERY        = {config.PAD_INTERVAL_SECONDS}s")
     print(f"  MIN_FACE_SIZE    = {config.DETECTOR_MIN_FACE_SIZE}px")
+    print(f"  APP_MODE         = {args.mode.upper()}")
     print(f"  FPS overlay      = {'ON' if args.show_fps else 'OFF'}")
     print("Controls: 'q' quit | 'p' toggle PAD | 'f' toggle FPS")
 
     pad_enabled_rt = (pad_predictor is not None)  # runtime toggle
     show_fps_rt    = args.show_fps                 # runtime toggle
+    app_mode       = args.mode.upper()
+    attendance_msg = ""
+    attendance_msg_color = (0, 255, 0)
+    attendance_msg_time = 0
 
     fps_deque: deque = deque(maxlen=config.FPS_AVG_WINDOW)
     avg_fps = 0.0
@@ -293,8 +303,8 @@ def main():
                         )
                         if embedding is not None:
                             rows = db.search(embedding, top_k=5)
-                            name, score = decide_identity(rows, threshold=config.MATCH_THRESHOLD)
-                            track.update_result(name, score)
+                            user_id, name, score = decide_identity(rows, threshold=config.MATCH_THRESHOLD)
+                            track.update_result(user_id, name, score)
                     except Exception as e:
                         print(f"[Pipeline error] {e}")
 
@@ -306,12 +316,52 @@ def main():
                     and track.needs_recognition(config.RECOGNIZE_INTERVAL_SECONDS)
                 )
 
+                if is_spoof:
+                    track.stable_recognitions = 0 # reset stability if spoof
+                    
+                # Attendance logging check
+                if (
+                    app_mode != "NONE"
+                    and not is_spoof
+                    and not is_pending
+                    and track.user_id
+                    and track.can_log_attendance(config.ATTENDANCE_GAP_MINUTES)
+                    and track.stable_recognitions >= config.ATTENDANCE_STABLE_COUNT
+                ):
+                    success, reason, last_ts = db.log_attendance(track.user_id, app_mode, config.ATTENDANCE_GAP_MINUTES)
+                    
+                    if last_ts:
+                        # last_ts là datetime, lưu dưới dạng timestamp để local timer đếm ngược
+                        track.last_attendance_time = last_ts.timestamp()
+                    else:
+                        # Fallback: nếu lỗi DB không trả về timestamp, lấy local time
+                        track.last_attendance_time = time.time()
+
+                    attendance_msg_time = time.time()
+                    if success:
+                        attendance_msg = f"{name}: {app_mode} SUCCESS"
+                        attendance_msg_color = (0, 255, 0)
+                        ts_str = f" lúc {last_ts.astimezone().strftime('%H:%M:%S')}" if last_ts else ""
+                        print(f"[ATTENDANCE] {attendance_msg}{ts_str}")
+                    else:
+                        attendance_msg = f"{name}: {reason}"
+                        attendance_msg_color = (0, 165, 255)
+                        ts_str = f" (Gần nhất: {last_ts.astimezone().strftime('%H:%M:%S')})" if last_ts else ""
+                        print(f"[ATTENDANCE BLOCKED] {name}: {reason}{ts_str}")
+
                 draw_track(frame, bbox, name, score, is_pending, is_reverifying, is_spoof=is_spoof)
 
             # ── Overlay FPS & PAD badge ───────────────────────────────────────
             if show_fps_rt:
                 draw_fps(frame, avg_fps)
             draw_pad_badge(frame, pad_enabled_rt)
+            
+            # ── Draw mode & attendance message ────────────────────────────────
+            cv2.putText(frame, f"MODE: {app_mode}", (10, 84), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 200, 0), 2, cv2.LINE_AA)
+            if attendance_msg and (time.time() - attendance_msg_time < 3.0):
+                # Hiển thị thông báo (thành công hoặc cảnh báo) trong 3 giây
+                cv2.putText(frame, attendance_msg, (10, frame.shape[0] - 30), 
+                            cv2.FONT_HERSHEY_SIMPLEX, 0.7, attendance_msg_color, 2, cv2.LINE_AA)
 
             cv2.imshow("SmartFace — Face Auth", frame)
 

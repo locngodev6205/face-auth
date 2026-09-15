@@ -1,3 +1,5 @@
+from typing import Optional, Tuple
+from datetime import datetime, timezone
 import numpy as np
 from psycopg_pool import ConnectionPool
 
@@ -30,6 +32,16 @@ class VectorDB:
                     is_mean BOOLEAN DEFAULT FALSE,
                     created_at TIMESTAMP DEFAULT NOW()
                 );
+            """)
+            conn.execute("""
+                CREATE TABLE IF NOT EXISTS attendance_logs (
+                    log_id SERIAL PRIMARY KEY,
+                    user_id TEXT NOT NULL REFERENCES users(user_id) ON DELETE CASCADE,
+                    action TEXT NOT NULL CHECK (action IN ('CHECKIN', 'CHECKOUT')),
+                    timestamp TIMESTAMPTZ DEFAULT NOW()
+                );
+                CREATE INDEX IF NOT EXISTS idx_attendance_lookup 
+                ON attendance_logs (user_id, action, timestamp DESC);
             """)
             conn.commit()
 
@@ -105,17 +117,63 @@ class VectorDB:
             conn.commit()
             return user_id, is_new, is_ignored
 
+    def log_attendance(
+        self, user_id: Optional[str], action: str, gap_minutes: int
+    ) -> Tuple[bool, str, Optional[datetime]]:
+        """
+        Ghi nhận lịch sử điểm danh.
+        Trả về tuple: (success: bool, reason: str, timestamp: Optional[datetime])
+          - Thành công: (True, "Thành công", timestamp_moi_ghi)
+          - Bị chặn do cooldown: (False, "Đã ... gần đây...", timestamp_gan_nhat) -> dùng cho local timer
+          - Lỗi hoặc thiếu tham số: (False, reason, None)
+        """
+        if not user_id:
+            return False, "Thiếu user_id", None
+
+        action = action.upper()
+        if action not in ("CHECKIN", "CHECKOUT"):
+            return False, f"Action không hợp lệ: {action}", None
+
+        try:
+            with self.pool.connection() as conn:
+                # Check for recent identical action
+                existing = conn.execute("""
+                    SELECT timestamp FROM attendance_logs 
+                    WHERE user_id = %s AND action = %s AND timestamp > NOW() - make_interval(mins => %s)
+                    ORDER BY timestamp DESC
+                    LIMIT 1
+                """, (user_id, action, gap_minutes)).fetchone()
+                
+                if existing:
+                    last_ts = existing[0]
+                    if last_ts and last_ts.tzinfo is None:
+                        last_ts = last_ts.replace(tzinfo=timezone.utc)
+                    return False, f"Đã {action} gần đây. Vui lòng đợi {gap_minutes} phút.", last_ts
+                    
+                inserted = conn.execute("""
+                    INSERT INTO attendance_logs (user_id, action)
+                    VALUES (%s, %s)
+                    RETURNING timestamp
+                """, (user_id, action)).fetchone()
+                conn.commit()
+                last_ts = inserted[0]
+                if last_ts and last_ts.tzinfo is None:
+                    last_ts = last_ts.replace(tzinfo=timezone.utc)
+                return True, "Thành công", last_ts
+        except Exception as e:
+            return False, f"Lỗi database: {e}", None
+
     def close(self):
         self.pool.close()
 
 
 def decide_identity(rows, threshold: float):
     if not rows:
-        return "UNKNOWN", 0.0
+        return None, "UNKNOWN", 0.0
 
     best_id, best_name, best_similarity = rows[0]
 
     if best_similarity >= threshold:
-        return best_name, float(best_similarity)
+        return best_id, best_name, float(best_similarity)
 
-    return "UNKNOWN", float(best_similarity)
+    return None, "UNKNOWN", float(best_similarity)

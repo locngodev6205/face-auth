@@ -21,7 +21,7 @@ Face Tracking (IOU Matching)
 ┌───────────────────────────────────────┐
 │  Anti-Spoofing / PAD Module           │
 │  Input: expanded crop × 1.5           │
-│  ↓ Adaptive Gamma Correction          │  ← NEW: bật/tắt qua PAD_GAMMA_ENABLED
+│  ↓ Adaptive Gamma Correction          │  ← NEW: bật/tắt qua PAD_GAMMA_ENABLED (Spatial only)
 │  Model: [đang tối ưu — xem §3.2]     │
 │  Temporal Smoothing (rolling window)  │
 │  Verdict: REAL / SPOOF                │
@@ -264,7 +264,7 @@ bbox (x1, y1, x2, y2)
 Expanded square crop × 1.5 (preprocess.py::crop())
     + BORDER_REFLECT_101 cho vùng tràn mép ảnh
     ↓
-Adaptive Gamma Correction (preprocess.py::adaptive_gamma())   ← NEW
+Adaptive Gamma Correction (preprocess.py::adaptive_gamma())   ← NEW (dành riêng nhánh Spatial)
     — bật/tắt qua PAD_GAMMA_ENABLED; target luma qua PAD_GAMMA_TARGET
     — gamma tính từ luma kênh V (HSV); clamp trong [0.4, 2.5]
     — skip tự động nếu |gamma − 1| < 0.05 (zero cost)
@@ -281,6 +281,20 @@ ONNX Runtime inference
 ```
 
 **Lý do crop ×1.5:** Model có thể học context ngoài vùng mặt (viền màn hình, mép giấy, bezel thiết bị, tóc/tai), đây là những cue quan trọng để phân biệt spoof.
+
+> [!IMPORTANT]
+> **Lưu ý kiến trúc: Tách riêng Adaptive Gamma cho nhánh Spatial khi tích hợp Frequency Branch (DCT)**
+>
+> - **Nhánh Spatial (RGB / CNN hiện tại):** Giữ `adaptive_gamma()` để cân bằng độ sáng tự động, giúp mô hình trích xuất đặc trưng kết cấu (texture da, mép viền) ổn định trong môi trường thiếu sáng hoặc thừa sáng.
+> - **Nhánh Frequency (DCT / Fourier sau này):** **Tuyệt đối KHÔNG áp dụng Gamma Correction**. Phép toán phi tuyến $I^\gamma$ sẽ làm sai lệch phổ năng lượng tần số tự nhiên, tạo ra các sóng hài bậc cao giả tạo (harmonic artifacts) và làm biến dạng các dấu hiệu giả mạo cốt lõi (như vân moiré màn hình, lưới in halftone print dot pitch, vết quét tần số hiển thị).
+> - **Thiết kế luồng xử lý Dual-Branch:**
+>   ```text
+>   Face Crop 1.5× (Raw uint8)
+>       ├── [Spatial Branch]   ──> adaptive_gamma() ──> Resize/Normalize ──> Spatial Backbone (MobileNetV3) ──┐
+>       │                                                                                                    ├──> Fusion ──> Classifier
+>       └── [Frequency Branch] ──> Giữ raw (KHÔNG gamma) ──> Resize/Patches ──> 2D-DCT Transform  ──────────┘
+>   ```
+> - *Ở mức mã nguồn:* Hàm `antispoof/preprocess.py::preprocess()` hỗ trợ tham số `apply_gamma`. Nhánh Spatial dùng `apply_gamma=True` (mặc định), khi tích hợp nhánh Frequency sẽ gọi với `apply_gamma=False`.
 
 ### 3.3 Face Alignment & Recognition (giữ nguyên từ V1)
 
@@ -512,7 +526,7 @@ FPS_AVG_WINDOW = 30
 - Fill vùng tràn mép bằng `BORDER_REFLECT_101` (không có viền đen gây sai lệch PAD).
 
 **`preprocess(img, model_img_size, mean, std, apply_gamma=True)`:**
-- `apply_gamma=True`: gọi `adaptive_gamma()` trước khi normalize — đúng thứ tự (uint8 → gamma → float32).
+- `apply_gamma=True`: gọi `adaptive_gamma()` trước khi normalize — đúng thứ tự (uint8 → gamma → float32). **Lưu ý kiến trúc:** Cờ này chỉ bật cho nhánh Spatial; nhánh Frequency (DCT) tương lai bắt buộc truyền `apply_gamma=False` để tránh làm biến dạng phổ tần số.
 - Letterboxing giữ tỉ lệ + `BORDER_REFLECT_101` → `[0, 1]` → mean/std → CHW float32.
 
 **`adaptive_gamma(img)`** — ★ NEW:
@@ -723,7 +737,7 @@ FAR, FRR, EER, Accuracy (pair-based) và TPIR@FAR (1:N identification) — giữ
 - [x] `PAD_INTERVAL_SECONDS` tự động sync với `RECOGNIZE_INTERVAL`.
 - [x] `antispoof/` là package độc lập.
 - [x] Interface `FaceDetector.detect()` tương thích ngược hoàn toàn với SCRFD.
-- [x] Adaptive gamma correction cho PAD crop (bật/tắt qua `PAD_GAMMA_ENABLED` trong `.env`).
+- [x] Adaptive gamma correction cho PAD crop (bật/tắt qua `PAD_GAMMA_ENABLED` trong `.env` — dành riêng nhánh Spatial, tách biệt với nhánh Frequency).
 
 ### Research
 

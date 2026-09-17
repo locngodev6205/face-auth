@@ -23,11 +23,13 @@ def main():
                 SELECT 
                     a.log_id,
                     a.timestamp,
-                    u.user_id,
-                    u.name,
-                    a.action
+                    e.employee_id,
+                    e.full_name,
+                    a.action,
+                    a.face_similarity,
+                    a.liveness_score
                 FROM attendance_logs a
-                JOIN users u ON a.user_id = u.user_id
+                JOIN employees e ON a.employee_id = e.employee_id
                 ORDER BY a.timestamp DESC
                 LIMIT %s
             """
@@ -38,28 +40,31 @@ def main():
                 return
 
             # Print beautifully
-            print(f"\n{'-'*80}")
-            print(f"{'TIME':<25} | {'USER ID':<15} | {'NAME':<20} | {'ACTION':<10}")
-            print(f"{'-'*80}")
+            print(f"\n{'-'*95}")
+            print(f"{'TIME':<20} | {'EMPLOYEE ID':<18} | {'NAME':<20} | {'ACTION':<9} | {'SIM':<6} | {'PAD SCORE':<10}")
+            print(f"{'-'*95}")
             
             for row in rows:
-                log_id, ts, uid, name, action = row
+                log_id, ts, emp_id, name, action, sim, liveness = row
                 if ts and ts.tzinfo is None:
                     ts = ts.replace(tzinfo=timezone.utc)
                 ts_str = ts.astimezone().strftime("%Y-%m-%d %H:%M:%S") if ts else ""
                 
                 # Colors
-                action_colored = f"\033[92m{action}\033[0m" if action == 'CHECKIN' else f"\033[93m{action}\033[0m"
+                action_colored = f"\033[92m{action:<9}\033[0m" if action == 'CHECKIN' else f"\033[93m{action:<9}\033[0m"
+                sim_str = f"{sim:.2f}" if sim is not None else "-"
+                live_str = f"{liveness:.2f}" if liveness is not None else "-"
                 
-                print(f"{ts_str:<25} | {uid:<15} | {name:<20} | {action_colored}")
+                print(f"{ts_str:<20} | {emp_id:<18} | {name:<20} | {action_colored} | {sim_str:<6} | {live_str:<10}")
             
-            print(f"{'-'*80}\n")
+            print(f"{'-'*95}\n")
             print(f"Total: {len(rows)} record(s) shown.")
             
         except Exception as e:
             print(f"Lỗi truy vấn: {e}")
         finally:
             pool.close()
+
 
 if __name__ == "__main__":
     main()

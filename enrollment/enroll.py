@@ -1,3 +1,4 @@
+from typing import Optional, List, Tuple
 import numpy as np
 
 
@@ -51,10 +52,29 @@ def build_identity_embedding(embeddings, outlier_threshold=0.35):
     return mean_embedding / norm, warnings, valid_embeddings
 
 
-def enroll_person(db, user_id, name, embeddings, overwrite=True, outlier_threshold=0.35, save_individuals=True):
+def enroll_person(
+    db,
+    employee_id: str,
+    full_name: str,
+    embeddings=None,
+    overwrite: bool = True,
+    outlier_threshold: float = 0.35,
+    save_individuals: bool = True,
+    model_version: str = "buffalo_s",
+):
+    if not employee_id or not full_name:
+        raise ValueError("Missing employee_id or full_name for enrollment")
     if not embeddings:
         raise ValueError("No embeddings provided for enrollment")
 
     identity_embedding, warnings, valid_embeddings = build_identity_embedding(embeddings, outlier_threshold)
-    person_id, is_new, is_ignored = db.upsert(user_id, name, valid_embeddings, identity_embedding, overwrite=overwrite, save_individuals=save_individuals)
+    person_id, is_new, is_ignored = db.upsert(
+        employee_id=employee_id,
+        full_name=full_name,
+        individual_embeddings=valid_embeddings,
+        mean_embedding=identity_embedding,
+        overwrite=overwrite,
+        save_individuals=save_individuals,
+        model_version=model_version,
+    )
     return person_id, is_new, is_ignored, warnings

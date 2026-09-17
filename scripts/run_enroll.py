@@ -48,16 +48,16 @@ def main():
 
     print(f"Bắt đầu quét thư mục gallery: {gallery_dir}")
 
-    for person_name in os.listdir(gallery_dir):
+    for person_name in sorted(os.listdir(gallery_dir)):
         person_dir = os.path.join(gallery_dir, person_name)
 
         if not os.path.isdir(person_dir):
             continue
 
-        print(f"\nĐang xử lý dữ liệu cho: {person_name}")
+        print(f"\nĐang xử lý dữ liệu cho nhân viên: {person_name}")
         embeddings = []
 
-        for filename in os.listdir(person_dir):
+        for filename in sorted(os.listdir(person_dir)):
             if not filename.lower().endswith(('.png', '.jpg', '.jpeg')):
                 continue
 
@@ -93,27 +93,33 @@ def main():
                 print(f"  [!] Lỗi: Không thể tạo embedding từ {filename}")
 
         if not embeddings:
-            print(f"==> Bỏ qua '{person_name}' - Không có ảnh hợp lệ nào.")
+            print(f"==> Bỏ qua nhân viên '{person_name}' - Không có ảnh hợp lệ nào.")
             continue
 
         try:
             overwrite = not args.ignore_duplicate
             save_individuals = not args.no_individuals
             new_id, is_new, is_ignored, warnings = enroll_person(
-                db, user_id=person_name, name=person_name, embeddings=embeddings, overwrite=overwrite, save_individuals=save_individuals
+                db,
+                employee_id=person_name,
+                full_name=person_name,
+                embeddings=embeddings,
+                overwrite=overwrite,
+                save_individuals=save_individuals,
+                model_version=config.EMBEDDING_MODEL_VERSION,
             )
 
             for w in warnings:
                 print(f"  [!] {w}")
 
             if is_ignored:
-                action = "Bỏ qua (đã tồn tại)"
+                action = "Bỏ qua (nhân viên đã tồn tại)"
             else:
-                action = "Đăng ký mới" if is_new else "Cập nhật (ghi đè)"
+                action = "Đăng ký mới nhân viên" if is_new else "Cập nhật nhân viên (ghi đè)"
 
-            print(f"==> {action} '{person_name}' với ID: {new_id} (Dựa trên {len(embeddings)} ảnh)")
+            print(f"==> {action} '{person_name}' với Employee ID: {new_id} (Dựa trên {len(embeddings)} ảnh)")
         except Exception as e:
-            print(f"==> Lỗi khi đăng ký '{person_name}': {e}")
+            print(f"==> Lỗi khi đăng ký nhân viên '{person_name}': {e}")
 
     db.close()
 

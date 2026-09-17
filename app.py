@@ -13,6 +13,7 @@ CLI usage:
 """
 
 import argparse
+import sys
 import time
 import cv2
 import config
@@ -45,22 +46,26 @@ COLOR_SPOOF     = (0, 0, 220)       # Đỏ     — giả mạo
 
 # ── Hàm vẽ ──────────────────────────────────────────────────────────────────
 
-def draw_track(frame, bbox, name, score, is_pending, is_reverifying, is_spoof=False):
+def draw_track(frame, bbox, name, score, is_pending, is_reverifying, is_spoof=False, is_pad_pending=False):
     """
     Vẽ bounding box và label lên frame theo trạng thái track.
 
     Trạng thái:
-        - SPOOF (đỏ)      : PAD phát hiện giả mạo — ưu tiên cao nhất.
-        - Pending (xám)   : track vừa tạo, chưa nhận diện.
-        - Locked (xanh)   : đã nhận diện, đang trong thời gian locked.
-        - Re-verify (cam) : chờ re-verify, giữ tên cũ.
-        - Unknown (đỏ đậm): không khớp ai trong DB.
+        - SPOOF (đỏ)         : PAD phát hiện giả mạo — ưu tiên cao nhất.
+        - PAD Pending (xám)  : đang tích lũy vote PAD, chưa cho phép nhận diện.
+        - Pending (xám)      : track vừa tạo, chưa nhận diện.
+        - Locked (xanh)      : đã nhận diện, đang trong thời gian locked.
+        - Re-verify (cam)    : chờ re-verify, giữ tên cũ.
+        - Unknown (đỏ đậm)   : không khớp ai trong DB.
     """
     x1, y1, x2, y2 = bbox
 
     if is_spoof:
         color = COLOR_SPOOF
         label = "⚠ SPOOF"
+    elif is_pad_pending:
+        color = COLOR_PENDING
+        label = "Kiem tra PAD..."
     elif is_pending:
         color = COLOR_PENDING
         label = "Nhan dien..."
@@ -101,6 +106,95 @@ def draw_pad_badge(frame, enabled: bool):
     color = (0, 200, 80) if enabled else (100, 100, 100)
     cv2.putText(frame, text, (10, 56),
                 cv2.FONT_HERSHEY_SIMPLEX, 0.6, color, 2, cv2.LINE_AA)
+
+
+def orchestrate_track_step(
+    track,
+    pad_enabled_rt: bool,
+    app_mode: str,
+    db,
+    embedder=None,
+    frame=None,
+    detection=None,
+    recognize_interval_seconds: float = config.RECOGNIZE_INTERVAL_SECONDS,
+    match_threshold: float = config.MATCH_THRESHOLD,
+    model_version: str = config.EMBEDDING_MODEL_VERSION,
+    attendance_gap_minutes: int = config.ATTENDANCE_GAP_MINUTES,
+    attendance_stable_count: int = config.ATTENDANCE_STABLE_COUNT,
+) -> dict:
+    """
+    Điều phối nhận diện và điểm danh cho một track:
+        1. Kiểm tra trạng thái PAD (spoof, pending, real, hoặc disabled).
+        2. Quyết định có chạy ArcFace recognition & DB search hay không.
+        3. Cập nhật kết quả nhận diện và reset recognition stability nếu spoof/pending.
+        4. Quyết định và thực thi ghi nhận điểm danh (attendance logging).
+    """
+    is_spoof = pad_enabled_rt and track.is_spoof
+    is_pad_pending = pad_enabled_rt and (not track.pad_ready)
+
+    if is_spoof or is_pad_pending:
+        track.stable_recognitions = 0
+
+    should_recognize = track.needs_recognition(recognize_interval_seconds, pad_enabled=pad_enabled_rt)
+    recognized = False
+
+    if should_recognize and embedder is not None and frame is not None and detection is not None:
+        bbox = detection["bbox"]
+        landmarks = detection.get("landmarks")
+        try:
+            aligned_face = get_input_face(frame, bbox, landmarks, embedder.input_size)
+            embedding = (
+                embedder.embed_aligned(aligned_face)
+                if aligned_face is not None
+                else None
+            )
+            if embedding is not None:
+                rows = db.search(embedding, top_k=5, model_version=model_version)
+                employee_id, name, score = decide_identity(rows, threshold=match_threshold)
+                track.update_result(employee_id, name, score)
+                recognized = True
+        except Exception as e:
+            print(f"[Pipeline error] {e}")
+
+    attendance_attempted = False
+    attendance_success = None
+    attendance_reason = None
+    last_ts = None
+
+    if (
+        app_mode != "NONE"
+        and not is_spoof
+        and not is_pad_pending
+        and not track.is_pending
+        and track.employee_id
+        and track.can_log_attendance(attendance_gap_minutes)
+        and track.stable_recognitions >= attendance_stable_count
+    ):
+        attendance_attempted = True
+        success, reason, last_ts = db.log_attendance(
+            employee_id=track.employee_id,
+            action=app_mode,
+            gap_minutes=attendance_gap_minutes,
+            face_similarity=float(track.score) if track.score is not None else None,
+            liveness_score=track.last_pad_score,
+        )
+        attendance_success = success
+        attendance_reason = reason
+        if last_ts:
+            track.last_attendance_time = last_ts.timestamp()
+        else:
+            track.last_attendance_time = time.time()
+
+    return {
+        "should_recognize": should_recognize,
+        "is_spoof": is_spoof,
+        "is_pad_pending": is_pad_pending,
+        "recognized": recognized,
+        "attendance_attempted": attendance_attempted,
+        "attendance_success": attendance_success,
+        "attendance_reason": attendance_reason,
+        "last_ts": last_ts,
+    }
 
 
 # ── Hàm parse CLI ────────────────────────────────────────────────────────────
@@ -185,6 +279,7 @@ def main():
         pad_smooth_window=config.PAD_SMOOTH_WINDOW,
         pad_spoof_min_ratio=config.PAD_SPOOF_MIN_RATIO,
         pad_interval_seconds=config.PAD_INTERVAL_SECONDS,
+        pad_min_votes=config.PAD_MIN_VOTES,
     )
 
     # ── Khởi tạo PAD (nếu bật) ───────────────────────────────────────────────
@@ -199,12 +294,16 @@ def main():
                 model_path=_pad_model_path,
                 threshold=args.pad_threshold,
                 apply_gamma=config.PAD_GAMMA_ENABLED,
+                color_order=config.PAD_COLOR_ORDER,
             )
             print(f"  PAD              = ON  ({args.pad_model}, threshold={args.pad_threshold})")
             print(f"  PAD_GAMMA        = {'ON' if config.PAD_GAMMA_ENABLED else 'OFF'}  (target luma={config.PAD_GAMMA_TARGET:.0f})")
         except Exception as e:
-            print(f"[Warning] Không thể tải model PAD: {e}. Tiếp tục không có PAD.")
-            pad_predictor = None
+            print(f"[ERROR] Không thể tải model PAD: {e}.", file=sys.stderr)
+            print("[ERROR] PAD đang được yêu cầu (--pad hoặc PAD_ENABLED=true). Hệ thống dừng khởi động để đảm bảo an toàn.", file=sys.stderr)
+            print("[ERROR] Nếu muốn chạy hệ thống không có kiểm tra liveness PAD, hãy khởi động với cờ --no-pad.", file=sys.stderr)
+            db.close()
+            sys.exit(1)
     else:
         print("  PAD              = OFF")
 
@@ -275,81 +374,69 @@ def main():
                     try:
                         pad_batch = pad_predictor.predict_crops(face_crops)
                         # Đẩy verdict vào rolling window của từng track
-                        tid_to_track = {t.track_id: t for _, t in tracked}
-                        for tid, res in zip(track_ids, pad_batch):
-                            if tid in tid_to_track:
-                                tid_to_track[tid].update_pad(res.get("is_real", True))
+                        if pad_batch:
+                            tid_to_track = {t.track_id: t for _, t in tracked}
+                            for tid, res in zip(track_ids, pad_batch):
+                                if tid in tid_to_track and "is_real" in res:
+                                    tid_to_track[tid].update_pad(
+                                        is_real=res["is_real"],
+                                        pad_score=res.get("pad_score", res.get("logit_diff", None)),
+                                    )
                     except Exception as e:
                         print(f"[PAD error] {e}")
 
-            # ── Recognition + Display ─────────────────────────────────────────
+            # ── Recognition + Attendance + Display ───────────────────────────
             for detection, track in tracked:
-                bbox      = detection["bbox"]
-                landmarks = detection.get("landmarks")
+                bbox = detection["bbox"]
 
-                # Lấy trạng thái PAD đã smoothed từ rolling window của track
-                is_spoof = pad_enabled_rt and track.is_spoof
-
-                # Chỉ chạy recognition khi mặt không phải SPOOF (hoặc PAD tắt)
-                if not is_spoof and track.needs_recognition(config.RECOGNIZE_INTERVAL_SECONDS):
-                    try:
-                        aligned_face = get_input_face(
-                            frame, bbox, landmarks, embedder.input_size
-                        )
-                        embedding = (
-                            embedder.embed_aligned(aligned_face)
-                            if aligned_face is not None
-                            else None
-                        )
-                        if embedding is not None:
-                            rows = db.search(embedding, top_k=5)
-                            user_id, name, score = decide_identity(rows, threshold=config.MATCH_THRESHOLD)
-                            track.update_result(user_id, name, score)
-                    except Exception as e:
-                        print(f"[Pipeline error] {e}")
-
-                # Xác định trạng thái
-                name, score = track.name, track.score
-                is_pending     = track.is_pending
-                is_reverifying = (
-                    not is_pending
-                    and track.needs_recognition(config.RECOGNIZE_INTERVAL_SECONDS)
+                orch_res = orchestrate_track_step(
+                    track=track,
+                    detection=detection,
+                    frame=frame,
+                    embedder=embedder,
+                    db=db,
+                    pad_enabled_rt=pad_enabled_rt,
+                    app_mode=app_mode,
+                    recognize_interval_seconds=config.RECOGNIZE_INTERVAL_SECONDS,
+                    match_threshold=config.MATCH_THRESHOLD,
+                    model_version=config.EMBEDDING_MODEL_VERSION,
+                    attendance_gap_minutes=config.ATTENDANCE_GAP_MINUTES,
+                    attendance_stable_count=config.ATTENDANCE_STABLE_COUNT,
                 )
 
-                if is_spoof:
-                    track.stable_recognitions = 0 # reset stability if spoof
-                    
-                # Attendance logging check
-                if (
-                    app_mode != "NONE"
-                    and not is_spoof
-                    and not is_pending
-                    and track.user_id
-                    and track.can_log_attendance(config.ATTENDANCE_GAP_MINUTES)
-                    and track.stable_recognitions >= config.ATTENDANCE_STABLE_COUNT
-                ):
-                    success, reason, last_ts = db.log_attendance(track.user_id, app_mode, config.ATTENDANCE_GAP_MINUTES)
-                    
-                    if last_ts:
-                        # last_ts là datetime, lưu dưới dạng timestamp để local timer đếm ngược
-                        track.last_attendance_time = last_ts.timestamp()
-                    else:
-                        # Fallback: nếu lỗi DB không trả về timestamp, lấy local time
-                        track.last_attendance_time = time.time()
+                # Trạng thái hiển thị
+                name, score = track.name, track.score
+                is_pending = track.is_pending
+                is_reverifying = (
+                    not is_pending
+                    and not orch_res["is_pad_pending"]
+                    and not orch_res["is_spoof"]
+                    and track.needs_recognition(config.RECOGNIZE_INTERVAL_SECONDS, pad_enabled=pad_enabled_rt)
+                )
 
+                if orch_res["attendance_attempted"]:
                     attendance_msg_time = time.time()
-                    if success:
+                    last_ts = orch_res["last_ts"]
+                    if orch_res["attendance_success"]:
                         attendance_msg = f"{name}: {app_mode} SUCCESS"
                         attendance_msg_color = (0, 255, 0)
                         ts_str = f" lúc {last_ts.astimezone().strftime('%H:%M:%S')}" if last_ts else ""
                         print(f"[ATTENDANCE] {attendance_msg}{ts_str}")
                     else:
+                        reason = orch_res["attendance_reason"]
                         attendance_msg = f"{name}: {reason}"
                         attendance_msg_color = (0, 165, 255)
                         ts_str = f" (Gần nhất: {last_ts.astimezone().strftime('%H:%M:%S')})" if last_ts else ""
                         print(f"[ATTENDANCE BLOCKED] {name}: {reason}{ts_str}")
 
-                draw_track(frame, bbox, name, score, is_pending, is_reverifying, is_spoof=is_spoof)
+                draw_track(
+                    frame, bbox, name, score,
+                    is_pending=is_pending,
+                    is_reverifying=is_reverifying,
+                    is_spoof=orch_res["is_spoof"],
+                    is_pad_pending=orch_res["is_pad_pending"],
+                )
+
 
             # ── Overlay FPS & PAD badge ───────────────────────────────────────
             if show_fps_rt:
@@ -375,11 +462,30 @@ def main():
             if key == ord("q") or key == 27:
                 break
             elif key == ord("p"):
+                if pad_predictor is None:
+                    try:
+                        from antispoof import AntiSpoofPredictor
+                        _pad_model_path = str(
+                            Path(__file__).parent / "antispoof" / "models" / args.pad_model
+                        )
+                        pad_predictor = AntiSpoofPredictor(
+                            model_path=_pad_model_path,
+                            threshold=args.pad_threshold,
+                            apply_gamma=config.PAD_GAMMA_ENABLED,
+                            color_order=config.PAD_COLOR_ORDER,
+                        )
+                        print(f"[PAD] Model loaded on demand: {args.pad_model}")
+                    except Exception as e:
+                        print(f"[PAD error] Không thể tải model PAD: {e}")
+
                 if pad_predictor is not None:
                     pad_enabled_rt = not pad_enabled_rt
+                    if pad_enabled_rt:
+                        for t in tracker.tracks:
+                            t.reset_pad()
                     print(f"[PAD] {'ON' if pad_enabled_rt else 'OFF'}")
                 else:
-                    print("[PAD] Không thể bật — model PAD chưa được tải thành công.")
+                    print("[PAD] Không thể bật — model PAD chưa sẵn sàng.")
             elif key == ord("f"):
                 show_fps_rt = not show_fps_rt
 

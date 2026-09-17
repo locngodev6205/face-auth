@@ -333,7 +333,11 @@ def main():
 
     detector_model_name = args.detector_model if args.detector_model else "buffalo_s"
     detector = FaceDetector(model_name=detector_model_name, conf_thresh=args.threshold)
-    predictor = AntiSpoofPredictor(model_path=args.liveness_model, threshold=args.threshold)
+    predictor = AntiSpoofPredictor(
+        model_path=args.liveness_model,
+        threshold=args.threshold,
+        color_order=getattr(config, "PAD_COLOR_ORDER", None),
+    )
 
     if args.image is None:
         process_camera(args, detector, predictor)

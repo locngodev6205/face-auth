@@ -215,37 +215,37 @@ Chuyển đổi HWC -> CHW, gom Batch (N, 3, H, W) float32 -> Nạp vào ONNX Ru
 > - **Nhánh Spatial (MobileNetV3):** Bật Adaptive Gamma (`apply_gamma=True`) để giúp mạng nơ-ron nhận diện tốt texture da và viền thiết bị trong điều kiện thiếu sáng hoặc lóa sáng.  
 > - **Nhánh Frequency (DCT / Fourier sau này):** **TUYỆT ĐỐI KHÔNG ÁP DỤNG GAMMA CORRECTION**. Hàm lũy thừa phi tuyến $I^\gamma$ sẽ tạo sóng hài bậc cao giả tạo (harmonic artifacts) làm biến dạng hoàn toàn phổ năng lượng tự nhiên của vân Moiré màn hình và hạt mực in.
 
-#### Logic Quyết định Logit (`antispoof/predictor.py`):
-Thay vì lấy Softmax argmax đơn thuần, hệ thống tính hiệu số Logit (`logit_diff`):
-- Với mô hình 2 lớp: `logit_diff = real_logit - spoof_logit`
-- Với mô hình 3 lớp: `logit_diff = real_logit - max(physical_spoof_logit, digital_spoof_logit)`
-- Kết luận `is_real = True` khi `logit_diff >= logit_threshold` (trong đó `logit_threshold` được quy đổi từ `threshold` thông qua hàm Inverse-Sigmoid: $\ln(p / (1 - p))$).
+#### Quy ước Thứ tự Kênh Màu (Color-Order Contract):
+- **Frame OpenCV gốc:** Cung cấp ảnh định dạng BGR.
+- **Mô hình MiniFASNetV2SE (128×128):** Sử dụng thứ tự kênh `BGR` gốc của OpenCV, không chuyển đổi.
+- **Mô hình MobileNetV3 / MobileNetV4 (224×224):** Huấn luyện trên CelebA-Spoof yêu cầu thứ tự kênh `RGB`. Luồng tiền xử lý tự động chuyển BGR $\rightarrow$ RGB qua `cv2.cvtColor(img, cv2.COLOR_BGR2RGB)` sau khi đã tính Adaptive Gamma (trên BGR/HSV) và trước khi normalize.
+
+#### Logic Quyết định Logit Tổng quát (`antispoof/predictor.py`):
+Thay vì lấy Softmax argmax đơn thuần hoặc `max(spoof_logits)`, hệ thống sử dụng công thức LogSumExp chuẩn toán học:
+$$\text{pad\_score} = z_{\text{real}} - \text{logsumexp}(z_{\text{spoof}})$$
+Trong đó $\text{logit\_threshold} = \ln\left(\frac{p}{1 - p}\right)$, và kết luận `is_real = True` khi $\text{pad\_score} \ge \text{logit\_threshold}$.
+- **Với mô hình 2 lớp:** $\text{logsumexp}([z_{\text{spoof}}]) = z_{\text{spoof}} \rightarrow \text{pad\_score} = z_{\text{real}} - z_{\text{spoof}}$ (tương đương 100% logic binary cũ).
+- **Với mô hình 3 lớp:** $\text{pad\_score} = z_0 - \ln(e^{z_1} + e^{z_2})$, tương ứng chính xác về mặt giải tích với điều kiện xác suất Softmax $P_{\text{softmax}}(\text{REAL}) \ge p$.
+- Điểm `pad_score` được tính toán ổn định số học thông qua hàm `_stable_logsumexp` (tránh tràn số khi $z$ lớn).
+- Defensive error handling: nếu inference gặp lỗi (ví dụ session crash), trả về danh sách rỗng, không bao giờ fake kết quả `True`.
 
 ---
 
-### 3.4 Face Tracking & Temporal Smoothing (`tracking/tracker.py`)
+### 3.4 Face Tracking, Temporal Smoothing & PAD Gating (`tracking/tracker.py`)
 
 - **IOU Matching:** So khớp Bounding Box giữa frame hiện tại và frame liền trước. Nếu `IOU >= 0.3`, khuôn mặt được gán vào `Track` có sẵn; ngược lại khởi tạo `Track` mới.
-- **Xử lý nhấp nháy bằng Temporal Smoothing:**
-  - Mỗi lần chạy PAD, kết quả boolean (`True=Real`, `False=Spoof`) được ghi vào hàng đợi trượt `_pad_window = deque(maxlen=5)`.
-  - Thuộc tính `track.is_spoof` trả về `True` khi và chỉ khi:
-    $$\frac{\text{Số phiếu SPOOF}}{\text{Tổng số phiếu trong window}} \ge 0.6$$
-  - *Cơ chế chống False Positive ban đầu:* Khi track mới khởi tạo (window rỗng hoặc chưa đủ phiếu), mặc định coi là REAL để tránh hiện nhầm cảnh báo đỏ ngay frame đầu tiên.
+- **Cơ chế PAD Gating & Trạng thái PAD_PENDING:**
+  - Track mới khởi tạo hoặc vừa bật lại PAD có trạng thái `pad_status = "PAD_PENDING"` (`pad_ready = False`).
+  - Khi PAD bật (`pad_enabled=True`), track **bị chặn tuyệt đối khỏi Recognition và Attendance** cho đến khi tích lũy đủ `pad_min_votes` (mặc định 5 phiếu).
+  - Khi đủ `pad_min_votes`:
+    * Nếu tỷ lệ SPOOF $\ge 60\% \rightarrow$ kết luận `SPOOF`, visual đổi sang 🔴 SPOOF, reset `stable_recognitions = 0`, tiếp tục chặn nhận diện và điểm danh.
+    * Nếu tỷ lệ SPOOF $< 60\% \rightarrow$ kết luận `REAL` (`pad_ready = True, is_real = True`), mở cổng cho phép trích xuất đặc trưng ArcFace và tra cứu DB.
+  - Khi người dùng bật lại PAD bằng phím `p`, toàn bộ track đang theo dõi được gọi `track.reset_pad()`, đưa về trạng thái `PAD_PENDING` an toàn.
 - **Đồng bộ nhịp thời gian giữa PAD và Nhận diện:**
-  - `RECOGNIZE_INTERVAL_SECONDS = 1.0s` (hoặc `0.5s`)
+  - `RECOGNIZE_INTERVAL_SECONDS = 0.5s`
   - `PAD_SMOOTH_WINDOW = 5`
-  - $\rightarrow$ `PAD_INTERVAL_SECONDS = RECOGNIZE_INTERVAL / PAD_SMOOTH_WINDOW`
-  - *Ý nghĩa:* Trong khoảng thời gian chờ nhận diện lại, module PAD chạy đều đặn tích lũy phiếu. Khi bước Recognition kích hoạt, rolling window vừa kịp tích lũy đủ 5 phiếu $\rightarrow$ phán quyết Real/Spoof đạt trạng thái cực kỳ ổn định.
-- **Quản lý Trạng thái Điểm danh (Attendance Tracking States):**
-  - `track.user_id`: Định danh người dùng của lần nhận diện gần nhất (`None` nếu là UNKNOWN hoặc score < 0.35).
-  - `track.stable_recognitions`: Biến đếm chuỗi nhận diện ổn định liên tiếp cùng một `user_id`.
-  - `track.last_attendance_time`: Lưu trữ timestamp (thời gian) điểm danh gần nhất (hoặc bị chặn gần nhất do cooldown từ DB) để tự quản lý đếm ngược (local timer) qua phương thức `can_log_attendance(gap_minutes)`.
-  - **Quy tắc chuyển trạng thái & reset chuỗi phòng thủ (Defensive Reset Rules):**
-    * *Cùng user:* Tăng chuỗi `stable_recognitions += 1`, reset bộ đếm nháy `_unknown_streak = 0`.
-    * *Đổi user:* Gán `stable_recognitions = 1`, reset `_unknown_streak = 0` và tự động **reset `last_attendance_time = None`** để không chặn nhầm người mới.
-    * *Nhận diện UNKNOWN:* Gán `stable_recognitions = 0`, tăng `_unknown_streak`. Chỉ xoá `user_id` và `last_attendance_time` khi UNKNOWN kéo dài liên tục > 3 chu kỳ (~1.5s) để chống nháy frame tạm thời làm mất timer cooldown của người vừa điểm danh.
-    * *Mất dấu / Quay mặt / Mất focus:* Nếu track rơi vào `unmatched_tracks` ở bất kỳ frame nào, `stable_recognitions` lập tức bị **reset về `0`** (bắt buộc phải đứng diện kiến ổn định liên tục).
-    * *Dính PAD Spoof:* Nếu `is_spoof` kích hoạt, `stable_recognitions` lập tức bị **reset về `0`**.
+  - `PAD_INTERVAL_SECONDS = 0.1s` (hoặc 0.2s)
+  - *Ý nghĩa:* Trong khoảng thời gian chờ nhận diện lại, module PAD chạy đều đặn tích lũy phiếu. Khi bước Recognition kích hoạt, rolling window vừa kịp tích lũy đủ 5 phiếu $\rightarrow$ phán quyết Real/Spoof đạt trạng thái ổn định.
 
 ---
 
@@ -265,50 +265,64 @@ Thay vì lấy Softmax argmax đơn thuần, hệ thống tính hiệu số Logi
 
 ### 3.6 Cơ sở dữ liệu Vector & Đăng ký (`database/`, `enrollment/`)
 
-1. **Database Schema (`database/vector_db.py`):**
+1. **Database Schema Đúng Ba Bảng Tối Giản (`database/schema.sql`, `database/vector_db.py`):**
    - Hệ thống dùng PostgreSQL 16 tích hợp extension `pgvector`.
-   - Bảng `users`: `user_id` (PK, Text), `name` (Text), `created_at` (Timestamp).
-   - Bảng `face_embeddings`: `embedding_id` (PK, Text), `user_id` (FK), `embedding` (VECTOR(512)), `is_mean` (Boolean).
-   - Bảng `attendance_logs`: `log_id` (PK, Serial), `user_id` (FK cascade), `action` (CHECKIN/CHECKOUT), `timestamp` (Timestamp).
-   - **Composite Index tối ưu tra cứu:**
+   - **Bảng `employees`** (Danh tính nhân viên demo):
+     - `employee_id TEXT PRIMARY KEY`, `full_name TEXT NOT NULL`.
+     - `status TEXT NOT NULL DEFAULT 'ACTIVE' CHECK (status IN ('ACTIVE', 'INACTIVE'))`.
+     - `created_at TIMESTAMPTZ DEFAULT NOW()`, `updated_at TIMESTAMPTZ DEFAULT NOW()`.
+   - **Bảng `face_embeddings`** (Vector sinh trắc học):
+     - `embedding_id BIGSERIAL PRIMARY KEY`.
+     - `employee_id TEXT NOT NULL REFERENCES employees(employee_id) ON DELETE CASCADE`.
+     - `embedding VECTOR(512) NOT NULL`.
+     - `embedding_type TEXT NOT NULL CHECK (embedding_type IN ('SAMPLE', 'CENTROID'))`.
+     - `model_version TEXT NOT NULL`.
+     - `created_at TIMESTAMPTZ DEFAULT NOW()`.
+   - **Bảng `attendance_logs`** (Lịch sử điểm danh):
+     - `log_id BIGSERIAL PRIMARY KEY`.
+     - `employee_id TEXT NOT NULL REFERENCES employees(employee_id) ON DELETE RESTRICT` (Ngăn xoá nhầm nhân viên khi đã có lịch sử điểm danh).
+     - `action TEXT NOT NULL CHECK (action IN ('CHECKIN', 'CHECKOUT'))`.
+     - `face_similarity REAL NULL`, `liveness_score REAL NULL`.
+     - `timestamp TIMESTAMPTZ NOT NULL DEFAULT NOW()`.
+     - **Composite Index tra cứu cooldown**:
+       ```sql
+       CREATE INDEX idx_attendance_lookup
+       ON attendance_logs (employee_id, action, timestamp DESC);
+       ```
+
+2. **Chiến lược Tìm kiếm Realtime (Active Centroid):**
+   - Câu lệnh SQL 1:N chỉ so khớp trên các vector thỏa mãn toàn bộ điều kiện:
      ```sql
-     CREATE INDEX IF NOT EXISTS idx_attendance_lookup 
-     ON attendance_logs (user_id, action, timestamp DESC);
-     ```
-     Giúp truy vấn kiểm tra thời gian giãn cách (cooldown 15 phút) đạt tốc độ $O(\log N)$ (chỉ đọc trực tiếp 1 bản ghi mới nhất từ index B-Tree, không quét toàn bảng và không cần lệnh Sort trong RAM).
-2. **Chiến lược Mean Centroid (`is_mean=TRUE`):**
-   - Khi đăng ký 1 người (ví dụ nạp 3 ảnh), hệ thống tính vector trung bình đại diện và lưu với mã `embedding_id = "{user_id}_0000"`, đặt cờ `is_mean = TRUE`.
-   - Các vector thành phần lưu với mã `{user_id}_0001`, `{user_id}_0002`... phục vụ truy vết.
-   - Khi tìm kiếm nhận diện danh tính (`search(mean_only=True)`), câu lệnh SQL chỉ quét qua các hàng có `is_mean = TRUE`:
-     ```sql
-     SELECT u.user_id, u.name, 1 - (f.embedding <=> %s::vector) AS similarity
+     SELECT
+         e.employee_id,
+         e.full_name,
+         1 - (f.embedding <=> %s::vector) AS similarity
      FROM face_embeddings f
-     JOIN users u ON f.user_id = u.user_id
-     WHERE f.is_mean = TRUE
+     JOIN employees e ON f.employee_id = e.employee_id
+     WHERE f.embedding_type = 'CENTROID'
+       AND f.model_version = %s
+       AND e.status = 'ACTIVE'
      ORDER BY f.embedding <=> %s::vector
-     LIMIT 5;
+     LIMIT %s;
      ```
-   - *Lợi ích:* Đã được chứng minh qua LFW Benchmark — tiết kiệm 3-5 lần dung lượng index RAM, tốc độ truy vấn 1:N nhanh gấp nhiều lần, hạn chế triệt để hiện tượng 1 người chiếm nhiều vị trí trong top kết quả.
-3. **Lọc Outlier khi Enrollment (`enrollment/enroll.py`):**
-   - Thu thập 3 ảnh chân dung/người.
-   - Tính mean sơ bộ $\rightarrow$ đo Cosine Similarity của từng ảnh với mean sơ bộ.
-   - Loại bỏ các ảnh có điểm $< 0.35$ (ảnh nhắm mắt, quay lưng, mờ nhoè hoặc detect nhầm) trước khi tính toán vector đại diện cuối cùng.
+   - *Lợi ích:* Đảm bảo tốc độ tra cứu trực tiếp, chỉ so khớp trên nhân viên `ACTIVE` và đúng phiên bản model đang chạy.
+
+3. **Quy trình Re-enroll Gọn Gàng:**
+   - Khi re-enroll, trong một database transaction duy nhất:
+     1. Upsert thông tin nhân viên vào `employees`.
+     2. Xoá toàn bộ embeddings cũ của nhân viên với cùng `model_version`: `DELETE FROM face_embeddings WHERE employee_id = %s AND model_version = %s;`
+     3. Insert các `SAMPLE` embeddings mới.
+     4. Insert 1 `CENTROID` mới.
+   - Giữ nguyên 100% thuật toán loại outlier ($0.35$) và công thức L2-normalized mean centroid trong `enrollment/enroll.py`.
+
 4. **Quyết định Danh tính (`decide_identity`):**
-   - Điểm số so sánh với `MATCH_THRESHOLD = 0.35`.
-   - Nếu $\text{similarity} \ge 0.35 \rightarrow$ Trả về `(best_id, best_name, float(best_similarity))`.
+   - So sánh điểm số với `MATCH_THRESHOLD = 0.35`.
+   - Nếu $\text{similarity} \ge 0.35 \rightarrow$ Trả về `(employee_id, full_name, float(best_similarity))`.
    - Nếu $\text{similarity} < 0.35 \rightarrow$ Trả về `(None, "UNKNOWN", float(best_similarity))`.
-5. **Ghi nhận Điểm danh (`log_attendance`):**
-   - Truy vấn kiểm tra an toàn chống SQL Injection:
-     ```sql
-     SELECT timestamp FROM attendance_logs 
-     WHERE user_id = %s AND action = %s AND timestamp > NOW() - make_interval(mins => %s)
-     ORDER BY timestamp DESC LIMIT 1;
-     ```
-   - Trả về tuple chuẩn `(success: bool, reason: str, timestamp: Optional[datetime])` và bọc phòng vệ `try...except`:
-     * Cột `timestamp` lưu kiểu `TIMESTAMPTZ DEFAULT NOW()` và được đảm bảo gắn `timezone.utc` khi trả về Python.
-     * Khi thành công: trả về `(True, "Thành công", timestamp_moi_ghi)`.
-     * Khi bị từ chối do cooldown: trả về `(False, "Đã {action} gần đây...", timestamp_gan_nhat)` giúp client/local app dễ dàng chạy timer đếm ngược chính xác qua `.timestamp()` và hiển thị giờ địa phương chính xác qua `.astimezone()` ngay cả khi vừa khởi động lại app.
-     * Khi lỗi hoặc thiếu tham số: trả về `(False, "Lý do lỗi", None)`.
+
+5. **Ghi nhận Điểm danh Cooldown (`log_attendance`):**
+   - Kiểm tra cooldown qua cột `timestamp` trong `attendance_logs` theo khoảng thời gian `gap_minutes`.
+   - Ghi nhận `face_similarity`, `liveness_score`, `timestamp` cho demo 1 tiến trình.
 
 ---
 
@@ -332,13 +346,13 @@ Chương trình điều phối toàn bộ pipeline với 5 trạng thái hiển 
 **Tính năng Điểm danh (Attendance Tracking):**
 - Ứng dụng hỗ trợ chạy ở 3 chế độ cấu hình qua `.env` (`ATTENDANCE_MODE`) hoặc cờ CLI `--mode`: `checkin`, `checkout`, hoặc `none` (mặc định: `checkin`).
 - **Điều kiện kích hoạt & cơ chế bảo vệ chuỗi nhận diện:**
-  - Khuôn mặt phải được xác nhận là người thật (`not is_spoof`), không ở trạng thái pending, đã có `user_id` xác định (`track.user_id` khác `None`), và đã hết thời gian cooldown (`track.can_log_attendance(...)`).
+  - Khuôn mặt phải được xác nhận là người thật (`not is_spoof`), không ở trạng thái pending, đã có `employee_id` xác định (`track.employee_id` khác `None`), và đã hết thời gian cooldown (`track.can_log_attendance(...)`).
   - Đạt số lần nhận diện ổn định liên tiếp: `track.stable_recognitions >= ATTENDANCE_STABLE_COUNT` (mặc định 3 lần liên tiếp, tương đương ~1.5s với interval 0.5s).
-  - **Cơ chế chống gian lận & mất chuỗi:** Chuỗi ổn định sẽ lập tức bị reset về `0` nếu:
+  - **Cơ chế chống gian lận & mất chuỗi:** Chuỗi ổn định sẽ lập tiếp bị reset về `0` nếu:
     1. Bị phát hiện SPOOF ở bất kỳ frame nào.
     2. Track bị mất dấu (`unmatched_tracks`), ví dụ đối tượng quay mặt đi, khuất hình hoặc mất focus.
     3. Nhận diện trả về `UNKNOWN` hoặc trượt ngưỡng `MATCH_THRESHOLD`.
-  - **Reset trạng thái khi đổi người:** Khi track thay đổi `user_id`, `last_attendance_time` tự động được reset về `None` để tránh chặn nhầm người mới.
+  - **Reset trạng thái khi đổi người:** Khi track thay đổi `employee_id`, `last_attendance_time` tự động được reset về `None` để tránh chặn nhầm người mới.
   - **Đồng bộ thời gian đếm ngược (Local Cooldown Timer):** Bất kể điểm danh thành công hay bị chặn (vì check-in liên tục), DB luôn trả về `last_ts` (timestamp của lần ghi nhận gần nhất). App sẽ lưu `last_ts.timestamp()` vào tracker để bộ đếm ngược client hoạt động chính xác ngay cả khi vừa khởi động lại app.
 - **Phản hồi trực quan thời gian thực (HUD Feedback):**
   - Hiển thị góc trên trái: `MODE: CHECKIN` / `CHECKOUT` / `NONE`.
@@ -387,7 +401,7 @@ Quy trình nghiên cứu và huấn luyện mô hình Spatial Baseline (MobileNe
 
 ## 5. Hướng dẫn Thao tác Thực tế & Lệnh Vận hành
 
-### 5.1 Khởi tạo Môi trường
+### 5.1 Khởi tạo Môi trường & Cơ sở Dữ liệu
 ```bash
 # 1. Khởi động PostgreSQL + pgvector qua Docker
 docker-compose up -d
@@ -395,8 +409,11 @@ docker-compose up -d
 # 2. Cài đặt thư viện phụ thuộc
 pip install -r requirements.txt
 
-# 3. Đăng ký người dùng thật (Chuẩn bị 3 ảnh/người trong gallery/<Ten_Nguoi>/)
-python scripts/run_enroll.py
+# 3. Khởi tạo / Reset Database sạch (3 bảng)
+python scripts/reset_database.py --reset
+
+# 4. Đăng ký nhân viên (Chuẩn bị ảnh trong gallery/<employee_id>/)
+python scripts/run_enroll.py --gallery gallery
 ```
 
 ### 5.2 Khởi chạy Ứng dụng Realtime
@@ -426,6 +443,9 @@ python scripts/delete_attendance_logs.py --minutes 10 --yes  # Bỏ qua xác nh�
 
 ### 5.3 Chạy Kiểm thử & Đánh giá Độc lập
 ```bash
+# Chạy toàn bộ test suite
+python3 -m unittest discover -s tests -p "test_*.py" -v
+
 # Đo benchmark tốc độ và FPS của Detector
 python scripts/test_detection.py --detector yunnet
 
@@ -434,6 +454,7 @@ python scripts/demo_antispoof_yunnet.py
 
 # Dọn dẹp dữ liệu người dùng thử nghiệm
 python scripts/cleanup_demo.py --dry-run
+
 ```
 
 ---
@@ -456,6 +477,7 @@ python scripts/cleanup_demo.py --dry-run
 
 | Ngày | Người thực hiện | Nội dung cập nhật chính |
 |---|---|---|
-| **2026-09-15** | Agent & Dev | Khởi tạo tài liệu Master Context `current_codebase_state.md`, đồng bộ toàn diện kiến trúc V2, tích hợp Adaptive Gamma, đặc tả chi tiết 8 module cốt lõi và các issue trong nghiên cứu PAD. |
-| **2026-09-15** | Agent & Dev | Triển khai hoàn chỉnh khối Điểm danh (Attendance Tracking): tạo bảng `attendance_logs` kèm Composite Index `idx_attendance_lookup (user_id, action, timestamp DESC)`, chuyển toàn bộ truy vấn sang parameterized query với `make_interval`. Xử lý triệt để các edge cases trong tracker (reset streak khi mất focus hoặc dính spoof, reset cờ log khi đổi user). Bổ sung cấu hình linh hoạt trong `.env` (`ATTENDANCE_MODE`, `RECOGNIZE_INTERVAL_SECONDS`, ...), banner HUD trực quan trên camera, hoàn thiện 2 script vận hành `view_attendance.py` và `delete_attendance_logs.py`. |
-| **2026-09-15** | Agent & Dev | Refactor kiến trúc điểm danh: Chuyển đổi cờ `has_logged_attendance` thành `last_attendance_time` kết hợp `can_log_attendance(gap_minutes)`. Đồng bộ giá trị `last_ts` từ DB về tracker để quản lý Local Cooldown Timer chính xác, hỗ trợ đếm ngược ngay cả khi ứng dụng bị ngắt và khởi động lại, cho phép người dùng tự động được điểm danh lại sau khi quá hạn interval mà không cần reset session. |
+| **2026-09-15** | Agent & Dev | Khởi tạo tài liệu Master Context `current_codebase_state.md`, đồng bộ toàn diện kiến trúc prototype, tích hợp Adaptive Gamma, đặc tả chi tiết 8 module cốt lõi và các issue trong nghiên cứu PAD. |
+| **2026-09-15** | Agent & Dev | Triển khai hoàn chỉnh khối Điểm danh (Attendance Tracking): tạo bảng `attendance_logs` kèm Composite Index `idx_attendance_lookup (employee_id, action, timestamp DESC)`, chuyển toàn bộ truy vấn sang parameterized query với `make_interval`. Xử lý các edge cases trong tracker (reset streak khi mất focus hoặc dính spoof, reset cờ log khi đổi user). Bổ sung cấu hình linh hoạt trong `.env` (`ATTENDANCE_MODE`, `RECOGNIZE_INTERVAL_SECONDS`, ...), banner HUD trực quan trên camera, hoàn thiện script vận hành. |
+| **2026-09-15** | Agent & Dev | Refactor kiến trúc điểm danh: Chuyển đổi cờ `has_logged_attendance` thành `last_attendance_time` kết hợp `can_log_attendance(gap_minutes)`. Đồng bộ giá trị `last_ts` từ DB về tracker để quản lý Local Cooldown Timer chính xác, hỗ trợ đếm ngược ngay cả khi ứng dụng bị ngắt và khởi động lại, cho phép người dùng tự động được điểm danh lại sau khi quá hạn interval. |
+| **2026-09-17** | Agent & Dev | **Hoàn thiện refactor và chuẩn hóa face_auth:**<br>1. **PAD Predictor & Preprocess:** Chuẩn hóa công thức LogSumExp tổng quát $z_{\text{real}} - \text{logsumexp}(z_{\text{spoof}})$ cho cả mô hình 2 lớp và 3 lớp (tương đương chính xác $P_{\text{softmax}}(\text{REAL}) \ge p$). Ràng buộc chuẩn hóa kênh màu `convert_rgb` (BGR cho MiniFASNet, RGB cho MobileNet).<br>2. **Tracker PAD Gating:** Thiết lập trạng thái `PAD_PENDING`, chặn nhận diện và điểm danh trước khi tích lũy đủ `pad_min_votes=5`. Reset trạng thái PAD khi toggle phím `p`. Chuẩn hóa API sử dụng `employee_id`.<br>3. **Schema 3 bảng sạch & Re-enrollment transaction:** Đổi bảng sang `employees`, tìm kiếm theo active centroid và model_version, re-enroll xóa embedding cũ cùng model_version rồi insert trong 1 transaction an toàn.<br>4. **Scripts & Notebooks:** Đồng bộ toàn bộ scripts vận hành và notebook LFW (`lfw_demo_enroll.ipynb`, `lfw_identity_benchmark.ipynb`) với seed `42` bảo toàn. |

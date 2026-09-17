@@ -20,11 +20,26 @@ from .preprocess import preprocess_batch, crop
 DEFAULT_MODEL_PATH = Path(__file__).parent / "models" / "best_model_quantized.onnx"
 
 
+def _stable_logsumexp(a: np.ndarray) -> float:
+    """Tính log(sum(exp(a))) ổn định số học, tránh tràn số mũ."""
+    a = np.asarray(a, dtype=np.float64)
+    if a.size == 0:
+        return -float("inf")
+    if a.size == 1:
+        return float(a.item())
+    a_max = np.max(a)
+    if np.isneginf(a_max):
+        return -float("inf")
+    if np.isposinf(a_max):
+        return float("inf")
+    return float(a_max + np.log(np.sum(np.exp(a - a_max))))
+
+
 class AntiSpoofPredictor:
     """
     Lớp dự đoán chống giả mạo khuôn mặt (Anti-Spoofing Predictor).
 
-    Sử dụng kiến trúc MiniFASNet V2 SE tối ưu hóa bằng ONNX Runtime để đạt tốc độ mượt mà trên CPU.
+    Sử dụng kiến trúc MiniFASNet V2 SE (default) hoặc MobileNetV3/V4 tối ưu hóa bằng ONNX Runtime.
     """
 
     def __init__(
@@ -36,6 +51,7 @@ class AntiSpoofPredictor:
         mean: Optional[List[float]] = None,
         std: Optional[List[float]] = None,
         apply_gamma: bool = True,
+        color_order: Optional[str] = None,
     ):
         """
         Khởi tạo Predictor:
@@ -48,6 +64,8 @@ class AntiSpoofPredictor:
             mean (Optional[List[float]]): Giá trị mean chuẩn hóa kênh màu [R, G, B].
             std (Optional[List[float]]): Giá trị std chuẩn hóa kênh màu [R, G, B].
             apply_gamma (bool): Bật adaptive gamma correction trước khi normalize (mặc định: True).
+            color_order (Optional[str]): Thứ tự kênh màu mong muốn của model ("BGR" hoặc "RGB").
+                                         Nếu None, tự động nhận diện dựa trên tên model/kích thước.
         """
         self.model_path = Path(model_path) if model_path else DEFAULT_MODEL_PATH    # lấy đường dẫn model
 
@@ -63,7 +81,7 @@ class AntiSpoofPredictor:
 
         # Quy đổi ngưỡng xác xuất threshold sang ngưỡng logit difference (logit_threshold) bằng hàm Logit/Sigmoid ngược
         p = max(1e-6, min(1 - 1e-6, threshold)) # ép không chạm biên gây lỗi
-        self.logit_threshold = np.log(p / (1 - p))      
+        self.logit_threshold = float(np.log(p / (1.0 - p)))
 
         # Nạp mô hình ONNX qua hàm load_model
         self.session, self.input_name = load_model(str(self.model_path))
@@ -75,15 +93,25 @@ class AntiSpoofPredictor:
             input_shape = self.session.get_inputs()[0].shape
             # input_shape thường có dạng (batch_size, 3, height, width) hoặc [None, 3, H, W]
             if len(input_shape) == 4 and isinstance(input_shape[2], int) and input_shape[2] > 0:
-                self.model_img_size = input_shape[2]    # mặt định W = H -> lấy vuông
+                self.model_img_size = input_shape[2]    # mặc định W = H -> lấy vuông
         except Exception:
             pass
 
-        # Cấu hình mean/std chuẩn hóa: tự động thiết lập CelebA mean/std cho MobileNetV4 nếu không truyền vào
+        # Cấu hình mean/std chuẩn hóa và color order contract
+        model_name_lower = str(self.model_path).lower()
+        if color_order is not None:
+            self.color_order = color_order.upper()
+        elif "mnv" in model_name_lower or self.model_img_size == 224:
+            self.color_order = "RGB"
+        else:
+            self.color_order = "BGR"
+
+        self.convert_rgb = (self.color_order == "RGB")
+
         if mean is not None and std is not None:
             self.mean = mean
             self.std = std
-        elif "mnv4" in str(self.model_path).lower() or self.model_img_size == 224:
+        elif "mnv" in model_name_lower or self.model_img_size == 224:
             self.mean = [0.5931, 0.4690, 0.4229]
             self.std = [0.2471, 0.2214, 0.2157]
         else:
@@ -94,6 +122,14 @@ class AntiSpoofPredictor:
         """
         Chuyển đổi kết quả Logits thô từ đầu ra mô hình thành từ điển kết quả phân loại chi tiết.
 
+        Nguyên tắc tính toán:
+            pad_score = real_logit - logsumexp(all_spoof_logits)
+            logit_threshold = log(p / (1 - p))
+            is_real = pad_score >= logit_threshold
+
+            - Mô hình 2 lớp: logsumexp([spoof]) = spoof_logit => pad_score = real_logit - spoof_logit.
+            - Mô hình 3 lớp: logsumexp([spoof1, spoof2]) => tương đương chính xác với điều kiện Softmax P(REAL) >= p.
+
         Tham số:
             raw_logits (np.ndarray): Mảng 1D gồm 2 hoặc 3 phần tử (2-class hoặc 3-class model).
 
@@ -103,55 +139,69 @@ class AntiSpoofPredictor:
                 - status (str): "real" hoặc "spoof".
                 - detailed_status (str): Chi tiết lớp ("REAL", "SPOOF (Print)", "SPOOF (Screen)").
                 - class_probs (Dict[str, float]): Xác xuất (softmax) của từng lớp.
-                - logit_diff (float): Khoảng chênh lệch (real_logit - spoof_logit).
+                - pad_score (float): Điểm hiệu số logit real - logsumexp(spoof).
+                - logit_diff (float): Alias tương thích ngược cho pad_score.
                 - real_logit (float): Điểm logit của lớp mặt thật.
-                - spoof_logit (float): Điểm logit của lớp mặt giả.
-                - confidence (float): Độ tin cậy abs(logit_diff).
+                - spoof_logit (float): Điểm logsumexp (hoặc logit) của các lớp mặt giả.
+                - confidence (float): Độ tự tin abs(pad_score - logit_threshold).
         """
-        # Tính xác xuất Softmax cho tất cả các lớp
-        exp_logits = np.exp(raw_logits - np.max(raw_logits))
+        raw_arr = np.asarray(raw_logits, dtype=np.float64)
+
+        # Tính xác suất Softmax cho tất cả các lớp
+        exp_logits = np.exp(raw_arr - np.max(raw_arr))
         probs = exp_logits / np.sum(exp_logits)
 
-        if len(raw_logits) == 2:
-            real_logit = float(raw_logits[0])
-            spoof_logit = float(raw_logits[1])
+        real_logit = float(raw_arr[0])
+        spoof_logits = raw_arr[1:]
+        spoof_logsumexp = _stable_logsumexp(spoof_logits)
+
+        # pad_score tổng quát: real_logit - logsumexp(spoof_logits)
+        pad_score = float(real_logit - spoof_logsumexp)
+        is_real = bool(pad_score >= self.logit_threshold)
+
+        if len(raw_arr) == 2:
+            spoof_logit = float(raw_arr[1])
             class_probs = {
                 "real": float(probs[0]),
                 "spoof": float(probs[1]),
             }
-            detailed_status = "REAL" if real_logit >= spoof_logit else "SPOOF"
+            detailed_status = "REAL" if is_real else "SPOOF"
         else:
-            # Mô hình 3 lớp (MobileNetV4 CelebA-Spoof): Lớp 0: Real, Lớp 1: Physical Spoof (Print), Lớp 2: Digital Spoof (Screen)
-            real_logit = float(raw_logits[0])
-            spoof_logit = float(np.max(raw_logits[1:]))
-
+            # Mô hình 3 lớp (MobileNetV3/V4 CelebA-Spoof): Lớp 0: Real, Lớp 1: Physical Spoof (Print), Lớp 2: Digital Spoof (Screen)
+            spoof_logit = float(spoof_logsumexp)
             class_probs = {
                 "real": float(probs[0]),
                 "physical_spoof": float(probs[1]),
-                "screen_spoof": float(probs[2]),
+                "screen_spoof": float(probs[2]) if len(probs) > 2 else 0.0,
             }
 
-            top_class = int(np.argmax(raw_logits))
-            if top_class == 0:
+            top_class = int(np.argmax(raw_arr))
+            if is_real:
                 detailed_status = "REAL"
             elif top_class == 1:
                 detailed_status = "SPOOF (Print)"
-            else:
+            elif top_class == 2:
                 detailed_status = "SPOOF (Screen)"
+            else:
+                # Nếu top_class là 0 nhưng không vượt ngưỡng pad_score >= threshold
+                spoof_sub = int(np.argmax(raw_arr[1:])) + 1
+                detailed_status = "SPOOF (Print)" if spoof_sub == 1 else "SPOOF (Screen)"
 
-        logit_diff = real_logit - spoof_logit
-        is_real = logit_diff >= self.logit_threshold
-        confidence = abs(logit_diff)
+        if np.isnan(pad_score):
+            confidence = 0.0
+        else:
+            confidence = float(abs(pad_score - self.logit_threshold))
 
         return {
-            "is_real": bool(is_real),
+            "is_real": is_real,
             "status": "real" if is_real else "spoof",
             "detailed_status": detailed_status,
             "class_probs": class_probs,
-            "logit_diff": float(logit_diff),
-            "real_logit": float(real_logit),
+            "pad_score": pad_score,
+            "logit_diff": pad_score,  # Alias tương thích ngược
+            "real_logit": real_logit,
             "spoof_logit": float(spoof_logit),
-            "confidence": float(confidence),
+            "confidence": confidence,
         }
 
     def predict_crops(self, face_crops: List[np.ndarray]) -> List[Dict]:
@@ -163,6 +213,7 @@ class AntiSpoofPredictor:
 
         Trả về:
             List[Dict]: Danh sách các từ điển kết quả phân loại tương ứng với từng khuôn mặt.
+                        Rỗng nếu gặp lỗi hoặc danh sách đầu vào rỗng.
         """
         if not face_crops or self.session is None:
             return []
@@ -170,8 +221,12 @@ class AntiSpoofPredictor:
         try:
             # 1. Chạy tiền xử lý hình ảnh thành Tensor đầu vào (Batch, 3, H, W)
             batch_input = preprocess_batch(
-                face_crops, self.model_img_size, mean=self.mean, std=self.std,
+                face_crops,
+                self.model_img_size,
+                mean=self.mean,
+                std=self.std,
                 apply_gamma=self.apply_gamma,
+                convert_rgb=self.convert_rgb,
             )
 
             # 2. Suy luận bằng ONNX Runtime Session

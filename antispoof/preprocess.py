@@ -86,10 +86,12 @@ def preprocess(
     mean: Optional[List[float]] = None,
     std: Optional[List[float]] = None,
     apply_gamma: bool = True,
+    convert_rgb: bool = False,
 ) -> np.ndarray:
     """
     Tiền xử lý 1 ảnh khuôn mặt:
-        - (Tùy chọn) Adaptive gamma correction để robust với điều kiện ánh sáng khác nhau.
+        - (Tùy chọn) Adaptive gamma correction để robust với điều kiện ánh sáng khác nhau (chạy trên BGR/HSV).
+        - (Tùy chọn) Chuyển kênh màu BGR sang RGB nếu model yêu cầu (convert_rgb=True).
         - Resize theo đúng tỉ lệ (letterboxing).
         - Đệm viền BORDER_REFLECT_101 để đảm bảo ảnh vuông kích thước model_img_size x model_img_size.
         - Chuyển dải điểm ảnh từ [0, 255] sang [0.0, 1.0].
@@ -102,6 +104,7 @@ def preprocess(
         mean (Optional[List[float]]): Giá trị trung bình để chuẩn hóa kênh màu [R, G, B].
         std (Optional[List[float]]): Độ lệch chuẩn để chuẩn hóa kênh màu [R, G, B].
         apply_gamma (bool): Nếu True, áp adaptive gamma trước khi normalize (mặc định: True).
+        convert_rgb (bool): Nếu True, chuyển BGR sang RGB sau gamma và trước khi normalize (mặc định: False).
 
     Trả về:
         np.ndarray: Mảng 3D float32 kích thước (3, model_img_size, model_img_size).
@@ -109,6 +112,10 @@ def preprocess(
     # Adaptive gamma trên ảnh uint8 trước khi normalize — tránh double-scale
     if apply_gamma:
         img = adaptive_gamma(img)
+
+    # Chuyển đổi BGR -> RGB nếu model profile yêu cầu (ví dụ MobileNetV3/V4 CelebA-Spoof)
+    if convert_rgb:
+        img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 
     new_size = model_img_size
     old_size = img.shape[:2]
@@ -149,6 +156,7 @@ def preprocess_batch(
     mean: Optional[List[float]] = None,
     std: Optional[List[float]] = None,
     apply_gamma: bool = True,
+    convert_rgb: bool = False,
 ) -> np.ndarray:
     """
     Tiền xử lý đồng thời một danh sách nhiều ảnh crop khuôn mặt (Batching).
@@ -159,6 +167,7 @@ def preprocess_batch(
         mean (Optional[List[float]]): Giá trị mean chuẩn hóa.
         std (Optional[List[float]]): Giá trị std chuẩn hóa.
         apply_gamma (bool): Nếu True, áp adaptive gamma cho từng crop (mặc định: True).
+        convert_rgb (bool): Nếu True, chuyển BGR sang RGB cho từng crop (mặc định: False).
 
     Trả về:
         np.ndarray: Mảng 4D float32 kích thước (batch_size, 3, model_img_size, model_img_size).
@@ -171,7 +180,14 @@ def preprocess_batch(
         (len(face_crops), 3, model_img_size, model_img_size), dtype=np.float32
     )
     for i, face_crop in enumerate(face_crops):
-        batch[i] = preprocess(face_crop, model_img_size, mean=mean, std=std, apply_gamma=apply_gamma)
+        batch[i] = preprocess(
+            face_crop,
+            model_img_size,
+            mean=mean,
+            std=std,
+            apply_gamma=apply_gamma,
+            convert_rgb=convert_rgb,
+        )
 
     return batch
 

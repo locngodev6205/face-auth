@@ -331,7 +331,11 @@ def main():
         margin=args.margin,
         min_face_size=args.min_face_size,
     )
-    predictor = AntiSpoofPredictor(model_path=args.liveness_model, threshold=args.threshold)
+    predictor = AntiSpoofPredictor(
+        model_path=args.liveness_model,
+        threshold=args.threshold,
+        color_order=getattr(config, "PAD_COLOR_ORDER", None),
+    )
 
     if args.image is None:
         process_camera(args, detector, predictor)

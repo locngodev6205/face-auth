@@ -37,6 +37,7 @@ class Track:
         pad_smooth_window: int = 5,
         pad_spoof_min_ratio: float = 0.6,
         pad_min_votes: Optional[int] = None,
+        pad_stale_timeout: Optional[float] = None,
     ):
         self.track_id = track_id
         self.bbox = bbox
@@ -51,6 +52,7 @@ class Track:
         self._pad_window: deque = deque(maxlen=pad_smooth_window)
         self._pad_spoof_min_ratio = pad_spoof_min_ratio
         self.pad_min_votes = pad_min_votes if pad_min_votes is not None else pad_smooth_window
+        self._pad_stale_timeout: Optional[float] = pad_stale_timeout
         self.last_pad_time: Optional[float] = None  # None = chưa chạy PAD lần nào
         self.last_pad_score: Optional[float] = None
 
@@ -61,7 +63,17 @@ class Track:
         self._unknown_streak = 0
 
     def update_pad(self, is_real: bool, pad_score: Optional[float] = None) -> None:
-        """Ghi nhận verdict PAD của frame hiện tại vào rolling window và cập nhật timestamp."""
+        """Ghi nhận verdict PAD của frame hiện tại vào rolling window và cập nhật timestamp.
+
+        Nếu verdict cuối cùng đã quá cũ (>_pad_stale_timeout giây), reset window trước khi thêm
+        vote mới để tránh để dữ liệu cũ làm sai lệch kết quả (ví dụ: đối tượng vừa quay lại sau khi mất khỏi frame).
+        """
+        if (
+            self._pad_stale_timeout is not None
+            and self.last_pad_time is not None
+            and (time.time() - self.last_pad_time) > self._pad_stale_timeout
+        ):
+            self._pad_window.clear()
         self._pad_window.append(bool(is_real))
         self.last_pad_time = time.time()
         if pad_score is not None:
@@ -81,8 +93,17 @@ class Track:
 
     @property
     def pad_ready(self) -> bool:
-        """True nếu track đã tích lũy đủ số vote tối thiểu pad_min_votes."""
-        return len(self._pad_window) >= self.pad_min_votes
+        """True nếu track đã tích lũy đủ số vote tối thiểu pad_min_votes và verdict chưa cũ (stale)."""
+        if len(self._pad_window) < self.pad_min_votes:
+            return False
+        # Nếu đã vượt quá thời gian stale timeout mà chưa có update mới, coi như PAD_PENDING
+        if (
+            self._pad_stale_timeout is not None
+            and self.last_pad_time is not None
+            and (time.time() - self.last_pad_time) > self._pad_stale_timeout
+        ):
+            return False
+        return True
 
     @property
     def is_spoof(self) -> bool:
@@ -176,6 +197,7 @@ class FaceTracker:
         pad_spoof_min_ratio: float = 0.6,
         pad_interval_seconds: float = 0.2,
         pad_min_votes: Optional[int] = None,
+        pad_stale_timeout: Optional[float] = None,
     ):
         self.recognize_interval_seconds = recognize_interval_seconds
         self.iou_threshold = iou_threshold
@@ -184,6 +206,7 @@ class FaceTracker:
         self.pad_spoof_min_ratio = pad_spoof_min_ratio
         self.pad_interval_seconds = pad_interval_seconds
         self.pad_min_votes = pad_min_votes if pad_min_votes is not None else pad_smooth_window
+        self.pad_stale_timeout = pad_stale_timeout
         self.tracks: List[Track] = []
         self._next_track_id = 1
 
@@ -249,6 +272,7 @@ class FaceTracker:
                 pad_smooth_window=self.pad_smooth_window,
                 pad_spoof_min_ratio=self.pad_spoof_min_ratio,
                 pad_min_votes=self.pad_min_votes,
+                pad_stale_timeout=self.pad_stale_timeout,
             )
             self._next_track_id += 1
             new_track.missing_frames = 0

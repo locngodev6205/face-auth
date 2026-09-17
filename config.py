@@ -7,9 +7,8 @@ load_dotenv()
 def _clean_env_val(val: str | None) -> str | None:
     if val is None:
         return None
-    # Strip unquoted trailing comment (e.g. "value  # comment")
-    if "#" in val:
-        val = val.split("#", 1)[0]
+    # python-dotenv đã xử lý comment và quoted value khi load_dotenv().
+    # ở đây chỉ cần strip khoảng trắng thừa ở đầu/cuối.
     return val.strip()
 
 
@@ -179,6 +178,13 @@ PAD_MIN_VOTES = _get_env_int("PAD_MIN_VOTES", PAD_SMOOTH_WINDOW)
 #   bị nhiễu ~30-40% phiếu → không đủ ngưỡng → giữ xanh.
 PAD_SPOOF_MIN_RATIO = _get_env_float("PAD_SPOOF_MIN_RATIO", 0.6)
 
+# PAD_STALE_TIMEOUT_SECONDS: nếu track không nhận PAD inference nào trong khoảng thời gian này,
+# rolling window sẽ bị coi là cũ và bị reset khi inference tiếp theo được gọi.
+# Kết quả: track quay về trạng thái PAD_PENDING (không thể điểm danh) cho đến khi đủ vote mới.
+# Mặc định 3.0s — đủ dài để che hết khoảng cách giữa các lần detect, đủ ngắn để phát hiện
+# khi người dùng rời khỏi frame rồi quay lại (gương/ảnh mới).
+PAD_STALE_TIMEOUT_SECONDS = _get_env_float("PAD_STALE_TIMEOUT_SECONDS", 3.0)
+
 # PAD_INTERVAL_SECONDS: khoảng cách giữa 2 lần chạy PAD inference cho cùng 1 track.
 #
 # KHÔNG ĐẶT THỦ CÔNG — được tự động tính từ:
@@ -233,6 +239,10 @@ def validate_config():
         )
     if PAD_INTERVAL_SECONDS <= 0:
         raise ValueError(f"Cấu hình PAD_INTERVAL_SECONDS={PAD_INTERVAL_SECONDS} không hợp lệ. Yêu cầu > 0.")
+    if PAD_STALE_TIMEOUT_SECONDS <= 0:
+        raise ValueError(
+            f"Cấu hình PAD_STALE_TIMEOUT_SECONDS={PAD_STALE_TIMEOUT_SECONDS} không hợp lệ. Yêu cầu > 0."
+        )
 
 
 validate_config()

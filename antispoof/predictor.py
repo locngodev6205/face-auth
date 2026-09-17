@@ -249,7 +249,8 @@ class AntiSpoofPredictor:
 
         Tham số:
             frame (np.ndarray): Khung hình ảnh gốc (H, W, C).
-            bbox (Tuple[int, int, int, int]): Tọa độ (x, y, w, h).
+            bbox (Tuple[int, int, int, int]): Tọa độ (x1, y1, x2, y2) — định dạng xyxy,
+                đồng nhất với output của YunNet và SCRFD.
 
         Trả về:
             Dict: Từ điển kết quả phân loại khuôn mặt.

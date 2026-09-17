@@ -143,7 +143,9 @@ Các biến cấu hình được nạp từ file `.env` qua `python-dotenv`:
 | `PAD_GAMMA_ENABLED` | `True` | Bật Adaptive Gamma Correction cân bằng sáng cho face crop của PAD. |
 | `PAD_GAMMA_TARGET` | `110.0` | Mức Luma mục tiêu (~43% dải sáng) cho phép biến đổi gamma. |
 | `PAD_SMOOTH_WINDOW` | `5` | Kích thước rolling window (số lượt suy luận PAD dùng để biểu quyết). |
+| `PAD_MIN_VOTES` | `5` | Số phiếu tối thiểu cần tích lũy trước khi track thoát khỏi trạng thái PAD_PENDING. |
 | `PAD_SPOOF_MIN_RATIO` | `0.6` | Tỷ lệ phiếu SPOOF tối thiểu ($\ge 60\%$) trong window để kết luận là SPOOF. |
+| `PAD_STALE_TIMEOUT_SECONDS` | `3.0` s | Ngưỡng quá hạn phán quyết PAD. Quá thời gian này, track quay về PAD_PENDING và reset window khi có inference mới. |
 | `RECOGNIZE_INTERVAL_SECONDS` | `1.0` s / `0.5` s | Chu kỳ thời gian giữa 2 lần re-verify danh tính của cùng một khuôn mặt. |
 | `PAD_INTERVAL_SECONDS` | `0.2` s | Khoảng cách giữa 2 lần chạy PAD (`= RECOGNIZE_INTERVAL / PAD_SMOOTH_WINDOW`). |
 | `TRACK_IOU_THRESHOLD` | `0.3` | Ngưỡng IOU tối thiểu để match bounding box qua các frame. |
@@ -153,6 +155,9 @@ Các biến cấu hình được nạp từ file `.env` qua `python-dotenv`:
 | `ATTENDANCE_MODE` | `"checkin"` | Chế độ điểm danh mặc định của `app.py`: `"checkin"`, `"checkout"`, hoặc `"none"`. |
 | `ATTENDANCE_GAP_MINUTES` | `15` phút | Khoảng cách thời gian tối thiểu giữa 2 lần cùng hành vi điểm danh của 1 người. |
 | `ATTENDANCE_STABLE_COUNT` | `3` | Số lần nhận diện khớp ổn định liên tiếp cần thiết trước khi ghi log DB. |
+
+> [!NOTE]
+> **Quy ước Parse file `.env` (`config.py`):** Hàm `_clean_env_val()` sử dụng biểu thức chính quy `re.sub(r'\s+#.*$', '', val)` để chỉ loại bỏ phần chú thích (trailing comment) khi dấu `#` được tiền tố bằng khoảng trắng (`\s+#`). Cơ chế này đảm bảo giữ nguyên vẹn các chuỗi mật khẩu hoặc giá trị có chứa ký tự `#` (ví dụ `p@ss#word`).
 
 ---
 
@@ -210,6 +215,10 @@ Normalize: Scale về [0.0, 1.0] -> Khử Mean/Std theo tập CelebA (đối v�
 Chuyển đổi HWC -> CHW, gom Batch (N, 3, H, W) float32 -> Nạp vào ONNX Runtime
 ```
 
+- **Chuẩn hóa Bounding Box Định dạng `xyxy` (`antispoof/preprocess.py`):**
+  - Hàm `crop()` đã loại bỏ hoàn toàn logic heuristic phỏng đoán định dạng (`if w > x and h > y...`) vốn dễ gây nhận diện sai lệch cho khuôn mặt nằm sát mép trái khung hình.
+  - Toàn bộ pipeline thống nhất 100% định dạng `bbox = (x1, y1, x2, y2)` xuất từ cả 2 detector (YunNet và SCRFD). Hàm `crop()` trích xuất trực tiếp `w = x2 - x1`, `h = y2 - y1`, tính tâm mặt tại `center = (x1 + w/2, y1 + h/2)` chuẩn xác.
+
 > [!CAUTION]
 > **RÀNG BUỘC KIẾN TRÚC BẮT BUỘC: ĐỘC LẬP GIỮA SPATIAL VÀ FREQUENCY (DCT)**  
 > - **Nhánh Spatial (MobileNetV3):** Bật Adaptive Gamma (`apply_gamma=True`) để giúp mạng nơ-ron nhận diện tốt texture da và viền thiết bị trong điều kiện thiếu sáng hoặc lóa sáng.  
@@ -241,6 +250,10 @@ Trong đó $\text{logit\_threshold} = \ln\left(\frac{p}{1 - p}\right)$, và kế
     * Nếu tỷ lệ SPOOF $\ge 60\% \rightarrow$ kết luận `SPOOF`, visual đổi sang 🔴 SPOOF, reset `stable_recognitions = 0`, tiếp tục chặn nhận diện và điểm danh.
     * Nếu tỷ lệ SPOOF $< 60\% \rightarrow$ kết luận `REAL` (`pad_ready = True, is_real = True`), mở cổng cho phép trích xuất đặc trưng ArcFace và tra cứu DB.
   - Khi người dùng bật lại PAD bằng phím `p`, toàn bộ track đang theo dõi được gọi `track.reset_pad()`, đưa về trạng thái `PAD_PENDING` an toàn.
+- **Cơ chế Kiểm soát Độ tươi Phán quyết PAD (Freshness & Stale Timeout):**
+  - Track ghi nhận mốc thời gian `last_pad_time` mỗi lần chạy PAD.
+  - Thuộc tính `track.pad_ready` tự động trả về `False` nếu `(time.time() - last_pad_time) > PAD_STALE_TIMEOUT_SECONDS` (mặc định 3.0s), chuyển trạng thái hiển thị về `PAD_PENDING` và phong tỏa nhận diện + điểm danh.
+  - Khi đối tượng quay lại hoặc frame mới gọi `update_pad()`, nếu phát hiện dữ liệu cũ đã quá hạn stale timeout, rolling window `_pad_window` sẽ tự động được xóa sạch (`clear()`) trước khi nạp vote mới, loại bỏ hoàn toàn nguy cơ lọt ảnh giả mạo từ dữ liệu cũ còn sót lại.
 - **Đồng bộ nhịp thời gian giữa PAD và Nhận diện:**
   - `RECOGNIZE_INTERVAL_SECONDS = 0.5s`
   - `PAD_SMOOTH_WINDOW = 5`
@@ -353,7 +366,9 @@ Chương trình điều phối toàn bộ pipeline với 5 trạng thái hiển 
     2. Track bị mất dấu (`unmatched_tracks`), ví dụ đối tượng quay mặt đi, khuất hình hoặc mất focus.
     3. Nhận diện trả về `UNKNOWN` hoặc trượt ngưỡng `MATCH_THRESHOLD`.
   - **Reset trạng thái khi đổi người:** Khi track thay đổi `employee_id`, `last_attendance_time` tự động được reset về `None` để tránh chặn nhầm người mới.
-  - **Đồng bộ thời gian đếm ngược (Local Cooldown Timer):** Bất kể điểm danh thành công hay bị chặn (vì check-in liên tục), DB luôn trả về `last_ts` (timestamp của lần ghi nhận gần nhất). App sẽ lưu `last_ts.timestamp()` vào tracker để bộ đếm ngược client hoạt động chính xác ngay cả khi vừa khởi động lại app.
+  - **Đồng bộ thời gian đếm ngược & Bảo vệ Cooldown khi Thất bại:**
+    - `track.last_attendance_time` **chỉ được cập nhật khi DB ghi nhận thành công** (`attendance_success is True`). Nếu việc ghi log DB thất bại (ví dụ timeout kết nối, lỗi tạm thời), cooldown local không bị tiêu thụ, cho phép hệ thống tự động thử lại (retry) ở các chu kỳ frame tiếp theo mà không khóa nhầm user.
+    - Khi điểm danh thành công, DB trả về `last_ts` (timestamp chính xác trên server DB), app lưu `last_ts.timestamp()` vào tracker để bộ đếm ngược client hoạt động chính xác đồng bộ.
 - **Phản hồi trực quan thời gian thực (HUD Feedback):**
   - Hiển thị góc trên trái: `MODE: CHECKIN` / `CHECKOUT` / `NONE`.
   - Điểm danh thành công: Hiển thị banner xanh lá `"{Tên}: {MODE} SUCCESS"` trong 3 giây.
@@ -481,3 +496,4 @@ python scripts/cleanup_demo.py --dry-run
 | **2026-09-15** | Agent & Dev | Triển khai hoàn chỉnh khối Điểm danh (Attendance Tracking): tạo bảng `attendance_logs` kèm Composite Index `idx_attendance_lookup (employee_id, action, timestamp DESC)`, chuyển toàn bộ truy vấn sang parameterized query với `make_interval`. Xử lý các edge cases trong tracker (reset streak khi mất focus hoặc dính spoof, reset cờ log khi đổi user). Bổ sung cấu hình linh hoạt trong `.env` (`ATTENDANCE_MODE`, `RECOGNIZE_INTERVAL_SECONDS`, ...), banner HUD trực quan trên camera, hoàn thiện script vận hành. |
 | **2026-09-15** | Agent & Dev | Refactor kiến trúc điểm danh: Chuyển đổi cờ `has_logged_attendance` thành `last_attendance_time` kết hợp `can_log_attendance(gap_minutes)`. Đồng bộ giá trị `last_ts` từ DB về tracker để quản lý Local Cooldown Timer chính xác, hỗ trợ đếm ngược ngay cả khi ứng dụng bị ngắt và khởi động lại, cho phép người dùng tự động được điểm danh lại sau khi quá hạn interval. |
 | **2026-09-17** | Agent & Dev | **Hoàn thiện refactor và chuẩn hóa face_auth:**<br>1. **PAD Predictor & Preprocess:** Chuẩn hóa công thức LogSumExp tổng quát $z_{\text{real}} - \text{logsumexp}(z_{\text{spoof}})$ cho cả mô hình 2 lớp và 3 lớp (tương đương chính xác $P_{\text{softmax}}(\text{REAL}) \ge p$). Ràng buộc chuẩn hóa kênh màu `convert_rgb` (BGR cho MiniFASNet, RGB cho MobileNet).<br>2. **Tracker PAD Gating:** Thiết lập trạng thái `PAD_PENDING`, chặn nhận diện và điểm danh trước khi tích lũy đủ `pad_min_votes=5`. Reset trạng thái PAD khi toggle phím `p`. Chuẩn hóa API sử dụng `employee_id`.<br>3. **Schema 3 bảng sạch & Re-enrollment transaction:** Đổi bảng sang `employees`, tìm kiếm theo active centroid và model_version, re-enroll xóa embedding cũ cùng model_version rồi insert trong 1 transaction an toàn.<br>4. **Scripts & Notebooks:** Đồng bộ toàn bộ scripts vận hành và notebook LFW (`lfw_demo_enroll.ipynb`, `lfw_identity_benchmark.ipynb`) với seed `42` bảo toàn. |
+| **2026-09-17** | Agent & Dev | **Củng cố độ tin cậy và xử lý 4 rủi ro runtime / bảo mật cốt lõi:**<br>1. **PAD Stale Timeout:** Bổ sung cấu hình `PAD_STALE_TIMEOUT_SECONDS` (3.0s). `pad_ready` tự động trả về `False` khi phán quyết quá hạn. `update_pad()` chủ động reset window cũ trước khi nhận vote mới, ngăn chặn giả mạo khi đối tượng quay lại.<br>2. **Attendance Cooldown Guard:** Chỉ cập nhật `last_attendance_time` khi ghi nhận điểm danh DB thành công (`attendance_success is True`), tránh việc lỗi DB tạm thời làm tiêu hao nhầm cooldown khiến người dùng bị khóa điểm danh.<br>3. **BBox Format Standardization:** Xóa hoàn toàn heuristic phỏng đoán format trong `crop()`, thống nhất 100% định dạng `(x1, y1, x2, y2)` từ các detector.<br>4. **Bảo toàn Ký tự `#` trong .env:** Chuyển `_clean_env_val()` sang regex `\s+#.*$` để chỉ cắt bỏ trailing comment khi `#` đi liền sau khoảng trắng, bảo toàn nguyên vẹn mật khẩu hoặc giá trị có chứa `#`. |

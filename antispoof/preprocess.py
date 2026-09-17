@@ -200,30 +200,26 @@ def crop(img: np.ndarray, bbox: Tuple[int, int, int, int], bbox_expansion_factor
 
     Tham số:
         img (np.ndarray): Khung hình ảnh gốc (H, W, C).
-        bbox (Tuple[int, int, int, int]): Tọa độ (x, y, w, h) hoặc (x1, y1, x2, y2).
+        bbox (Tuple[int, int, int, int]): Tọa độ (x1, y1, x2, y2) — định dạng xyxy (SCRFD và YunNet đều xuất xyxy).
         bbox_expansion_factor (float): Tỷ lệ mở rộng khung bao (mặc định 1.5 = mở rộng thêm 50%).
 
     Trả về:
         np.ndarray: Ảnh khuôn mặt đã cắt vuông.
     """
     original_height, original_width = img.shape[:2]
-    x, y, w, h = bbox
 
-    # Hỗ trợ tự động chuyển đổi nếu đầu vào là format (x1, y1, x2, y2) thay vì (x, y, w, h)
-    if w > x and h > y and w > 0 and h > 0 and x < original_width and y < original_height:
-        if w <= original_width and h <= original_height:
-            w_dim = w - x
-            h_dim = h - y
-            if w_dim > 0 and h_dim > 0:
-                w, h = w_dim, h_dim
+    # Luôn interpet bbox là xyxy — cả hai detector đều xuất định dạng này
+    x1, y1, x2, y2 = bbox
+    w = x2 - x1
+    h = y2 - y1
 
     if w <= 0 or h <= 0:
         raise ValueError("Kích thước bounding box không hợp lệ!")
 
     # Chọn cạnh lớn nhất để tạo khung vuông
     max_dim = max(w, h)
-    center_x = x + w / 2
-    center_y = y + h / 2
+    center_x = x1 + w / 2
+    center_y = y1 + h / 2
 
     # Tính tâm và tọa độ đỉnh mới sau khi nhân tỷ lệ mở rộng bbox_expansion_factor
     x_start = int(center_x - max_dim * bbox_expansion_factor / 2)

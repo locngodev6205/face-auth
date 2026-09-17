@@ -180,10 +180,18 @@ def orchestrate_track_step(
         )
         attendance_success = success
         attendance_reason = reason
-        if last_ts:
+        # Ba trạng thái phân biệt:
+        #   success=True              → ghi log thành công, set local cooldown
+        #   success=False, last_ts≠None → DB báo đã có attendance trong cooldown,
+        #                               sync local cooldown theo timestamp DB để
+        #                               tránh retry spam mỗi chu kỳ frame
+        #   success=False, last_ts=None → lỗi DB thực sự, không tạo cooldown giả
+        if success:
+            track.last_attendance_time = (
+                last_ts.timestamp() if last_ts else time.time()
+            )
+        elif last_ts is not None:
             track.last_attendance_time = last_ts.timestamp()
-        else:
-            track.last_attendance_time = time.time()
 
     return {
         "should_recognize": should_recognize,
@@ -280,6 +288,7 @@ def main():
         pad_spoof_min_ratio=config.PAD_SPOOF_MIN_RATIO,
         pad_interval_seconds=config.PAD_INTERVAL_SECONDS,
         pad_min_votes=config.PAD_MIN_VOTES,
+        pad_stale_timeout=config.PAD_STALE_TIMEOUT_SECONDS,
     )
 
     # ── Khởi tạo PAD (nếu bật) ───────────────────────────────────────────────

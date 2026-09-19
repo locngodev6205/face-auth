@@ -259,3 +259,428 @@ Kiến trúc PAD đề xuất trong tài liệu [pad_spatial_frequency_architect
   url={https://doi.org/10.1016/j.image.2020.115990}
 }
 ```
+
+
+---
+
+# 6. Cập nhật Literature 2025–2026
+
+Phần dưới bổ sung các công trình mới hơn và gần hơn với kiến trúc Spatial–Frequency của project.
+
+## Paper 6 — Towards Generalized Face Anti-Spoofing from a Frequency Shortcut View
+
+- **Tác giả:** Junyi Cao, Chao Ma
+- **Xuất bản:** WACV 2025, pp. 1005–1015
+- **DOI:** `10.1109/WACV61041.2025.00107`
+- **Official:** https://openaccess.thecvf.com/content/WACV2025/html/Cao_Towards_Generalized_Face_Anti-Spoofing_from_a_Frequency_Shortcut_View_WACV_2025_paper.html
+
+### Ý nghĩa
+
+Paper không đơn giản giả định “càng nhiều high-frequency càng tốt”. Tác giả chỉ ra mạng có thể học **frequency shortcuts** và đề xuất:
+
+- frequency-aware autoencoder;
+- dynamic frequency masking;
+- style-inhibited modulation.
+
+### Bài học cho project
+
+> Frequency branch phải được **học và ablate cẩn thận**, không nên mặc định DCT chắc chắn cải thiện generalization.
+
+Paper này rất phù hợp để bảo vệ quan điểm thận trọng trong thesis/slide.
+
+---
+
+## Paper 7 — Fourier-Based Frequency Space Disentanglement and Augmentation for Generalizable Face Anti-Spoofing
+
+- **Tác giả:** Yang Yu, Zhekai Du, Heng Luo, Chengwei Xiao, Jiang Hu
+- **Journal:** IEEE Journal of Biomedical and Health Informatics, 29(8), 5413–5423, 2025
+- **DOI:** `10.1109/JBHI.2024.3417404`
+- **PubMed:** https://pubmed.ncbi.nlm.nih.gov/38913519/
+
+### Ý tưởng
+
+FSDA phân tích Fourier:
+
+- amplitude spectrum → low-level appearance / texture;
+- phase spectrum → content information;
+
+sau đó disentangle và augment frequency space để tăng domain generalization.
+
+### Liên hệ
+
+Hỗ trợ mạnh cho H2:
+
+> Tần số đặc biệt đáng nghiên cứu khi mục tiêu là unseen-domain performance, không chỉ in-domain accuracy.
+
+---
+
+## Paper 8 — Oculus: Hierarchical Face Spoof Detection via Frequency-Enhanced Vision Transformers with Group-Aware Classification and Post-Fusion Attention
+
+- **Tác giả:** Vincent Whannou de Dravo, Kiran Raja, Mohammed Bouzidi, Limamou Gueye, Jon Yngve Hardeberg
+- **Xuất bản:** ICCV Workshops 2025, Face Anti-Spoofing Workshop
+- **Official:** https://openaccess.thecvf.com/content/ICCV2025W/FAS2025/html/de_Dravo_Oculus_Hierarchical_Face_Spoof_Detection_via_Frequency-Enhanced_Vision_Transformers_with_ICCVW_2025_paper.html
+- **Code:** https://github.com/de20ce/oculus
+
+### Tại sao rất gần với roadmap fusion của project?
+
+Oculus dùng:
+
+```text
+Spatial feature
+      +
+Frequency-domain feature
+      ↓
+Feature Concatenation
+      ↓
+Fusion Head
+      ↓
+Post-Fusion SE Attention
+```
+
+Đây là precedent rất gần cho roadmap:
+
+```text
+Project V1: Concat
+Project V2: Adaptive/Gated Fusion
+```
+
+Oculus không phải cùng architecture với project: họ dùng ViT/CDC/SE và multi-task hierarchical classification. Vì vậy nên cite như **fusion inspiration**, không phải baseline tương đương.
+
+### Kết quả cần ghi đúng context
+
+Paper báo:
+- validation ACER dưới 7% cho hierarchical ViT;
+- một số ResNet variants dưới 5% validation ACER;
+- official challenge leaderboard best model ACER **20.14%**.
+
+Không so trực tiếp con số này với CelebA-Spoof/OULU experiment của project nếu protocol khác.
+
+---
+
+## Paper 9 — AI-enabled smart surveillance system for secure monitoring and authentication
+
+- **Tác giả:** Farida A. Ali, Sabita Mali, Rina Mahakud, Gaurav Yadav
+- **Journal:** Scientific Reports 16, Article 21686, 2026
+- **Published:** 12 May 2026
+- **DOI:** `10.1038/s41598-026-52387-w`
+- **Open access:** https://www.nature.com/articles/s41598-026-52387-w
+
+## Đây là paper gần nhất về *kiến trúc tổng thể* với project
+
+Paper sử dụng:
+- dual branch;
+- spatial lightweight backbone (MiniFASNet);
+- Fourier frequency branch;
+- edge deployment trên Raspberry Pi 3B+.
+
+### Điểm rất gần
+
+| Ali et al. 2026 | Project |
+|---|---|
+| Spatial MiniFASNet | Spatial MobileNetV3-Large |
+| FFT/Fourier cue | DCT frequency map |
+| Lightweight frequency processing | Tiny Frequency CNN |
+| Edge goal | Edge goal |
+| Real / print / replay | PAD classes / real-spoof research |
+
+### Kết quả paper
+
+Trên private prototype dataset, paper báo:
+- **TAR 98.7%**
+- **APCER 1.2%**
+- **BPCER 1.6%**
+- Raspberry Pi 3B+ inference khoảng **250–300 ms/frame** trong mô tả deployment.
+
+### Giới hạn quan trọng
+
+Tác giả nêu rõ:
+- dữ liệu đánh giá nhỏ/private;
+- không dùng public cross-dataset benchmark cho kết quả chính;
+- không thực hiện quantitative spatial-only baseline comparison do hạn chế tài nguyên.
+
+Do đó:
+
+> Đây là **closest conceptual paper**, nhưng các con số không nên dùng làm direct benchmark cho project.
+
+Ngược lại, project có cơ hội làm experimental design chặt hơn:
+- public datasets;
+- E1 spatial-only;
+- E3 concat;
+- E4 gated;
+- cross-dataset;
+- efficiency comparison.
+
+---
+
+## Paper 10 — Similarity-aware contrastive learning for face anti-spoofing via frequency enhancement and reconstruction
+
+- **Tác giả:** Yakun Niu, Xuelin Lin
+- **Journal:** Neural Networks, vol. 199, 108734, 2026
+- **DOI:** `10.1016/j.neunet.2026.108734`
+- **Article:** https://www.sciencedirect.com/science/article/pii/S0893608026001966
+
+## Đây là paper 2026 mạnh về frequency modeling
+
+Ba thành phần:
+- **FAEM:** Frequency Adaptive Enhancement Module;
+- **HIR:** High-Frequency Information Reconstruction;
+- **SACL:** Similarity-Aware Contrastive Learning.
+
+### Liên hệ với gated fusion
+
+FAEM cho thấy một ý tưởng quan trọng:
+
+> Không phải mọi frequency band đều có giá trị như nhau cho mọi sample; việc tích hợp tần số có thể mang tính **adaptive**.
+
+Điều này hỗ trợ motivation cho V2 gated fusion, dù kiến trúc của họ không giống gate `Spatial ↔ Frequency` mà project dự kiến.
+
+---
+
+## Paper 11 — DEFuseNet: A domain-enhanced fusion network for generalizable face anti-spoofing
+
+- **Tác giả:** Ravi Pratap Singh, Ratnakar Dash, Ramesh Kumar Mohapatra
+- **Journal:** Neurocomputing, vol. 696, 134092, 2026
+- **DOI:** `10.1016/j.neucom.2026.134092`
+- **Article:** https://www.sciencedirect.com/science/article/pii/S0925231226014906
+
+### Tại sao relevant dù không dùng DCT?
+
+DEFuseNet kết hợp:
+- RGB cues;
+- LBP texture cues;
+- **modulated fusion**;
+- domain perturbation;
+- modality consistency.
+
+Điểm có giá trị cho V2:
+
+> Khi hai nguồn cue có độ tin cậy thay đổi theo input/domain, **adaptive/modulated fusion** có thể hợp lý hơn static concatenation.
+
+Đây là reference tốt để giải thích gated fusion về mặt **fusion strategy**.
+
+---
+
+## Paper 12 — Robust multimodal face anti-spoofing via frequency-domain feature refinement and aggregation
+
+- **Tác giả:** Rui Sun, Fei Wang, Xiaolu Yu, Xinjian Gao, Xudong Zhang
+- **Journal:** Pattern Recognition Letters 197, 31–36, 2025
+- **DOI:** `10.1016/j.patrec.2025.07.003`
+
+Paper dùng:
+- wavelet-based frequency refinement;
+- RGB-guided feature interaction;
+- progressive multi-stage fusion.
+
+Relevant cho luận điểm:
+
+> Frequency information có thể được dùng để **refine** spatial representations, và fusion có thể tiến hóa từ static late fusion sang interaction/adaptive fusion.
+
+---
+
+# 7. Paper nào nên đưa trực tiếp lên slide?
+
+## Nếu chỉ chọn 1 paper
+
+### **Ali et al., Scientific Reports 2026**
+
+Lý do:
+- mới;
+- dual-branch Spatial + Frequency;
+- lightweight;
+- edge deployment;
+- gần mục tiêu project nhất.
+
+Nhưng trên slide phải ghi:
+
+> **Closest conceptual work; results are not directly comparable because it uses a small private deployment dataset.**
+
+---
+
+## Nếu chọn 3 paper
+
+| Paper | Vai trò trên slide |
+|---|---|
+| **Ali et al., Sci Rep 2026** | Gần architecture + edge goal nhất |
+| **Niu & Lin, Neural Networks 2026** | Latest adaptive frequency modeling |
+| **Oculus, ICCVW 2025** | Gần roadmap Concat → Attention/Gated Fusion nhất |
+
+---
+
+# 8. Bộ tiêu chí đánh giá từ literature
+
+## In-domain PAD
+
+- APCER
+- BPCER
+- ACER
+- AUC
+- EER (nếu protocol/paper tương ứng dùng)
+
+## Cross-domain / Domain Generalization
+
+Các paper DG thường dùng:
+- HTER
+- AUC
+
+Đặc biệt nếu chạy benchmark **OCIM**:
+
+```text
+O = OULU-NPU
+C = CASIA-FASD
+I = Idiap Replay-Attack
+M = MSU-MFSD
+```
+
+dùng leave-one-domain-out:
+
+```text
+train 3 domains → test 1 unseen domain
+```
+
+Đây là protocol phù hợp nếu mục tiêu là so sánh trực tiếp với literature DG.
+
+## Edge efficiency
+
+- Parameters
+- FLOPs / MACs
+- Model size
+- Peak RAM/VRAM
+- Latency
+- FPS
+
+---
+
+# 9. Quy tắc so sánh kết quả với paper
+
+Không đặt hai con số ACER/HTER cạnh nhau rồi tuyên bố model tốt hơn nếu:
+
+- dataset khác;
+- protocol khác;
+- modalities khác;
+- threshold setup khác;
+- train/test policy khác.
+
+Trên slide nên chia rõ:
+
+### Direct comparison
+Cùng benchmark + protocol.
+
+### Contextual reference
+Paper khác protocol, chỉ dùng để tham khảo.
+
+---
+
+# 10. Roadmap literature-supported cho project
+
+```text
+E1 — Spatial MobileNetV3
+        ↓
+E3 — Spatial + DCT + Tiny CNN + CONCAT
+        ↓
+Does frequency help?
+        ↓ yes
+Cross-domain + efficiency evaluation
+        ↓
+E4 — GATED / ADAPTIVE FUSION
+        ↓
+Does adaptive fusion improve over concat?
+```
+
+### Giả thuyết mới H4
+
+> **H4:** Khi độ tin cậy của spatial và frequency cues thay đổi theo input/domain, learned gated fusion có thể phân bổ trọng số thích nghi và cải thiện robustness so với static concatenation.
+
+H4 phải được kiểm chứng; không được viết như kết luận.
+
+---
+
+# 11. IEEE references bổ sung
+
+```text
+[6] J. Cao and C. Ma, "Towards Generalized Face Anti-Spoofing from a Frequency Shortcut View," in Proc. IEEE/CVF Winter Conf. Applications of Computer Vision (WACV), 2025, pp. 1005–1015, doi: 10.1109/WACV61041.2025.00107.
+
+[7] Y. Yu, Z. Du, H. Luo, C. Xiao, and J. Hu, "Fourier-Based Frequency Space Disentanglement and Augmentation for Generalizable Face Anti-Spoofing," IEEE J. Biomed. Health Inform., vol. 29, no. 8, pp. 5413–5423, 2025, doi: 10.1109/JBHI.2024.3417404.
+
+[8] V. W. de Dravo, K. Raja, M. Bouzidi, L. Gueye, and J. Y. Hardeberg, "Oculus: Hierarchical Face Spoof Detection via Frequency-Enhanced Vision Transformers with Group-Aware Classification and Post-Fusion Attention," in Proc. IEEE/CVF Int. Conf. Computer Vision Workshops (ICCVW), 2025.
+
+[9] F. A. Ali, S. Mali, R. Mahakud, and G. Yadav, "AI-enabled smart surveillance system for secure monitoring and authentication," Sci. Rep., vol. 16, Art. no. 21686, 2026, doi: 10.1038/s41598-026-52387-w.
+
+[10] Y. Niu and X. Lin, "Similarity-aware contrastive learning for face anti-spoofing via frequency enhancement and reconstruction," Neural Networks, vol. 199, Art. no. 108734, 2026, doi: 10.1016/j.neunet.2026.108734.
+
+[11] R. P. Singh, R. Dash, and R. K. Mohapatra, "DEFuseNet: A domain-enhanced fusion network for generalizable face anti-spoofing," Neurocomputing, vol. 696, Art. no. 134092, 2026, doi: 10.1016/j.neucom.2026.134092.
+
+[12] R. Sun, F. Wang, X. Yu, X. Gao, and X. Zhang, "Robust multimodal face anti-spoofing via frequency-domain feature refinement and aggregation," Pattern Recognit. Lett., vol. 197, pp. 31–36, 2025, doi: 10.1016/j.patrec.2025.07.003.
+```
+
+---
+
+# 12. BibTeX bổ sung
+
+```bibtex
+@inproceedings{cao2025frequencyshortcut,
+  title={Towards Generalized Face Anti-Spoofing from a Frequency Shortcut View},
+  author={Cao, Junyi and Ma, Chao},
+  booktitle={Proceedings of the IEEE/CVF Winter Conference on Applications of Computer Vision},
+  pages={1005--1015},
+  year={2025},
+  doi={10.1109/WACV61041.2025.00107}
+}
+
+@article{yu2025fsda,
+  title={Fourier-Based Frequency Space Disentanglement and Augmentation for Generalizable Face Anti-Spoofing},
+  author={Yu, Yang and Du, Zhekai and Luo, Heng and Xiao, Chengwei and Hu, Jiang},
+  journal={IEEE Journal of Biomedical and Health Informatics},
+  volume={29},
+  number={8},
+  pages={5413--5423},
+  year={2025},
+  doi={10.1109/JBHI.2024.3417404}
+}
+
+@inproceedings{dedravo2025oculus,
+  title={Oculus: Hierarchical Face Spoof Detection via Frequency-Enhanced Vision Transformers with Group-Aware Classification and Post-Fusion Attention},
+  author={de Dravo, Vincent Whannou and Raja, Kiran and Bouzidi, Mohammed and Gueye, Limamou and Hardeberg, Jon Yngve},
+  booktitle={Proceedings of the IEEE/CVF International Conference on Computer Vision Workshops},
+  year={2025}
+}
+
+@article{ali2026smart,
+  title={AI-enabled smart surveillance system for secure monitoring and authentication},
+  author={Ali, Farida A. and Mali, Sabita and Mahakud, Rina and Yadav, Gaurav},
+  journal={Scientific Reports},
+  volume={16},
+  pages={21686},
+  year={2026},
+  doi={10.1038/s41598-026-52387-w}
+}
+
+@article{niu2026frequency,
+  title={Similarity-aware contrastive learning for face anti-spoofing via frequency enhancement and reconstruction},
+  author={Niu, Yakun and Lin, Xuelin},
+  journal={Neural Networks},
+  volume={199},
+  pages={108734},
+  year={2026},
+  doi={10.1016/j.neunet.2026.108734}
+}
+
+@article{singh2026defusenet,
+  title={DEFuseNet: A domain-enhanced fusion network for generalizable face anti-spoofing},
+  author={Singh, Ravi Pratap and Dash, Ratnakar and Mohapatra, Ramesh Kumar},
+  journal={Neurocomputing},
+  volume={696},
+  pages={134092},
+  year={2026},
+  doi={10.1016/j.neucom.2026.134092}
+}
+
+@article{sun2025frequency,
+  title={Robust multimodal face anti-spoofing via frequency-domain feature refinement and aggregation},
+  author={Sun, Rui and Wang, Fei and Yu, Xiaolu and Gao, Xinjian and Zhang, Xudong},
+  journal={Pattern Recognition Letters},
+  volume={197},
+  pages={31--36},
+  year={2025},
+  doi={10.1016/j.patrec.2025.07.003}
+}
+```

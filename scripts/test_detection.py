@@ -62,6 +62,7 @@ def init_detector(detector_type: str, conf_thresh: float, nms_thresh: float, min
             ctx_id=config.MODEL_CTX_ID,
             det_size=config.DETECTOR_DET_SIZE,
             conf_thresh=conf_thresh,
+            min_face_size=min_face_size,
         )
     else:
         raise ValueError(f"Không hỗ trợ detector: '{detector_type}'. Chỉ chấp nhận 'yunnet' hoặc 'scrfd'.")

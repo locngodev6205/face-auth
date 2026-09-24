@@ -1,5 +1,11 @@
 from insightface.app import FaceAnalysis
 
+try:
+    import config
+    _DEFAULT_MIN_FACE_SIZE = getattr(config, "DETECTOR_MIN_FACE_SIZE", 60)
+except Exception:
+    _DEFAULT_MIN_FACE_SIZE = 60
+
 
 # state 1
 class FaceDetector:
@@ -28,6 +34,7 @@ class FaceDetector:
         ctx_id: int = -1, # chạy trên cpu
         det_size=(640, 640),    # kích thước ảnh đầu vào chuẩn để resize
         conf_thresh: float = 0.5,   # ngưỡng tự tin
+        min_face_size: int = _DEFAULT_MIN_FACE_SIZE,
     ):
         app = FaceAnalysis(
             name=model_name,
@@ -37,18 +44,28 @@ class FaceDetector:
         app.prepare(ctx_id=ctx_id, det_size=det_size, det_thresh=conf_thresh)
 
         self._model = app.models.get("detection")
+        self.min_face_size = max(int(min_face_size), 0)
         if self._model is None:
             raise RuntimeError(
                 f"Không tìm thấy detection model (SCRFD) trong pack '{model_name}'."
             )
 
     def detect(self, frame):
-        # có thẻ detect nhiều khuôn mặt
+        # Có thể detect nhiều khuôn mặt; lọc mặt quá nhỏ trước khi tạo track.
         bboxes, kpss = self._model.detect(frame, max_num=0, metric="default")
+
+        if bboxes is None or len(bboxes) == 0:
+            return []
 
         detections = []
         for i in range(bboxes.shape[0]):
             x1, y1, x2, y2, score = bboxes[i]
+
+            if self.min_face_size > 0 and (
+                (x2 - x1) < self.min_face_size
+                or (y2 - y1) < self.min_face_size
+            ):
+                continue
 
             landmarks = None
             if kpss is not None:

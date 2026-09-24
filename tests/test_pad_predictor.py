@@ -97,6 +97,18 @@ class TestPadMathAndPredictor(unittest.TestCase):
             self.assertEqual(pred_mnv3.color_order, "RGB")
             self.assertTrue(pred_mnv3.convert_rgb)
 
+    def test_default_bbox_expansion_factor(self):
+        with patch("antispoof.predictor.load_model") as mock_load:
+            mock_session = MagicMock()
+            mock_input = MagicMock()
+            mock_input.shape = [1, 3, 224, 224]
+            mock_load.return_value = (mock_session, "input")
+
+            predictor = AntiSpoofPredictor(
+                model_path="antispoof/models/mnv3_e1_preliminary_v5_1_best.onnx",
+            )
+            self.assertEqual(predictor.bbox_expansion_factor, 1.55)
+
 
 if __name__ == "__main__":
     unittest.main()

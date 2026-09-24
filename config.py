@@ -1,3 +1,4 @@
+import math
 import os
 from dotenv import load_dotenv
 
@@ -71,14 +72,15 @@ EMBEDDING_MODEL_VERSION = _get_env_str("EMBEDDING_MODEL_VERSION", MODEL_PACK_NAM
 # ctx_id: -1 = CPU, >=0 = GPU device index (chỉ có ý nghĩa khi dùng CUDAExecutionProvider)
 MODEL_CTX_ID = _get_env_int("MODEL_CTX_ID", -1)
 
-# Detector Config — YunNet (cv2.FaceDetectorYN, ONNX ~122 KB)
+# Detector Config — YunNet / SCRFD
 # DETECTOR_MODEL_PATH: None = dùng đường dẫn mặc định trong detection/models/
 DETECTOR_MODEL_PATH = _get_env_str("DETECTOR_MODEL_PATH", None)
 DETECTOR_CONF_THRESH = _get_env_float("DETECTOR_CONF_THRESH", 0.5)
 DETECTOR_NMS_THRESH = _get_env_float("DETECTOR_NMS_THRESH", 0.3)
 DETECTOR_TOP_K = _get_env_int("DETECTOR_TOP_K", 5000)
 
-# Kích thước khuôn mặt tối thiểu (pixel chiều rộng & chiều cao).
+# Kích thước khuôn mặt tối thiểu (pixel chiều rộng & chiều cao), áp dụng cho
+# cả YunNet và SCRFD trước khi tạo detection/track.
 # - Tăng giá trị (ví dụ: 60 - 100) để tập trung nhận diện người đứng gần camera/kiosk,
 #   tự động bỏ qua người đi lại ở hậu cảnh xa.
 # - Giảm giá trị (ví dụ: 20 - 30) nếu muốn nhận diện người từ khoảng cách xa.
@@ -107,18 +109,42 @@ CAMERA_FPS    = _get_env_int("CAMERA_FPS", 30)
 #             App.py sẽ set CAMERA_WIDTH × CAMERA_HEIGHT qua cap.set() để giới hạn frame size.
 # - "scrfd" : InsightFace SCRFD (buffalo_s), xử lý ảnh bất kỳ kích thước via det_size nội bộ,
 #             không cần giới hạn frame size — camera sẽ dùng full resolution nếu muốn.
-APP_DETECTOR = (_get_env_str("APP_DETECTOR", "yunnet") or "yunnet").lower()
+APP_DETECTOR = (_get_env_str("APP_DETECTOR", "scrfd") or "scrfd").lower()
 
 # Anti-Spoofing / PAD (Presentation Attack Detection) Config
 # PAD_ENABLED: bật/tắt module kiểm tra liveness. Cũng có thể bật/tắt qua CLI --pad / --no-pad.
 # Set "true"/"1" để bật mặc định, "false"/"0" để tắt mặc định.
 PAD_ENABLED = _get_env_bool("PAD_ENABLED", True)
 
-# PAD_MODEL_FILENAME: chỉ cần đặt tên file model (không cần full path).
-# Các file model phải nằm trong thư mục antispoof/models/.
-# File có sẵn: best_model_quantized.onnx (128px - default), mnv4_best_224.onnx (224px), mnv3_large_3class_best.onnx (224px)
-PAD_MODEL_FILENAME  = _get_env_str("PAD_MODEL_FILENAME", "best_model_quantized.onnx")
-PAD_THRESHOLD       = _get_env_float("PAD_THRESHOLD", 0.5)
+# PAD_MODEL_FILENAME: checkpoint E1 là runtime contract hiện tại.
+PAD_MODEL_FILENAME  = _get_env_str(
+    "PAD_MODEL_FILENAME", "mnv3_e1_preliminary_v5_1_best.onnx"
+)
+# PAD_THRESHOLD luôn là xác suất P(REAL), không phải logit difference.
+# Với E1, operating point đã calibrate: p=0.3356796703127529,
+# tương đương d=-0.682607114315033.
+PAD_THRESHOLD       = _get_env_float("PAD_THRESHOLD", 0.3356796703127529)
+_default_pad_threshold_logit = (
+    math.log(PAD_THRESHOLD / (1.0 - PAD_THRESHOLD))
+    if 0.0 < PAD_THRESHOLD < 1.0
+    else 0.0
+)
+PAD_THRESHOLD_LOGIT = _get_env_float(
+    "PAD_THRESHOLD_LOGIT",
+    _default_pad_threshold_logit,
+)
+
+if not (0.0 < PAD_THRESHOLD < 1.0):
+    raise ValueError(
+        f"Cấu hình PAD_THRESHOLD={PAD_THRESHOLD} không hợp lệ. Yêu cầu 0 < threshold < 1."
+    )
+_expected_pad_threshold_logit = math.log(PAD_THRESHOLD / (1.0 - PAD_THRESHOLD))
+if abs(PAD_THRESHOLD_LOGIT - _expected_pad_threshold_logit) > 1e-6:
+    raise ValueError(
+        "PAD_THRESHOLD và PAD_THRESHOLD_LOGIT không nhất quán: "
+        f"expected {_expected_pad_threshold_logit:.12f}, "
+        f"received {PAD_THRESHOLD_LOGIT:.12f}."
+    )
 
 _raw_color_order = _get_env_str("PAD_COLOR_ORDER", None)
 if _raw_color_order is not None and _raw_color_order != "":
@@ -135,11 +161,14 @@ else:
 # Bật để robust hơn với điều kiện ánh sáng khác nhau (tối / sáng quá).
 # Gamma được tính động theo perceived luma (kênh V của HSV), target về ~110/255.
 # Set "true"/"1" để bật, "false"/"0" để tắt.
-PAD_GAMMA_ENABLED = _get_env_bool("PAD_GAMMA_ENABLED", True)
+PAD_GAMMA_ENABLED = _get_env_bool("PAD_GAMMA_ENABLED", False)
 
 # Target luma (kênh V, [0-255]) mà adaptive gamma hướng đến.
 # 110 ≈ 43% — đủ sáng để model học texture, không bị over-expose.
 PAD_GAMMA_TARGET  = _get_env_float("PAD_GAMMA_TARGET", 110.0)
+
+# Hệ số mở rộng bbox khi crop khuôn mặt đưa vào PAD.
+PAD_BBOX_EXPANSION_FACTOR = _get_env_float("PAD_BBOX_EXPANSION_FACTOR", 1.55)
 
 # Đường dẫn thư mục chứa tất cả model anti-spoofing
 _ANTISPOOF_MODELS_DIR = os.path.join(os.path.dirname(__file__), "antispoof", "models")
@@ -184,6 +213,7 @@ PAD_SPOOF_MIN_RATIO = _get_env_float("PAD_SPOOF_MIN_RATIO", 0.6)
 # Mặc định 3.0s — đủ dài để che hết khoảng cách giữa các lần detect, đủ ngắn để phát hiện
 # khi người dùng rời khỏi frame rồi quay lại (gương/ảnh mới).
 PAD_STALE_TIMEOUT_SECONDS = _get_env_float("PAD_STALE_TIMEOUT_SECONDS", 3.0)
+PAD_DIAGNOSTIC_LOG = _get_env_bool("PAD_DIAGNOSTIC_LOG", False)
 
 # PAD_INTERVAL_SECONDS: khoảng cách giữa 2 lần chạy PAD inference cho cùng 1 track.
 #
@@ -196,6 +226,12 @@ PAD_STALE_TIMEOUT_SECONDS = _get_env_float("PAD_STALE_TIMEOUT_SECONDS", 3.0)
 PAD_INTERVAL_SECONDS = _get_env_float(
     "PAD_INTERVAL_SECONDS",
     round(RECOGNIZE_INTERVAL_SECONDS / max(PAD_SMOOTH_WINDOW, 1), 4),
+)
+
+# Face detector cadence. 0 means detect every frame (debug/rollback mode).
+# Mặc định đồng bộ với PAD cadence để không chạy detector dày hơn cần thiết.
+DETECTION_INTERVAL_SECONDS = _get_env_float(
+    "DETECTION_INTERVAL_SECONDS", PAD_INTERVAL_SECONDS
 )
 
 # Ngưỡng IOU để coi 2 bbox ở 2 frame liên tiếp là cùng một track.
@@ -225,6 +261,16 @@ ATTENDANCE_STABLE_COUNT = _get_env_int("ATTENDANCE_STABLE_COUNT", 3)
 # Validation
 def validate_config():
     """Kiểm tra tính hợp lệ của các tham số cấu hình hệ thống."""
+    if PAD_BBOX_EXPANSION_FACTOR <= 0:
+        raise ValueError(
+            f"Cấu hình PAD_BBOX_EXPANSION_FACTOR={PAD_BBOX_EXPANSION_FACTOR} không hợp lệ. "
+            "Yêu cầu > 0."
+        )
+    if DETECTOR_MIN_FACE_SIZE < 0:
+        raise ValueError(
+            f"Cấu hình DETECTOR_MIN_FACE_SIZE={DETECTOR_MIN_FACE_SIZE} không hợp lệ. "
+            "Yêu cầu >= 0."
+        )
     if PAD_SMOOTH_WINDOW < 1:
         raise ValueError(f"Cấu hình PAD_SMOOTH_WINDOW={PAD_SMOOTH_WINDOW} không hợp lệ. Yêu cầu >= 1.")
     if not (1 <= PAD_MIN_VOTES <= PAD_SMOOTH_WINDOW):
@@ -242,6 +288,11 @@ def validate_config():
     if PAD_STALE_TIMEOUT_SECONDS <= 0:
         raise ValueError(
             f"Cấu hình PAD_STALE_TIMEOUT_SECONDS={PAD_STALE_TIMEOUT_SECONDS} không hợp lệ. Yêu cầu > 0."
+        )
+    if DETECTION_INTERVAL_SECONDS < 0:
+        raise ValueError(
+            f"Cấu hình DETECTION_INTERVAL_SECONDS={DETECTION_INTERVAL_SECONDS} không hợp lệ. "
+            "Yêu cầu >= 0 (0 = detect mỗi frame)."
         )
 
 

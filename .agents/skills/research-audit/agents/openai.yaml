@@ -1,0 +1,4 @@
+interface:
+  display_name: "Research Audit"
+  short_description: "Audit claims, evidence, configs, and code"
+  default_prompt: "Use $research-audit for this task and follow its workflow."

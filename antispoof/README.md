@@ -1,5 +1,10 @@
 # 🛡️ Anti-Spoofing Module — SmartFace AIoT
 
+> **Runtime note:** This document contains legacy MiniFASNet examples. The current
+> E1 runtime contract is `mnv3_e1_preliminary_v5_1_best.onnx` (224×224, 3-class,
+> RGB, gamma off, CelebA mean/std). Use `config.py`, `app.py` and
+> `realtime_pad_inference_audit.md` as the source of truth for the active pipeline.
+
 Module **Anti-Spoofing (Chống giả mạo khuôn mặt)** được tích hợp trong hệ thống SmartFace AIoT, giúp phân biệt khuôn mặt THẬT (Real) và khuôn mặt GIẢ MẠO (Spoof - ảnh in giấy, video/ảnh phát qua màn hình điện thoại, máy tính, mặt nạ...).
 
 ---
@@ -9,7 +14,7 @@ Module **Anti-Spoofing (Chống giả mạo khuôn mặt)** được tích hợp
 - **Siêu nhẹ & Tối ưu CPU:** Mô hình ONNX đã được nén lượng hóa INT8 (chỉ **600 KB**), chạy mượt mà real-time ngay cả trên thiết bị phần cứng giới hạn (CPU / Edge AIoT).
 - **Độ chính xác cao:** Đạt độ chính xác **98.20%** và chỉ số ROC-AUC **0.9984** trên tập kiểm thử CelebA-Spoof (70,000+ mẫu).
 - **Hỗ trợ Batch Processing:** Xử lý suy luận đồng thời nhiều khuôn mặt xuất hiện trong cùng một khung hình.
-- **Tiền xử lý thông minh:** Tự động cắt mở rộng khuôn mặt (1.5x) lấy ngữ cảnh đường viền và đệm viền `BORDER_REFLECT_101` tránh hiện tượng viền đen làm sai lệch AI.
+- **Tiền xử lý thông minh:** Tự động cắt mở rộng khuôn mặt (1.55x trong runtime hiện tại) lấy ngữ cảnh đường viền và đệm viền `BORDER_REFLECT_101` tránh hiện tượng viền đen làm sai lệch AI.
 
 ---
 
@@ -34,7 +39,7 @@ face_auth/antispoof/
 ├── requirements.txt               # Các thư viện phụ thuộc siêu nhẹ
 ├── __init__.py                    # Export các lớp và hàm API chính
 ├── predictor.py                   # Class AntiSpoofPredictor chính
-├── preprocess.py                  # Hàm crop 1.5x và tiền xử lý ảnh 128x128
+├── preprocess.py                  # Hàm crop 1.55x và tiền xử lý ảnh 128x128
 ├── loader.py                      # Hàm load ONNX Runtime Session (GPU/CPU)
 ├── system.py                      # Tiện ích đọc thông tin phần cứng (CPU/GPU)
 └── models/

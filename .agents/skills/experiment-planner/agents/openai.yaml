@@ -1,0 +1,4 @@
+interface:
+  display_name: "Experiment Planner"
+  short_description: "Design fair and reproducible experiments"
+  default_prompt: "Use $experiment-planner for this task and follow its workflow."

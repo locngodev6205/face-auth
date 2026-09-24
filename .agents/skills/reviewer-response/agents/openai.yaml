@@ -1,0 +1,4 @@
+interface:
+  display_name: "Reviewer Response"
+  short_description: "Turn reviewer comments into traceable revisions"
+  default_prompt: "Use $reviewer-response for this task and follow its workflow."

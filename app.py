@@ -13,6 +13,7 @@ CLI usage:
 """
 
 import argparse
+import math
 import sys
 import time
 import cv2
@@ -137,8 +138,10 @@ def orchestrate_track_step(
 
     should_recognize = track.needs_recognition(recognize_interval_seconds, pad_enabled=pad_enabled_rt)
     recognized = False
+    recognition_called = False
 
     if should_recognize and embedder is not None and frame is not None and detection is not None:
+        recognition_called = True
         bbox = detection["bbox"]
         landmarks = detection.get("landmarks")
         try:
@@ -198,6 +201,7 @@ def orchestrate_track_step(
         "is_spoof": is_spoof,
         "is_pad_pending": is_pad_pending,
         "recognized": recognized,
+        "recognition_called": recognition_called,
         "attendance_attempted": attendance_attempted,
         "attendance_success": attendance_success,
         "attendance_reason": attendance_reason,
@@ -227,7 +231,11 @@ def parse_args():
     )
     parser.add_argument(
         "--pad-threshold", type=float, default=config.PAD_THRESHOLD,
-        help=f"Ngưỡng Real/Spoof cho PAD (mặc định: {config.PAD_THRESHOLD})"
+        help=f"Ngưỡng xác suất P(REAL) cho PAD (mặc định: {config.PAD_THRESHOLD})"
+    )
+    parser.add_argument(
+        "--pad-threshold-logit", type=float, default=None,
+        help="Ghi đè trực tiếp ngưỡng d=real-logsumexp(spoof), tránh nhầm đơn vị"
     )
     # FPS overlay
     fps_group = parser.add_mutually_exclusive_group()
@@ -256,6 +264,9 @@ def parse_args():
 
 def main():
     args = parse_args()
+    effective_pad_threshold_logit = args.pad_threshold_logit
+    if effective_pad_threshold_logit is None and args.pad_threshold == config.PAD_THRESHOLD:
+        effective_pad_threshold_logit = config.PAD_THRESHOLD_LOGIT
 
     # ── LOAD ONCE ──────────────────────────────────────────────────────────────
     if _DETECTOR_BACKEND == "scrfd":
@@ -264,6 +275,7 @@ def main():
             ctx_id=config.MODEL_CTX_ID,
             det_size=config.DETECTOR_DET_SIZE,
             conf_thresh=config.DETECTOR_CONF_THRESH,
+            min_face_size=config.DETECTOR_MIN_FACE_SIZE,
         )
     else:  # yunnet
         detector = FaceDetector(
@@ -296,17 +308,23 @@ def main():
     if args.pad_enabled:
         try:
             from antispoof import AntiSpoofPredictor
-            _pad_model_path = str(
-                Path(__file__).parent / "antispoof" / "models" / args.pad_model
-            )
+            _pad_model_path = Path(args.pad_model).expanduser()
+            if not _pad_model_path.is_absolute():
+                _pad_model_path = Path(__file__).resolve().parent / "antispoof" / "models" / _pad_model_path
             pad_predictor = AntiSpoofPredictor(
-                model_path=_pad_model_path,
+                model_path=str(_pad_model_path.resolve()),
                 threshold=args.pad_threshold,
+                threshold_logit=effective_pad_threshold_logit,
+                bbox_expansion_factor=config.PAD_BBOX_EXPANSION_FACTOR,
                 apply_gamma=config.PAD_GAMMA_ENABLED,
                 color_order=config.PAD_COLOR_ORDER,
             )
-            print(f"  PAD              = ON  ({args.pad_model}, threshold={args.pad_threshold})")
+            print(f"  PAD              = ON  ({pad_predictor.model_path})")
+            print(f"  PAD_BBOX_EXPAND  = {pad_predictor.bbox_expansion_factor:.2f}x")
+            print(f"  PAD threshold    = p={pad_predictor.threshold_probability:.12f}, d={pad_predictor.logit_threshold:.12f} ({pad_predictor.threshold_input_type})")
             print(f"  PAD_GAMMA        = {'ON' if config.PAD_GAMMA_ENABLED else 'OFF'}  (target luma={config.PAD_GAMMA_TARGET:.0f})")
+            print(f"  PAD providers    = {list(pad_predictor.providers)}")
+            print(f"  PAD input/output = {pad_predictor.input_metadata.name} {pad_predictor.input_metadata.shape} -> {pad_predictor.output_metadata.name} {pad_predictor.output_metadata.shape}")
         except Exception as e:
             print(f"[ERROR] Không thể tải model PAD: {e}.", file=sys.stderr)
             print("[ERROR] PAD đang được yêu cầu (--pad hoặc PAD_ENABLED=true). Hệ thống dừng khởi động để đảm bảo an toàn.", file=sys.stderr)
@@ -330,6 +348,7 @@ def main():
     print(f"  MATCH_THRESHOLD  = {config.MATCH_THRESHOLD}")
     print(f"  RECOGNIZE_EVERY  = {config.RECOGNIZE_INTERVAL_SECONDS}s")
     print(f"  PAD_EVERY        = {config.PAD_INTERVAL_SECONDS}s")
+    print(f"  DETECT_EVERY     = {config.DETECTION_INTERVAL_SECONDS}s (0 = every frame)")
     print(f"  MIN_FACE_SIZE    = {config.DETECTOR_MIN_FACE_SIZE}px")
     print(f"  APP_MODE         = {args.mode.upper()}")
     print(f"  FPS overlay      = {'ON' if args.show_fps else 'OFF'}")
@@ -344,6 +363,35 @@ def main():
 
     fps_deque: deque = deque(maxlen=config.FPS_AVG_WINDOW)
     avg_fps = 0.0
+    frame_id = 0
+    last_detection_time = None
+    counters = {
+        "total_frames": 0,
+        "detector_calls": 0,
+        "tracker_updates": 0,
+        "pad_calls": 0,
+        "recognition_calls": 0,
+        "detector_ms": 0.0,
+        "tracker_ms": 0.0,
+        "pad_ms": 0.0,
+        "recognition_ms": 0.0,
+    }
+
+    def print_runtime_summary():
+        total = max(counters["total_frames"], 1)
+        print("Runtime summary:")
+        print(
+            f"  frames={counters['total_frames']} "
+            f"detector_calls={counters['detector_calls']} "
+            f"({counters['detector_calls'] / total:.1%} of frames) "
+            f"tracker_updates={counters['tracker_updates']} "
+            f"pad_calls={counters['pad_calls']} "
+            f"recognition_calls={counters['recognition_calls']}"
+        )
+        for name in ("detector", "tracker", "pad", "recognition"):
+            calls = counters[f"{name}_calls"] if name != "tracker" else counters["tracker_updates"]
+            mean_ms = counters[f"{name}_ms"] / max(calls, 1)
+            print(f"  {name}_mean_ms={mean_ms:.2f}")
 
     try:
         while True:
@@ -353,15 +401,36 @@ def main():
             if not ok:
                 print("Failed to read from camera.")
                 break
+            frame_id += 1
+            counters["total_frames"] += 1
 
-            # ── Detection ────────────────────────────────────────────────────
-            try:
-                detections = detector.detect(frame)
-            except Exception as e:
-                print(f"[Detector error] {e}")
-                detections = []
-
-            tracked = tracker.update(detections)
+            # ── Detection cadence + bbox propagation ─────────────────────────
+            now = time.monotonic()
+            detector_due = (
+                last_detection_time is None
+                or config.DETECTION_INTERVAL_SECONDS <= 0
+                or (now - last_detection_time) >= config.DETECTION_INTERVAL_SECONDS
+                or tracker.needs_redetection()
+            )
+            detection_called = False
+            if detector_due:
+                detector_t0 = time.perf_counter()
+                try:
+                    detections = detector.detect(frame)
+                except Exception as e:
+                    print(f"[Detector error] {e}")
+                    detections = []
+                counters["detector_ms"] += (time.perf_counter() - detector_t0) * 1000.0
+                counters["detector_calls"] += 1
+                last_detection_time = now
+                detection_called = True
+                tracker_t0 = time.perf_counter()
+                tracked = tracker.update(detections, frame=frame, detector_called=True)
+            else:
+                tracker_t0 = time.perf_counter()
+                tracked = tracker.update([], frame=frame, detector_called=False)
+            counters["tracker_ms"] += (time.perf_counter() - tracker_t0) * 1000.0
+            counters["tracker_updates"] += 1
 
             # ── PAD batch — chỉ chạy cho các track đến hạn PAD_INTERVAL_SECONDS ─────
             if pad_enabled_rt and pad_predictor is not None and tracked:
@@ -380,23 +449,44 @@ def main():
                     except Exception:
                         pass
                 if face_crops:
+                    pad_t0 = time.perf_counter()
                     try:
                         pad_batch = pad_predictor.predict_crops(face_crops)
+                        counters["pad_calls"] += len(pad_batch)
                         # Đẩy verdict vào rolling window của từng track
                         if pad_batch:
                             tid_to_track = {t.track_id: t for _, t in tracked}
                             for tid, res in zip(track_ids, pad_batch):
                                 if tid in tid_to_track and "is_real" in res:
-                                    tid_to_track[tid].update_pad(
+                                    pad_track = tid_to_track[tid]
+                                    pad_track.update_pad(
                                         is_real=res["is_real"],
                                         pad_score=res.get("pad_score", res.get("logit_diff", None)),
                                     )
+                                    if config.PAD_DIAGNOSTIC_LOG:
+                                        score = float(res.get("pad_score", res.get("logit_diff", 0.0)))
+                                        p_real = 1.0 / (1.0 + math.exp(-score))
+                                        print(
+                                            f"[PAD] frame_id={frame_id} timestamp={time.time():.6f} "
+                                            f"track_id={tid} detector_called={detection_called} "
+                                            f"bbox_source={detection.get('bbox_source', 'UNKNOWN')} "
+                                            f"bbox={pad_track.bbox} face_width={pad_track.bbox[2]-pad_track.bbox[0]} "
+                                            f"face_height={pad_track.bbox[3]-pad_track.bbox[1]} "
+                                            f"logits=({res.get('real_logit')},{res.get('spoof_logit')}) "
+                                            f"d={score:.6f} p_real={p_real:.6f} "
+                                            f"threshold_logit={res.get('threshold_logit', pad_predictor.logit_threshold):.6f} "
+                                            f"raw={'REAL' if res['is_real'] else 'SPOOF'} "
+                                            f"smoothed={pad_track.pad_status}"
+                                        )
                     except Exception as e:
                         print(f"[PAD error] {e}")
+                    finally:
+                        counters["pad_ms"] += (time.perf_counter() - pad_t0) * 1000.0
 
             # ── Recognition + Attendance + Display ───────────────────────────
             for detection, track in tracked:
                 bbox = detection["bbox"]
+                recognition_t0 = time.perf_counter()
 
                 orch_res = orchestrate_track_step(
                     track=track,
@@ -412,6 +502,9 @@ def main():
                     attendance_gap_minutes=config.ATTENDANCE_GAP_MINUTES,
                     attendance_stable_count=config.ATTENDANCE_STABLE_COUNT,
                 )
+                counters["recognition_ms"] += (time.perf_counter() - recognition_t0) * 1000.0
+                if orch_res["recognition_called"]:
+                    counters["recognition_calls"] += 1
 
                 # Trạng thái hiển thị
                 name, score = track.name, track.score
@@ -474,12 +567,14 @@ def main():
                 if pad_predictor is None:
                     try:
                         from antispoof import AntiSpoofPredictor
-                        _pad_model_path = str(
-                            Path(__file__).parent / "antispoof" / "models" / args.pad_model
-                        )
+                        _pad_model_path = Path(args.pad_model).expanduser()
+                        if not _pad_model_path.is_absolute():
+                            _pad_model_path = Path(__file__).resolve().parent / "antispoof" / "models" / _pad_model_path
                         pad_predictor = AntiSpoofPredictor(
-                            model_path=_pad_model_path,
+                            model_path=str(_pad_model_path.resolve()),
                             threshold=args.pad_threshold,
+                            threshold_logit=effective_pad_threshold_logit,
+                            bbox_expansion_factor=config.PAD_BBOX_EXPANSION_FACTOR,
                             apply_gamma=config.PAD_GAMMA_ENABLED,
                             color_order=config.PAD_COLOR_ORDER,
                         )
@@ -499,6 +594,7 @@ def main():
                 show_fps_rt = not show_fps_rt
 
     finally:
+        print_runtime_summary()
         cap.release()
         cv2.destroyAllWindows()
         db.close()

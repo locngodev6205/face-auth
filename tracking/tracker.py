@@ -2,6 +2,9 @@ import time
 from collections import deque
 from typing import List, Dict, Tuple, Optional
 
+import cv2
+import numpy as np
+
 
 def compute_iou(bbox1: Tuple[int, int, int, int], bbox2: Tuple[int, int, int, int]) -> float:
     """Tính IOU giữa 2 bounding box (x1, y1, x2, y2)."""
@@ -41,6 +44,11 @@ class Track:
     ):
         self.track_id = track_id
         self.bbox = bbox
+        self.landmarks = None
+        self.detector_score: Optional[float] = None
+        self.bbox_source = "DETECTOR"
+        self.tracker_status = "detected"
+        self.tracker_confidence: Optional[float] = 1.0
         self.name = "UNKNOWN"
         self.score = 0.0
         self.last_recognition_time: Optional[float] = None  # None = ép nhận diện ngay khi đủ điều kiện
@@ -184,8 +192,12 @@ class Track:
 
 class FaceTracker:
     """
-    Theo dõi khuôn mặt bằng IOU matching đơn giản giữa các frame.
-    Giúp tối ưu FPS: chỉ chạy lại nhận diện sau mỗi recognize_interval_seconds giây.
+    Theo dõi khuôn mặt bằng IOU association + optical-flow propagation.
+
+    ``update(..., detector_called=True)`` nhận detection mới và reassociate ID.
+    ``update(..., detector_called=False, frame=...)`` không chạy detector mà
+    propagate bbox từ frame trước bằng Lucas-Kanade optical flow. Vì vậy caller
+    không được giữ nguyên bbox cũ một cách mù quáng khi detector bị skip.
     """
 
     def __init__(
@@ -209,12 +221,199 @@ class FaceTracker:
         self.pad_stale_timeout = pad_stale_timeout
         self.tracks: List[Track] = []
         self._next_track_id = 1
+        self._previous_gray: Optional[np.ndarray] = None
 
-    def update(self, detections: List[Dict]) -> List[Tuple[Dict, Track]]:
+    @staticmethod
+    def _gray(frame) -> Optional[np.ndarray]:
+        if frame is None or not hasattr(frame, "size") or frame.size == 0:
+            return None
+        if len(frame.shape) == 2:
+            return frame
+        return cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+
+    @staticmethod
+    def _valid_bbox(bbox, frame_shape=None) -> bool:
+        if bbox is None or len(bbox) != 4:
+            return False
+        x1, y1, x2, y2 = [float(v) for v in bbox]
+        if not all(np.isfinite(v) for v in (x1, y1, x2, y2)):
+            return False
+        if x2 <= x1 or y2 <= y1:
+            return False
+        if frame_shape is not None:
+            h, w = frame_shape[:2]
+            if x2 <= 0 or y2 <= 0 or x1 >= w or y1 >= h:
+                return False
+        return True
+
+    @staticmethod
+    def _clamp_bbox(bbox, frame_shape):
+        h, w = frame_shape[:2]
+        x1, y1, x2, y2 = bbox
+        return (
+            max(0, min(int(round(x1)), w - 1)),
+            max(0, min(int(round(y1)), h - 1)),
+            max(1, min(int(round(x2)), w)),
+            max(1, min(int(round(y2)), h)),
+        )
+
+    def _tracker_detection(self, track: Track) -> Dict:
+        return {
+            "bbox": track.bbox,
+            "score": track.detector_score,
+            "landmarks": track.landmarks,
+            "bbox_source": "TRACKER",
+            "detector_called": False,
+            "tracker_status": track.tracker_status,
+            "tracker_confidence": track.tracker_confidence,
+        }
+
+    def _mark_all_lost(self) -> None:
+        for track in self.tracks:
+            track.tracker_status = "lost"
+            track.tracker_confidence = 0.0
+            track.missing_frames += 1
+
+    def _propagate(self, frame) -> List[Tuple[Dict, Track]]:
+        gray = self._gray(frame)
+        if gray is None or self._previous_gray is None:
+            self._mark_all_lost()
+            self._previous_gray = gray
+            return []
+
+        results: List[Tuple[Dict, Track]] = []
+        for track in self.tracks:
+            track.frames_since_recognition += 1
+            x1, y1, x2, y2 = track.bbox
+            points = np.array(
+                [[x1, y1], [x2, y1], [x2, y2], [x1, y2],
+                 [(x1 + x2) / 2.0, (y1 + y2) / 2.0]],
+                dtype=np.float32,
+            ).reshape(-1, 1, 2)
+
+            try:
+                next_points, status, _ = cv2.calcOpticalFlowPyrLK(
+                    self._previous_gray,
+                    gray,
+                    points,
+                    None,
+                    winSize=(21, 21),
+                    maxLevel=2,
+                    criteria=(cv2.TERM_CRITERIA_EPS | cv2.TERM_CRITERIA_COUNT, 20, 0.03),
+                )
+            except cv2.error:
+                next_points, status = None, None
+
+            if next_points is None or status is None:
+                track.tracker_status = "lost"
+                track.tracker_confidence = 0.0
+                track.missing_frames += 1
+                continue
+
+            valid = status.reshape(-1).astype(bool)
+            valid_count = int(valid.sum())
+            if valid_count < 3:
+                track.tracker_status = "lost"
+                track.tracker_confidence = valid_count / len(points)
+                track.missing_frames += 1
+                continue
+
+            old_points = points.reshape(-1, 2)
+            new_points = next_points.reshape(-1, 2)
+            displacement = new_points[valid] - old_points[valid]
+            dx, dy = np.median(displacement, axis=0)
+
+            if valid_count >= 4 and valid[:4].all():
+                # Dùng 4 góc để giữ translation + scale khi optical flow ổn định.
+                candidate = (
+                    float(np.min(new_points[:4, 0])),
+                    float(np.min(new_points[:4, 1])),
+                    float(np.max(new_points[:4, 0])),
+                    float(np.max(new_points[:4, 1])),
+                )
+            else:
+                width, height = x2 - x1, y2 - y1
+                candidate = (x1 + dx, y1 + dy, x1 + dx + width, y1 + dy + height)
+
+            frame_shape = gray.shape
+            if not self._valid_bbox(candidate, frame_shape):
+                track.tracker_status = "lost"
+                track.tracker_confidence = valid_count / len(points)
+                track.missing_frames += 1
+                continue
+
+            frame_h, frame_w = frame_shape[:2]
+            if (
+                candidate[0] < 0 or candidate[1] < 0
+                or candidate[2] > frame_w or candidate[3] > frame_h
+            ):
+                # Không giữ bbox stale/partial ngoài ảnh: detector phải sửa lại.
+                track.tracker_status = "needs_redetection"
+                track.tracker_confidence = valid_count / len(points)
+                track.missing_frames += 1
+                continue
+
+            candidate = self._clamp_bbox(candidate, frame_shape)
+            width, height = candidate[2] - candidate[0], candidate[3] - candidate[1]
+            old_width, old_height = x2 - x1, y2 - y1
+            if (
+                width < 8 or height < 8
+                or width > old_width * 2.5
+                or height > old_height * 2.5
+            ):
+                track.tracker_status = "lost"
+                track.tracker_confidence = valid_count / len(points)
+                track.missing_frames += 1
+                continue
+
+            scale_x = width / max(old_width, 1)
+            scale_y = height / max(old_height, 1)
+            scale_changed = (
+                scale_x < 0.8 or scale_x > 1.25
+                or scale_y < 0.8 or scale_y > 1.25
+            )
+
+            track.bbox = candidate
+            if track.landmarks is not None:
+                track.landmarks = [
+                    [float(pt[0] + dx), float(pt[1] + dy)]
+                    for pt in track.landmarks
+                ]
+            track.bbox_source = "TRACKER"
+            track.tracker_status = "needs_redetection" if scale_changed or valid_count < 4 else "tracking"
+            track.tracker_confidence = valid_count / len(points)
+            track.missing_frames = 0
+            results.append((self._tracker_detection(track), track))
+
+        self._previous_gray = gray
+        self.tracks = [
+            t for t in self.tracks if t.missing_frames <= self.max_missing_frames
+        ]
+        return results
+
+    def needs_redetection(self) -> bool:
+        """Return True when propagation is unsafe or no active track exists."""
+        if not self.tracks:
+            return True
+        return any(
+            track.tracker_status not in {"tracking", "detected"}
+            or not self._valid_bbox(track.bbox)
+            for track in self.tracks
+        )
+
+    def update(
+        self,
+        detections: List[Dict],
+        frame=None,
+        detector_called: bool = True,
+    ) -> List[Tuple[Dict, Track]]:
         """
         Khớp các detection mới với tracks hiện có.
         Trả về list các tuple (detection, track).
         """
+        if not detector_called:
+            return self._propagate(frame)
+
         matched_results: List[Tuple[Dict, Track]] = []
         unmatched_detections = list(range(len(detections)))
         unmatched_tracks = list(range(len(self.tracks)))
@@ -253,8 +452,18 @@ class FaceTracker:
                 det = detections[d_idx]
                 track = self.tracks[t_idx]
                 track.bbox = det["bbox"]
+                track.landmarks = det.get("landmarks")
+                track.detector_score = det.get("score")
+                track.bbox_source = "DETECTOR"
+                track.tracker_status = "detected"
+                track.tracker_confidence = det.get("score", 1.0)
                 track.missing_frames = 0
-                matched_results.append((det, track))
+                matched_det = dict(det)
+                matched_det["bbox_source"] = "DETECTOR"
+                matched_det["detector_called"] = True
+                matched_det["tracker_status"] = "detected"
+                matched_det["tracker_confidence"] = track.tracker_confidence
+                matched_results.append((matched_det, track))
 
             unmatched_detections = [i for i in range(len(detections)) if i not in used_dets]
             unmatched_tracks = [i for i in range(len(self.tracks)) if i not in used_tracks]
@@ -262,6 +471,8 @@ class FaceTracker:
         # Reset chuỗi ổn định nếu track bị mất dấu ở frame này (mất focus / quay mặt)
         for t_idx in unmatched_tracks:
             self.tracks[t_idx].stable_recognitions = 0
+            self.tracks[t_idx].tracker_status = "lost"
+            self.tracks[t_idx].tracker_confidence = 0.0
 
         # Tạo track mới cho các detection chưa match
         for d_idx in unmatched_detections:
@@ -276,10 +487,23 @@ class FaceTracker:
             )
             self._next_track_id += 1
             new_track.missing_frames = 0
+            new_track.landmarks = det.get("landmarks")
+            new_track.detector_score = det.get("score")
+            new_track.bbox_source = "DETECTOR"
+            new_track.tracker_status = "detected"
+            new_track.tracker_confidence = det.get("score", 1.0)
             self.tracks.append(new_track)
+            det = dict(det)
+            det["bbox_source"] = "DETECTOR"
+            det["detector_called"] = True
+            det["tracker_status"] = "detected"
+            det["tracker_confidence"] = new_track.tracker_confidence
             matched_results.append((det, new_track))
 
         # Xóa các track đã mất dấu quá max_missing_frames
         self.tracks = [t for t in self.tracks if t.missing_frames <= self.max_missing_frames]
+
+        # Lưu frame detector gần nhất làm điểm bắt đầu cho optical flow.
+        self._previous_gray = self._gray(frame)
 
         return matched_results

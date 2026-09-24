@@ -1,0 +1,4 @@
+interface:
+  display_name: "Experiment Runner"
+  short_description: "Execute approved experiments reproducibly"
+  default_prompt: "Use $experiment-runner for this task and follow its workflow."

@@ -2,7 +2,7 @@
 Module Lớp dự đoán Anti-Spoofing (Face Anti-Spoofing Predictor Class).
 
 Chức năng chính:
-    - Quản lý mô hình MiniFASNet V2 SE ONNX được nén dạng INT8 (best_model_quantized.onnx).
+    - Quản lý các checkpoint PAD ONNX; runtime contract hiện tại là MobileNetV3 E1.
     - Nhận danh sách các hình ảnh crop khuôn mặt (hoặc trực tiếp khung hình + bbox).
     - Tính toán giá trị logit (real_logit vs spoof_logit) để phân loại khuôn mặt THẬT (real) hay GIẢ (spoof).
 """
@@ -16,8 +16,8 @@ from typing import List, Dict, Tuple, Optional
 from .loader import load_model
 from .preprocess import preprocess_batch, crop
 
-# Đường dẫn mặc định tới trọng số mô hình Anti-Spoofing nén INT8
-DEFAULT_MODEL_PATH = Path(__file__).parent / "models" / "best_model_quantized.onnx"
+# Đường dẫn mặc định tới checkpoint PAD của runtime hiện tại.
+DEFAULT_MODEL_PATH = Path(__file__).parent / "models" / "mnv3_e1_preliminary_v5_1_best.onnx"
 
 
 def _stable_logsumexp(a: np.ndarray) -> float:
@@ -39,54 +39,61 @@ class AntiSpoofPredictor:
     """
     Lớp dự đoán chống giả mạo khuôn mặt (Anti-Spoofing Predictor).
 
-    Sử dụng kiến trúc MiniFASNet V2 SE (default) hoặc MobileNetV3/V4 tối ưu hóa bằng ONNX Runtime.
+    Sử dụng checkpoint PAD được chọn trong config/CLI bằng ONNX Runtime.
     """
 
     def __init__(
         self,
         model_path: Optional[str] = None,
-        threshold: float = 0.5,
+        threshold: Optional[float] = None,
         model_img_size: int = 128,
-        bbox_expansion_factor: float = 1.5,
+        bbox_expansion_factor: float = 1.55,
         mean: Optional[List[float]] = None,
         std: Optional[List[float]] = None,
-        apply_gamma: bool = True,
+        apply_gamma: Optional[bool] = None,
         color_order: Optional[str] = None,
+        threshold_logit: Optional[float] = None,
     ):
         """
         Khởi tạo Predictor:
 
         Tham số:
-            model_path (Optional[str]): Đường dẫn tới file .onnx (mặc định dùng best_model_quantized.onnx).
-            threshold (float): Ngưỡng xác xuất quyết định Real/Spoof (mặc định 0.5).
+            model_path (Optional[str]): Đường dẫn tới file .onnx.
+            threshold (float): Ngưỡng xác suất P(REAL). Không phải logit difference.
             model_img_size (int): Kích thước ảnh vuông đầu vào của mô hình (mặc định 128x128).
-            bbox_expansion_factor (float): Tỷ lệ mở rộng khung bao bbox khi crop mặt (mặc định 1.5x).
+            bbox_expansion_factor (float): Tỷ lệ mở rộng khung bao bbox khi crop mặt (mặc định 1.55x).
             mean (Optional[List[float]]): Giá trị mean chuẩn hóa kênh màu [R, G, B].
             std (Optional[List[float]]): Giá trị std chuẩn hóa kênh màu [R, G, B].
-            apply_gamma (bool): Bật adaptive gamma correction trước khi normalize (mặc định: True).
+            apply_gamma (Optional[bool]): Bật/tắt adaptive gamma correction. Khi None,
+                                          E1/MNV profiles mặc định tắt gamma còn legacy
+                                          128px profiles giữ hành vi cũ.
             color_order (Optional[str]): Thứ tự kênh màu mong muốn của model ("BGR" hoặc "RGB").
                                          Nếu None, tự động nhận diện dựa trên tên model/kích thước.
+            threshold_logit (Optional[float]): Nếu có, dùng trực tiếp ngưỡng d thay cho
+                                               ``threshold``. Dùng để tránh nhầm đơn vị.
         """
-        self.model_path = Path(model_path) if model_path else DEFAULT_MODEL_PATH    # lấy đường dẫn model
+        self.model_path = (
+            Path(model_path).expanduser().resolve()
+            if model_path
+            else DEFAULT_MODEL_PATH.resolve()
+        )
 
         if not self.model_path.exists():
             raise FileNotFoundError(
                 f"Không tìm thấy file trọng số Anti-Spoofing tại: '{self.model_path}'"
             )
 
-        self.threshold = threshold
         self.model_img_size = model_img_size
         self.bbox_expansion_factor = bbox_expansion_factor
-        self.apply_gamma = apply_gamma
-
-        # Quy đổi ngưỡng xác xuất threshold sang ngưỡng logit difference (logit_threshold) bằng hàm Logit/Sigmoid ngược
-        p = max(1e-6, min(1 - 1e-6, threshold)) # ép không chạm biên gây lỗi
-        self.logit_threshold = float(np.log(p / (1.0 - p)))
 
         # Nạp mô hình ONNX qua hàm load_model
         self.session, self.input_name = load_model(str(self.model_path))
         if self.session is None:
             raise RuntimeError(f"Không thể khởi tạo ONNX InferenceSession từ '{self.model_path}'")
+
+        self.providers = tuple(self.session.get_providers())
+        self.input_metadata = self.session.get_inputs()[0]
+        self.output_metadata = self.session.get_outputs()[0]
 
         # Tự động phát hiện kích thước ảnh đầu vào (model_img_size) trực tiếp từ đồ thị mô hình ONNX
         try:
@@ -99,6 +106,27 @@ class AntiSpoofPredictor:
 
         # Cấu hình mean/std chuẩn hóa và color order contract
         model_name_lower = str(self.model_path).lower()
+        if threshold_logit is None and threshold is None:
+            threshold = (
+                0.3356796703127529
+                if "mnv" in model_name_lower or self.model_img_size == 224
+                else 0.5
+            )
+        if threshold_logit is not None:
+            self.threshold = None if threshold is None else float(threshold)
+            self.logit_threshold = float(threshold_logit)
+            self.threshold_probability = float(1.0 / (1.0 + np.exp(-self.logit_threshold)))
+            self.threshold_input_type = "logit"
+        else:
+            self.threshold = float(threshold)
+            p = max(1e-6, min(1 - 1e-6, self.threshold))
+            self.logit_threshold = float(np.log(p / (1.0 - p)))
+            self.threshold_probability = float(p)
+            self.threshold_input_type = "probability"
+        if apply_gamma is None:
+            self.apply_gamma = not ("mnv" in model_name_lower or self.model_img_size == 224)
+        else:
+            self.apply_gamma = bool(apply_gamma)
         if color_order is not None:
             self.color_order = color_order.upper()
         elif "mnv" in model_name_lower or self.model_img_size == 224:
@@ -202,6 +230,8 @@ class AntiSpoofPredictor:
             "real_logit": real_logit,
             "spoof_logit": float(spoof_logit),
             "confidence": confidence,
+            "threshold_logit": float(self.logit_threshold),
+            "threshold_probability": float(self.threshold_probability),
         }
 
     def predict_crops(self, face_crops: List[np.ndarray]) -> List[Dict]:

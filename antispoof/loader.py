@@ -26,8 +26,9 @@ def load_model(model_path: str) -> Tuple[Optional[ort.InferenceSession], Optiona
             - input_name: Tên của node đầu vào trong mô hình ONNX (hoặc None nếu lỗi).
     """
     # 1. Kiểm tra sự tồn tại của file trọng số
-    if not Path(model_path).exists():
-        return None, None
+    resolved_path = Path(model_path).expanduser().resolve()
+    if not resolved_path.exists():
+        raise FileNotFoundError(f"Không tìm thấy model ONNX: '{resolved_path}'")
 
     try:
         # 2. Cấu hình các tùy chọn tối ưu hóa cho ONNX Runtime Session
@@ -48,11 +49,13 @@ def load_model(model_path: str) -> Tuple[Optional[ort.InferenceSession], Optiona
 
         # 4. Khởi tạo ONNX InferenceSession, và lấy tên input
         ort_session = ort.InferenceSession(
-            str(model_path), sess_options=sess_options, providers=providers
+            str(resolved_path), sess_options=sess_options, providers=providers
         )
         # Lấy tên của tensor đầu vào đầu tiên trong mô hình (thường là 'input' hoặc 'data').
         input_name = ort_session.get_inputs()[0].name
         return ort_session, input_name
-    except Exception:
-        # Trả về (None, None) nếu xảy ra lỗi trong quá trình load model
-        return None, None
+    except Exception as exc:
+        # Không silent fallback: model artifact/external-data lỗi phải làm startup fail.
+        raise RuntimeError(
+            f"Không thể load ONNX model '{resolved_path}' với providers={providers}: {exc}"
+        ) from exc

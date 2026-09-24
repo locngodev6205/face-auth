@@ -325,7 +325,7 @@ def main():
     parser.add_argument("--detector-model", type=str, default="buffalo_s", help="InsightFace model pack name (default: buffalo_s)")  # tên model pack SCRFD
     parser.add_argument("--liveness-model", type=str, default=None, help="Path to AntiSpoof ONNX model")    # đường dẫn tới model antiproof
     parser.add_argument("--align", action="store_true", default=True, help="Enable face alignment using 5 landmarks (default: True)")
-    parser.add_argument("--no-align", action="store_false", dest="align", help="Disable face alignment, fallback to 1.5x bbox crop")
+    parser.add_argument("--no-align", action="store_false", dest="align", help="Disable face alignment, fallback to 1.55x bbox crop")
     parser.add_argument("--verbose", action="store_true", help="Enable verbose error logging")  # true: log lỗi chi tiết
 
     # đọc tham số lưu vào args

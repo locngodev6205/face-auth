@@ -1,0 +1,4 @@
+interface:
+  display_name: "Results Analysis"
+  short_description: "Aggregate and analyze research results"
+  default_prompt: "Use $results-analysis for this task and follow its workflow."

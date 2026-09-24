@@ -2,7 +2,7 @@
 Module xử lý ảnh tiền xử lý (Preprocessing) cho mô hình Anti-Spoofing.
 
 Chức năng chính:
-    1. crop(): Cắt vùng khuôn mặt vuông từ ảnh gốc với tỉ lệ mở rộng (mặc định 1.5x).
+    1. crop(): Cắt vùng khuôn mặt vuông từ ảnh gốc với tỉ lệ mở rộng (mặc định 1.55x).
        - Thêm viền theo thuật toán BORDER_REFLECT_101 để tránh viền đen giả tạo gây nhận diện nhầm Spoof.
     2. adaptive_gamma(): Điều chỉnh gamma động theo độ sáng thực tế của ảnh crop.
        - Target luma ~110/255; gamma được clamp trong [0.4, 2.5] để tránh diverge.
@@ -192,16 +192,16 @@ def preprocess_batch(
     return batch
 
 
-def crop(img: np.ndarray, bbox: Tuple[int, int, int, int], bbox_expansion_factor: float = 1.5) -> np.ndarray:
+def crop(img: np.ndarray, bbox: Tuple[int, int, int, int], bbox_expansion_factor: float = 1.55) -> np.ndarray:
     """
     Cắt vùng khuôn mặt từ khung hình gốc dựa theo Bounding Box (bbox),
-    tự động mở rộng vùng cắt theo bbox_expansion_factor (mặc định 1.5x)
+    tự động mở rộng vùng cắt theo bbox_expansion_factor (mặc định 1.55x)
     để lấy thêm ngữ cảnh (tóc, tai, viền màn hình) phục vụ nhận diện giả mạo.
 
     Tham số:
         img (np.ndarray): Khung hình ảnh gốc (H, W, C).
         bbox (Tuple[int, int, int, int]): Tọa độ (x1, y1, x2, y2) — định dạng xyxy (SCRFD và YunNet đều xuất xyxy).
-        bbox_expansion_factor (float): Tỷ lệ mở rộng khung bao (mặc định 1.5 = mở rộng thêm 50%).
+        bbox_expansion_factor (float): Tỷ lệ mở rộng khung bao (mặc định 1.55).
 
     Trả về:
         np.ndarray: Ảnh khuôn mặt đã cắt vuông.

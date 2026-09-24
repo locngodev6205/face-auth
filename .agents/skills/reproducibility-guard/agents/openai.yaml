@@ -1,0 +1,4 @@
+interface:
+  display_name: "Reproducibility Guard"
+  short_description: "Audit experimental provenance and traceability"
+  default_prompt: "Use $reproducibility-guard for this task and follow its workflow."

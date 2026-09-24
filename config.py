@@ -103,12 +103,15 @@ CAMERA_INDEX  = _get_env_int("CAMERA_INDEX", 0)
 CAMERA_WIDTH  = _get_env_int("CAMERA_WIDTH", 640)
 CAMERA_HEIGHT = _get_env_int("CAMERA_HEIGHT", 480)
 CAMERA_FPS    = _get_env_int("CAMERA_FPS", 30)
+# Giảm số frame cũ nằm trong hàng đợi backend camera. Một số backend có thể bỏ qua.
+CAMERA_BUFFER_SIZE = _get_env_int("CAMERA_BUFFER_SIZE", 1)
 
 # Detector cho app.py (real-time inference).
 # - "yunnet": cv2.FaceDetectorYN, ~122 KB, nhanh trên edge, nhưng cần resize frame nhỏ trước khi detect.
 #             App.py sẽ set CAMERA_WIDTH × CAMERA_HEIGHT qua cap.set() để giới hạn frame size.
-# - "scrfd" : InsightFace SCRFD (buffalo_s), xử lý ảnh bất kỳ kích thước via det_size nội bộ,
-#             không cần giới hạn frame size — camera sẽ dùng full resolution nếu muốn.
+# - "scrfd" : InsightFace SCRFD (buffalo_s), resize nội bộ qua det_size nhưng vẫn nhận
+#             frame camera theo kích thước cấu hình; app in kích thước thực tế vì backend
+#             Windows/Linux/macOS có thể không hỗ trợ mọi lệnh cap.set().
 APP_DETECTOR = (_get_env_str("APP_DETECTOR", "scrfd") or "scrfd").lower()
 
 # Anti-Spoofing / PAD (Presentation Attack Detection) Config
@@ -293,6 +296,18 @@ def validate_config():
         raise ValueError(
             f"Cấu hình DETECTION_INTERVAL_SECONDS={DETECTION_INTERVAL_SECONDS} không hợp lệ. "
             "Yêu cầu >= 0 (0 = detect mỗi frame)."
+        )
+    if CAMERA_WIDTH <= 0 or CAMERA_HEIGHT <= 0:
+        raise ValueError(
+            f"Cấu hình camera {CAMERA_WIDTH}x{CAMERA_HEIGHT} không hợp lệ. "
+            "Yêu cầu width/height > 0."
+        )
+    if CAMERA_FPS <= 0:
+        raise ValueError(f"Cấu hình CAMERA_FPS={CAMERA_FPS} không hợp lệ. Yêu cầu > 0.")
+    if CAMERA_BUFFER_SIZE < 0:
+        raise ValueError(
+            f"Cấu hình CAMERA_BUFFER_SIZE={CAMERA_BUFFER_SIZE} không hợp lệ. "
+            "Yêu cầu >= 0 (0 = để backend tự chọn)."
         )
 
 

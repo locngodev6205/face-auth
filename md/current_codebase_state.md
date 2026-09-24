@@ -7,6 +7,7 @@
 ### Snapshot runtime hiện tại (2026-09-24)
 
 - Detector của `app.py`: **SCRFD / InsightFace `buffalo_s`**, `det_size=(640, 640)`, CPU provider.
+- Camera runtime: app yêu cầu `640×480@30`, đặt buffer best-effort `1`; backend sẽ in resolution/FPS thực tế vì Windows/Linux/macOS có thể từ chối `cap.set()`.
 - Tracker: detector cadence `0.1s`; các frame xen kẽ dùng Lucas–Kanade optical flow, redetect khi track không an toàn.
 - PAD model: `mnv3_e1_preliminary_v5_1_best.onnx` + sidecar `.onnx.data`, input `224×224`, 3-class.
 - PAD contract: `RGB`, CelebA mean/std, gamma `OFF`, `PAD_BBOX_EXPANSION_FACTOR=1.55`, threshold `P(REAL)=0.3356796703127529` (`d=-0.682607114315033`).
@@ -151,6 +152,9 @@ Các biến cấu hình được nạp từ file `.env` qua `python-dotenv`:
 | `DETECTOR_NMS_THRESH` | `0.3` | Ngưỡng Non-Maximum Suppression chống trùng lặp hộp nhận diện. |
 | `DETECTOR_MIN_FACE_SIZE` | `60` px | Lọc bbox nhỏ hơn 60px theo cả width/height trước khi tạo track; áp dụng cho SCRFD và YunNet. |
 | `DETECTOR_MARGIN` | `5` px | Lọc mặt cách mép khung hình $< 5$px; áp dụng cho YunNet. |
+| `CAMERA_WIDTH` / `CAMERA_HEIGHT` | `640` / `480` | Kích thước camera được yêu cầu cho cả SCRFD và YunNet; backend có thể trả về kích thước khác. |
+| `CAMERA_FPS` | `30` | FPS yêu cầu camera; không phải FPS đo thực tế. |
+| `CAMERA_BUFFER_SIZE` | `1` | Giảm frame cũ trong hàng đợi camera; backend có thể bỏ qua. |
 | `PAD_ENABLED` | `True` | Bật/tắt module Anti-Spoofing (có thể ghi đè bằng phím `p` hoặc CLI `--no-pad`). |
 | `PAD_MODEL_FILENAME` | `"mnv3_e1_preliminary_v5_1_best.onnx"` | Model E1 tự train đang chạy trong runtime; ONNX dùng sidecar `.onnx.data`. |
 | `PAD_THRESHOLD` | `0.3356796703127529` | Ngưỡng xác suất $P(REAL)$; tương đương `PAD_THRESHOLD_LOGIT=-0.682607114315033`. |
@@ -200,7 +204,7 @@ Hệ thống hỗ trợ 2 backends với chính sách phân chia rõ ràng:
 
 2. **SCRFD (`detection/detector.py` — Active Runtime):**
    - Submodel phát hiện khuôn mặt trích từ bộ `buffalo_s` của InsightFace.
-   - Tự động co giãn ảnh thông qua tham số nội bộ `det_size=(640, 640)`, phù hợp cho camera full resolution và ảnh tĩnh.
+   - Tự động co giãn ảnh thông qua tham số nội bộ `det_size=(640, 640)`; app hiện yêu cầu camera `640×480`, còn ảnh tĩnh vẫn có thể có resolution bất kỳ.
    - Sau SCRFD inference, bbox bị loại nếu chiều rộng hoặc chiều cao nhỏ hơn `DETECTOR_MIN_FACE_SIZE` (mặc định 60px), tránh đưa mặt quá nhỏ vào tracker/PAD.
 
 ---
@@ -531,4 +535,4 @@ python scripts/cleanup_demo.py --dry-run
 | **2026-09-15** | Agent & Dev | Refactor kiến trúc điểm danh: Chuyển đổi cờ `has_logged_attendance` thành `last_attendance_time` kết hợp `can_log_attendance(gap_minutes)`. Đồng bộ giá trị `last_ts` từ DB về tracker để quản lý Local Cooldown Timer chính xác, hỗ trợ đếm ngược ngay cả khi ứng dụng bị ngắt và khởi động lại, cho phép người dùng tự động được điểm danh lại sau khi quá hạn interval. |
 | **2026-09-17** | Agent & Dev | **Hoàn thiện refactor và chuẩn hóa face_auth:**<br>1. **PAD Predictor & Preprocess:** Chuẩn hóa công thức LogSumExp tổng quát $z_{\text{real}} - \text{logsumexp}(z_{\text{spoof}})$ cho cả mô hình 2 lớp và 3 lớp (tương đương chính xác $P_{\text{softmax}}(\text{REAL}) \ge p$). Ràng buộc chuẩn hóa kênh màu `convert_rgb` (BGR cho MiniFASNet, RGB cho MobileNet).<br>2. **Tracker PAD Gating:** Thiết lập trạng thái `PAD_PENDING`, chặn nhận diện và điểm danh trước khi tích lũy đủ `pad_min_votes=5`. Reset trạng thái PAD khi toggle phím `p`. Chuẩn hóa API sử dụng `employee_id`.<br>3. **Schema 3 bảng sạch & Re-enrollment transaction:** Đổi bảng sang `employees`, tìm kiếm theo active centroid và model_version, re-enroll xóa embedding cũ cùng model_version rồi insert trong 1 transaction an toàn.<br>4. **Scripts & Notebooks:** Đồng bộ toàn bộ scripts vận hành và notebook LFW (`lfw_demo_enroll.ipynb`, `lfw_identity_benchmark.ipynb`) với seed `42` bảo toàn. |
 | **2026-09-17** | Agent & Dev | **Củng cố độ tin cậy và xử lý 4 rủi ro runtime / bảo mật cốt lõi:**<br>1. **PAD Stale Timeout:** Bổ sung cấu hình `PAD_STALE_TIMEOUT_SECONDS` (3.0s). `pad_ready` tự động trả về `False` khi phán quyết quá hạn. `update_pad()` chủ động reset window cũ trước khi nhận vote mới, ngăn chặn giả mạo khi đối tượng quay lại.<br>2. **Attendance Cooldown Guard:** Chỉ cập nhật `last_attendance_time` khi ghi nhận điểm danh DB thành công (`attendance_success is True`), tránh việc lỗi DB tạm thời làm tiêu hao nhầm cooldown khiến người dùng bị khóa điểm danh.<br>3. **BBox Format Standardization:** Xóa hoàn toàn heuristic phỏng đoán format trong `crop()`, thống nhất 100% định dạng `(x1, y1, x2, y2)` từ các detector.<br>4. **Bảo toàn Ký tự `#` trong .env:** Chuyển `_clean_env_val()` sang regex `\s+#.*$` để chỉ cắt bỏ trailing comment khi `#` đi liền sau khoảng trắng, bảo toàn nguyên vẹn mật khẩu hoặc giá trị có chứa `#`. |
-| **2026-09-24** | Agent & Dev | **Đồng bộ runtime E1 và tối ưu pipeline realtime:** chuyển app sang SCRFD active runtime; thêm detector cadence `0.1s` với optical-flow propagation và redetection safety guard; sửa lỗi trạng thái `detected` khiến detector chạy mọi frame; chuẩn hóa E1 ONNX/RGB/gamma OFF/threshold calibrated; đổi PAD crop expansion lên `1.55x`; áp dụng `DETECTOR_MIN_FACE_SIZE=60px` cho cả SCRFD và YunNet; bổ sung tests và backup runtime trước các thay đổi. |
+| **2026-09-24** | Agent & Dev | **Đồng bộ runtime E1 và tối ưu pipeline realtime:** chuyển app sang SCRFD active runtime; thêm detector cadence `0.1s` với optical-flow propagation và redetection safety guard; sửa lỗi trạng thái `detected` khiến detector chạy mọi frame; chuẩn hóa E1 ONNX/RGB/gamma OFF/threshold calibrated; đổi PAD crop expansion lên `1.55x`; áp dụng `DETECTOR_MIN_FACE_SIZE=60px` cho cả SCRFD và YunNet; bổ sung camera resolution/buffer diagnostics và FPS end-to-end; bổ sung tests và backup runtime trước các thay đổi. |

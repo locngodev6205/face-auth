@@ -2,7 +2,7 @@
 Face Authentication App — SmartFace AIoT.
 
 Pipeline mỗi frame:
-    Camera → Detection (YunNet) → Tracking (IOU) → [PAD liveness check] → Alignment → Embedding → DB Search → Display
+    Camera → Detection (SCRFD/YunNet) → Tracking (IOU) → [PAD liveness check] → Alignment → Embedding → DB Search → Display
 
 CLI usage:
     python app.py
@@ -336,14 +336,35 @@ def main():
 
     # ── Camera ──────────────────────────────────────────────────────────────
     cap = cv2.VideoCapture(args.camera)
-    if _DETECTOR_BACKEND == "yunnet":
-        # YunNet hoạt động tốt hơn với ảnh nhỏ — giới hạn frame size qua cap.set()
-        cap.set(cv2.CAP_PROP_FRAME_WIDTH,  config.CAMERA_WIDTH)
-        cap.set(cv2.CAP_PROP_FRAME_HEIGHT, config.CAMERA_HEIGHT)
-    # SCRFD tự resize nội bộ qua det_size — để camera chạy full resolution
+    if not cap.isOpened():
+        db.close()
+        raise RuntimeError(f"Không thể mở camera index {args.camera}.")
+
+    # Giữ input camera ổn định trên các backend khác nhau (AVFoundation/MSMF/V4L2).
+    # Một số backend không hỗ trợ BUFFERSIZE hoặc có thể làm tròn resolution; các giá trị
+    # thực tế được in ra ngay sau đây để chẩn đoán thay vì giả định cap.set() đã thành công.
+    if config.CAMERA_BUFFER_SIZE > 0:
+        cap.set(cv2.CAP_PROP_BUFFERSIZE, config.CAMERA_BUFFER_SIZE)
+    cap.set(cv2.CAP_PROP_FRAME_WIDTH,  config.CAMERA_WIDTH)
+    cap.set(cv2.CAP_PROP_FRAME_HEIGHT, config.CAMERA_HEIGHT)
     cap.set(cv2.CAP_PROP_FPS, config.CAMERA_FPS)
 
+    try:
+        camera_backend = cap.getBackendName()
+    except (AttributeError, cv2.error):
+        camera_backend = "UNKNOWN"
+    actual_width = int(round(cap.get(cv2.CAP_PROP_FRAME_WIDTH)))
+    actual_height = int(round(cap.get(cv2.CAP_PROP_FRAME_HEIGHT)))
+    actual_fps = cap.get(cv2.CAP_PROP_FPS)
+    actual_buffer = cap.get(cv2.CAP_PROP_BUFFERSIZE)
+
     print("Starting face authentication system...")
+    print(
+        f"  CAMERA          = backend={camera_backend} "
+        f"requested={config.CAMERA_WIDTH}x{config.CAMERA_HEIGHT}@{config.CAMERA_FPS} "
+        f"actual={actual_width}x{actual_height}@{actual_fps:.2f} "
+        f"buffer={actual_buffer:.2f}"
+    )
     print(f"  DETECTOR         = {_DETECTOR_BACKEND.upper()}")
     print(f"  MATCH_THRESHOLD  = {config.MATCH_THRESHOLD}")
     print(f"  RECOGNIZE_EVERY  = {config.RECOGNIZE_INTERVAL_SECONDS}s")
@@ -361,7 +382,7 @@ def main():
     attendance_msg_color = (0, 255, 0)
     attendance_msg_time = 0
 
-    fps_deque: deque = deque(maxlen=config.FPS_AVG_WINDOW)
+    frame_time_deque: deque = deque(maxlen=max(1, config.FPS_AVG_WINDOW))
     avg_fps = 0.0
     frame_id = 0
     last_detection_time = None
@@ -554,13 +575,16 @@ def main():
 
             cv2.imshow("SmartFace — Face Auth", frame)
 
-            # ── FPS tính sau khi imshow để bao gồm cả render time ─────────────
-            t1 = time.perf_counter()
-            fps_deque.append(1.0 / max(t1 - t0, 1e-6))
-            avg_fps = sum(fps_deque) / len(fps_deque)
-
             # ── Key handling ─────────────────────────────────────────────────
             key = cv2.waitKey(1) & 0xFF
+
+            # Đo toàn bộ vòng lặp, bao gồm capture, inference, imshow và waitKey.
+            # Dùng tổng thời gian / số frame thay vì mean(1/dt), tránh FPS bị thổi phồng
+            # khi thời gian từng frame dao động giữa các backend camera.
+            t1 = time.perf_counter()
+            frame_time_deque.append(max(t1 - t0, 1e-6))
+            avg_fps = len(frame_time_deque) / sum(frame_time_deque)
+
             if key == ord("q") or key == 27:
                 break
             elif key == ord("p"):

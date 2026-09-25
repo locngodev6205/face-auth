@@ -33,12 +33,21 @@ smartface_pad_artifacts/
 │   ├── deployment/                                    <-- ONNX Export
 │   │   ├── mnv3_e1_preliminary_v5_1_best.onnx
 │   │   └── mnv3_e1_preliminary_v5_1_best.onnx.data
-│   └── metadata/                                      <-- Tham số, lịch sử huấn luyện & đồ thị
-│       ├── mnv3_e1_preliminary_v5_1_best_meta.json
-│       ├── mnv3_e1_preliminary_v5_1_run_config.json
-│       ├── mnv3_e1_preliminary_v5_1_training_history.json
-│       ├── mnv3_e1_preliminary_v5_1_training_history.png
-│       └── plots/
+│   ├── metadata/                                      <-- Tham số, lịch sử huấn luyện & đồ thị
+│   │   ├── mnv3_e1_preliminary_v5_1_best_meta.json
+│   │   ├── mnv3_e1_preliminary_v5_1_run_config.json
+│   │   ├── mnv3_e1_preliminary_v5_1_training_history.json
+│   │   ├── mnv3_e1_preliminary_v5_1_training_history.png
+│   │   └── plots/
+│   └── test/                                          <-- [ĐÃ HOÀN TẤT] Kết quả Deep Eval & Test 10.000 mẫu
+│       ├── pad_deep_evaluation_summary.json           <-- Val AUC: 99.99%, Test AUC: 99.31%, BPCER: 0.27%, ACER: 8.49%
+│       ├── test_predictions_detailed.csv              <-- Dự đoán chi tiết từng ảnh test
+│       ├── validation_predictions_detailed.csv        <-- Dự đoán chi tiết tập val
+│       ├── test_bootstrap_ci.csv                      <-- Khoảng tin cậy Bootstrap 95%
+│       ├── test_per_attack_breakdown.csv              <-- Phân rã lỗi theo từng loại spoof
+│       ├── test_subject_breakdown.csv                 <-- Phân rã lỗi theo ID đối tượng
+│       ├── plots/                                     <-- 16 đồ thị ROC, DET, Confusion Matrix, Error Galleries
+│       └── cache/                                     <-- Cache prediction CSVs
 │
 ├── E1_v5_3_mnv3_small/                                <-- [E1 v5.3 Edge] MobileNetV3-Small (Runtime Active)
 │   ├── data_protocol/                                 <-- BẮT BUỘC: Đóng băng dữ liệu cho E2 reuse
@@ -52,12 +61,19 @@ smartface_pad_artifacts/
 │   │   ├── mnv3s_e1_preliminary_v5_3_edge_best.onnx
 │   │   ├── mnv3s_e1_preliminary_v5_3_edge_best.onnx.data
 │   │   └── mnv3s_e1_preliminary_v5_3_edge_runtime_config.json
-│   └── metadata/                                      <-- Log huấn luyện & Biểu đồ
-│       ├── mnv3s_e1_preliminary_v5_3_edge_best_meta.json
-│       ├── mnv3s_e1_preliminary_v5_3_edge_run_config.json
-│       ├── mnv3s_e1_preliminary_v5_3_edge_training_history.json
-│       ├── mnv3s_e1_preliminary_v5_3_edge_training_history.png
-│       └── plots/
+│   ├── metadata/                                      <-- Log huấn luyện & Biểu đồ
+│   │   ├── mnv3s_e1_preliminary_v5_3_edge_best_meta.json
+│   │   ├── mnv3s_e1_preliminary_v5_3_edge_run_config.json
+│   │   ├── mnv3s_e1_preliminary_v5_3_edge_training_history.json
+│   │   ├── mnv3s_e1_preliminary_v5_3_edge_training_history.png
+│   │   └── plots/
+│   └── test/                                          <-- [ĐÃ HOÀN TẤT] Kết quả Held-out Test 10.000 mẫu
+│       ├── e1_heldout_test_summary.json               <-- AUC: 98.14%, BPCER: 0.40%, ACER: 9.66%, Latency: 2.47ms
+│       ├── e1_test_predictions.csv                    <-- Chi tiết dự đoán từng ảnh
+│       ├── e1_attack_breakdown.csv                    <-- Phân rã lỗi theo từng loại spoof
+│       ├── e1_binary_confusion_matrix.png             <-- Ma trận nhầm lẫn 180 DPI
+│       ├── e1_score_distribution.png                  <-- Biểu đồ phân phối điểm số
+│       └── e1_preliminary_heldout_test_results.zip    <-- Gói ZIP lưu trữ toàn bộ
 │
 ├── E2_dct_v1/                                         <-- [E2 Frequency-only: Sẵn sàng nhận output]
 │   ├── pytorch/                                       <-- Lưu frequency_branch_best.pth

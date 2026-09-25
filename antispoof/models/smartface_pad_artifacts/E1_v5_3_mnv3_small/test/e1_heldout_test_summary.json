@@ -1,0 +1,48 @@
+{
+  "experiment": "E1",
+  "model": "MobileNetV3-Small spatial-only",
+  "run_mode": "preliminary",
+  "model_file": "mnv3s_e1_preliminary_v5_3_edge_best.onnx",
+  "model_sha256": "f644427b7b4351093a3cfac64f6ddedafd11c4a05e81fda7e5e156dea4a5c96e",
+  "cache_file": "celeba_scrfd_bbox_cache_v5_3_preliminary_seed42.json",
+  "manifest_file": "celeba_spoof_preliminary_v5_3_edge_mnv3_small_seed42.npz",
+  "split_fingerprints": {
+    "train": "4ecbcee78758366dd454c0e446444f6c74c82ac5c4d1c937730382b34d4e25f8",
+    "val": "4560d12efe0bb840c0584a38bda12097e2048f3066d89177cda62f8d931edf91",
+    "test": "394d6a5ba98cde1cfbda3b9c41c7824262c4c5bc648883b93581a9585400a26c"
+  },
+  "threshold_sources": [
+    [
+      "runtime_config",
+      -0.4650222063064575
+    ],
+    [
+      "best_meta",
+      -0.4650222063064575
+    ]
+  ],
+  "metrics": {
+    "Accuracy": 0.8658,
+    "APCER": 0.18908160363946544,
+    "BPCER": 0.004045853000674309,
+    "ACER": 0.09656372832006987,
+    "AUC": 0.9814262139907675,
+    "binary_confusion_matrix": [
+      [
+        5704,
+        1330
+      ],
+      [
+        12,
+        2954
+      ]
+    ],
+    "Accuracy3Class": 0.8053,
+    "N": 10000,
+    "locked_logit_threshold": -0.4650222063064575,
+    "locked_probability_threshold": 0.3857950952646775,
+    "model_inference_seconds": 24.68298032099983,
+    "total_evaluation_seconds": 104.56411727499994,
+    "model_inference_ms_per_image": 2.468298032099983
+  }
+}

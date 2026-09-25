@@ -1,0 +1,21 @@
+{
+  "run_mode": "preliminary",
+  "input_size": 224,
+  "rgb_mean": [
+    0.5931,
+    0.469,
+    0.4229
+  ],
+  "rgb_std": [
+    0.2471,
+    0.2214,
+    0.2157
+  ],
+  "gamma": false,
+  "scrfd_crop_factor": 1.55,
+  "celeba_fallback_crop_factor": 1.5,
+  "threshold_policy": "locked from Validation; never calibrated on Test",
+  "locked_logit_threshold": -0.4650222063064575,
+  "locked_probability_threshold": 0.3857950952646775,
+  "test_fingerprint": "394d6a5ba98cde1cfbda3b9c41c7824262c4c5bc648883b93581a9585400a26c"
+}

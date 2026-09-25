@@ -1,0 +1,55 @@
+{
+  "model": "/kaggle/input/datasets/locngodev/model-trained/results/mnv3_e1_preliminary_v5_1_best.pth",
+  "protocol_version": "spatial_e1_optimized_v5_1_time_balanced",
+  "split_manifest": "/kaggle/input/datasets/locngodev/model-trained/results/celeba_spoof_subject_disjoint_preliminary_split_seed42.npz",
+  "locked_logit_threshold": -0.682607114315033,
+  "locked_predictor_probability": 0.3356796703127529,
+  "runtime_contract": {
+    "input_size": 224,
+    "crop_factor": 1.5,
+    "color_order": null,
+    "mean": [
+      0.5931,
+      0.469,
+      0.4229
+    ],
+    "std": [
+      0.2471,
+      0.2214,
+      0.2157
+    ],
+    "apply_gamma": false
+  },
+  "metrics_percent": {
+    "Validation": {
+      "N": 15116,
+      "Accuracy": 99.84784334480021,
+      "APCER": 0.16771902131018154,
+      "BPCER": 0.12048192771084339,
+      "ACER": 0.14410047451051247,
+      "AUC": 99.98512201925303,
+      "EER": 0.15924788340417587,
+      "TN": 4974,
+      "FP": 6,
+      "FN": 17,
+      "TP": 10119,
+      "3class_accuracy": 98.69674517068007,
+      "EER_threshold": -0.5531689524650574
+    },
+    "Held-out Test": {
+      "N": 10000,
+      "Accuracy": 88.17,
+      "APCER": 16.704577765140748,
+      "BPCER": 0.26972353337828725,
+      "ACER": 8.487150649259517,
+      "AUC": 99.31238042138455,
+      "EER": 2.8377147430139456,
+      "TN": 2958,
+      "FP": 8,
+      "FN": 1175,
+      "TP": 5859,
+      "3class_accuracy": 82.3,
+      "EER_threshold": 1.865445613861084
+    }
+  }
+}

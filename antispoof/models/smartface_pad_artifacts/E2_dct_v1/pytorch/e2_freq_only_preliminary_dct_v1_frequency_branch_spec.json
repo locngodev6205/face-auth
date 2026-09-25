@@ -1,0 +1,14 @@
+{
+  "class": "FrequencyBranch",
+  "protocol_version": "e2_frequency_only_dct_v1",
+  "input": [
+    1,
+    224,
+    224
+  ],
+  "output_dim": 64,
+  "dct": "sign(C)*log1p(abs(C))",
+  "normalization": "per-sample z-score over full map",
+  "frequency_mask": "none",
+  "parameter_count": 8480
+}

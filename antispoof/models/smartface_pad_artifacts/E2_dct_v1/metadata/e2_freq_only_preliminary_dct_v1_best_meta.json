@@ -1,0 +1,36 @@
+{
+  "protocol_version": "e2_frequency_only_dct_v1",
+  "best_epoch": 20,
+  "model_parameter_count": 17187,
+  "frequency_branch_parameter_count": 8480,
+  "calibrated_logit_threshold": -0.6203932898564033,
+  "calibrated_probability_threshold": 0.34969200907386344,
+  "validation_metrics": {
+    "Accuracy": 0.899311987298227,
+    "APCER": 0.10783346487766378,
+    "BPCER": 0.086144578313253,
+    "ACER": 0.09698902159545839,
+    "AUC": 0.9587601194042152,
+    "confusion_matrix": [
+      [
+        9043,
+        1093
+      ],
+      [
+        429,
+        4551
+      ]
+    ],
+    "LogitThreshold": -0.6203932898564033,
+    "PredictorProbabilityThreshold": 0.34969200907386344,
+    "Loss": 0.6776515919242974,
+    "Accuracy3Class": 0.7818867425244774
+  },
+  "e1_split_fingerprints": {
+    "train": "4ecbcee78758366dd454c0e446444f6c74c82ac5c4d1c937730382b34d4e25f8",
+    "val": "4560d12efe0bb840c0584a38bda12097e2048f3066d89177cda62f8d931edf91",
+    "test": "394d6a5ba98cde1cfbda3b9c41c7824262c4c5bc648883b93581a9585400a26c"
+  },
+  "e1_cache_selected_fingerprint": "4ac3763a6c566c976de11dda1cbfdb8426f2df73d95347c7fe2c1b9629ab9b85",
+  "frequency_branch_artifact": "e2_freq_only_preliminary_dct_v1_frequency_branch_best.pth"
+}

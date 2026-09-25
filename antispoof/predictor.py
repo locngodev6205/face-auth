@@ -14,7 +14,7 @@ from pathlib import Path
 from typing import List, Dict, Tuple, Optional
 
 from .loader import load_model
-from .preprocess import preprocess_batch, crop
+from .preprocess import preprocess_batch, preprocess_dct_batch, crop
 
 # Đường dẫn mặc định tới checkpoint PAD của runtime hiện tại.
 DEFAULT_MODEL_PATH = Path(__file__).parent / "models" / "mnv3_e1_preliminary_v5_1_best.onnx"
@@ -95,17 +95,24 @@ class AntiSpoofPredictor:
         self.input_metadata = self.session.get_inputs()[0]
         self.output_metadata = self.session.get_outputs()[0]
 
-        # Tự động phát hiện kích thước ảnh đầu vào (model_img_size) trực tiếp từ đồ thị mô hình ONNX
+        # Tự động phát hiện kích thước ảnh đầu vào và loại mô hình (Spatial vs Frequency)
+        self.is_frequency_model = False
         try:
             input_shape = self.session.get_inputs()[0].shape
             # input_shape thường có dạng (batch_size, 3, height, width) hoặc [None, 3, H, W]
-            if len(input_shape) == 4 and isinstance(input_shape[2], int) and input_shape[2] > 0:
-                self.model_img_size = input_shape[2]    # mặc định W = H -> lấy vuông
+            # Với mô hình E2 DCT frequency-only: (batch_size, 1, 224, 224)
+            if len(input_shape) == 4:
+                if isinstance(input_shape[2], int) and input_shape[2] > 0:
+                    self.model_img_size = input_shape[2]    # mặc định W = H -> lấy vuông
+                if input_shape[1] == 1:
+                    self.is_frequency_model = True
         except Exception:
             pass
 
         # Cấu hình mean/std chuẩn hóa và color order contract
         model_name_lower = str(self.model_path).lower()
+        if "freq" in model_name_lower or "dct" in model_name_lower:
+            self.is_frequency_model = True
         if threshold_logit is None and threshold is None:
             threshold = (
                 0.3356796703127529
@@ -249,15 +256,18 @@ class AntiSpoofPredictor:
             return []
 
         try:
-            # 1. Chạy tiền xử lý hình ảnh thành Tensor đầu vào (Batch, 3, H, W)
-            batch_input = preprocess_batch(
-                face_crops,
-                self.model_img_size,
-                mean=self.mean,
-                std=self.std,
-                apply_gamma=self.apply_gamma,
-                convert_rgb=self.convert_rgb,
-            )
+            # 1. Chạy tiền xử lý hình ảnh thành Tensor đầu vào
+            if self.is_frequency_model:
+                batch_input = preprocess_dct_batch(face_crops, self.model_img_size)
+            else:
+                batch_input = preprocess_batch(
+                    face_crops,
+                    self.model_img_size,
+                    mean=self.mean,
+                    std=self.std,
+                    apply_gamma=self.apply_gamma,
+                    convert_rgb=self.convert_rgb,
+                )
 
             # 2. Suy luận bằng ONNX Runtime Session
             logits = self.session.run([], {self.input_name: batch_input})[0]

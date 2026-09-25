@@ -1,0 +1,58 @@
+{
+  "experiment": "E2",
+  "model": "Frequency-only DCT Tiny CNN",
+  "run_mode": "preliminary",
+  "model_file": "e2_freq_only_preliminary_dct_v1_best.onnx",
+  "model_sha256": "3976aa68d1fd82e2b3a2c632c1ca3c43d633a478becf0a8b5c4f45de6c55157d",
+  "cache_file": "celeba_scrfd_bbox_cache_v5_3_preliminary_seed42.json",
+  "manifest_file": "celeba_spoof_preliminary_v5_3_edge_mnv3_small_seed42.npz",
+  "split_fingerprints": {
+    "train": "4ecbcee78758366dd454c0e446444f6c74c82ac5c4d1c937730382b34d4e25f8",
+    "val": "4560d12efe0bb840c0584a38bda12097e2048f3066d89177cda62f8d931edf91",
+    "test": "394d6a5ba98cde1cfbda3b9c41c7824262c4c5bc648883b93581a9585400a26c"
+  },
+  "threshold_sources": [
+    [
+      "runtime_config",
+      -0.6203932898564033
+    ],
+    [
+      "best_meta",
+      -0.6203932898564033
+    ]
+  ],
+  "dct_preprocess": {
+    "luminance_weights_rgb": [
+      0.299,
+      0.587,
+      0.114
+    ],
+    "dynamic_range": "sign(C)*log1p(abs(C))",
+    "normalization": "per-sample z-score",
+    "frequency_mask": "none"
+  },
+  "metrics": {
+    "Accuracy": 0.6835,
+    "APCER": 0.40986636337787885,
+    "BPCER": 0.09507754551584625,
+    "ACER": 0.25247195444686255,
+    "AUC": 0.8365700285157671,
+    "binary_confusion_matrix": [
+      [
+        4151,
+        2883
+      ],
+      [
+        282,
+        2684
+      ]
+    ],
+    "Accuracy3Class": 0.5912,
+    "N": 10000,
+    "locked_logit_threshold": -0.6203932898564033,
+    "locked_probability_threshold": 0.34969200907386344,
+    "model_inference_seconds": 5.6806279830002495,
+    "total_evaluation_seconds": 84.29047794299998,
+    "model_inference_ms_per_image": 0.5680627983000249
+  }
+}

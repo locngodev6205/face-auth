@@ -80,11 +80,31 @@ smartface_pad_artifacts/
 │       ├── e1_score_distribution.png                  <-- Biểu đồ phân phối điểm số
 │       └── e1_preliminary_heldout_test_results.zip    <-- Gói ZIP lưu trữ toàn bộ
 │
-├── E2_dct_v1/                                         <-- [E2 Frequency-only: Sẵn sàng nhận output]
-│   ├── pytorch/                                       <-- Lưu frequency_branch_best.pth
-│   ├── deployment/                                    <-- Lưu e2_*.onnx & runtime_config.json
-│   ├── metadata/                                      <-- Lưu e2 run config & history
-│   └── test/                                          <-- Lưu e2 heldout test ZIP & CSVs
+├── E2_dct_v1/                                         <-- [E2 Frequency-only 2D-DCT] Huấn luyện hoàn tất (17K tham số)
+│   ├── deployment/                                    <-- Model ONNX & Runtime config
+│   │   ├── e2_freq_only_preliminary_dct_v1_best.onnx
+│   │   ├── e2_freq_only_preliminary_dct_v1_best.onnx.data
+│   │   └── e2_freq_only_preliminary_dct_v1_runtime_config.json
+│   ├── pytorch/                                       <-- Trọng số PyTorch & nhánh tần số cho E3
+│   │   ├── e2_freq_only_preliminary_dct_v1_best.pth
+│   │   ├── e2_freq_only_preliminary_dct_v1_checkpoint_last.pth
+│   │   ├── e2_freq_only_preliminary_dct_v1_frequency_branch_best.pth   <-- Trích xuất nhánh tần số (8.48K params)
+│   │   └── e2_freq_only_preliminary_dct_v1_frequency_branch_spec.json
+│   ├── metadata/                                      <-- Log huấn luyện & Biểu đồ
+│   │   ├── e2_freq_only_preliminary_dct_v1_best_meta.json  <-- Val AUC: 95.88%, ACER: 9.70%, Epoch 20
+│   │   ├── e2_freq_only_preliminary_dct_v1_run_config.json
+│   │   ├── e2_freq_only_preliminary_dct_v1_training_history.json
+│   │   ├── e2_freq_only_preliminary_dct_v1_training_history.png
+│   │   └── plots/
+│   │       └── __results___13_46.png
+│   └── test/                                          <-- [ĐÃ HOÀN TẤT] Kết quả Held-out Test 10.000 mẫu
+│       ├── e2_heldout_test_summary.json               <-- AUC: 83.66%, ACER: 25.25%, Latency: 0.57ms/ảnh
+│       ├── e2_test_predictions.csv                    <-- Chi tiết dự đoán từng ảnh test
+│       ├── e2_attack_breakdown.csv                    <-- Phân rã lỗi theo từng loại spoof
+│       ├── e2_binary_confusion_matrix.png             <-- Ma trận nhầm lẫn 180 DPI
+│       ├── e2_score_distribution.png                  <-- Biểu đồ phân phối điểm số
+│       ├── e2_test_protocol_snapshot.json             <-- Lưu snapshot cấu hình protocol test
+│       └── e2_preliminary_heldout_test_results.zip    <-- Gói ZIP lưu trữ toàn bộ
 │
 ├── minifasnet_v2se/                                   <-- [Mô hình kế thừa MiniFASNet] INT8 (128x128, 2-class)
 │   └── deployment/
@@ -94,3 +114,22 @@ smartface_pad_artifacts/
     └── deployment/
         └── mnv4_best_224.onnx                         <-- Model ONNX (~5.0 MB)
 ```
+
+---
+
+## 📊 Bảng Thống kê Số lượng Trọng số & Kích thước Mô hình (Model Parameter Benchmark)
+
+Bảng tổng hợp thông số kỹ thuật được trích xuất và đo lường trực tiếp từ các file nhị phân (`.onnx`, `.pth`) và metadata huấn luyện:
+
+| Phân hệ / Thư mục | Tên file mô hình chính | Kiến trúc Backbone | Kích thước đầu vào | **Số lượng tham số (Parameters)** | Dung lượng file | Vai trò trong hệ thống |
+| :--- | :--- | :--- | :---: | :---: | :---: | :--- |
+| **[`E2_dct_v1`](E2_dct_v1/)** | `e2_freq_only_...best.onnx` | Tiny Frequency CNN (2D-DCT) | $1 \times 224 \times 224$ | **17,187** <br>*(Nhánh tần số: 8,480)* | **~105 KB** | Nghiên cứu miền Tần số (Ablation E2 & Module cho E3) |
+| **[`minifasnet_v2se`](minifasnet_v2se/)** | `best_model_quantized.onnx` | MiniFASNetV2SE (INT8) | $3 \times 128 \times 128$ | **468,769** *(~0.47M)* | **~600 KB** | Mô hình siêu nhẹ kế thừa (Legacy baseline 2-class) |
+| **[`E1_v5_3_mnv3_small`](E1_v5_3_mnv3_small/)** | `mnv3s_e1_...edge_best.onnx` | **MobileNetV3-Small** | $3 \times 224 \times 224$ | **1,108,515** *(~1.11M)* | **~4.4 MB** | ⭐ **Mô hình chính thức đang chạy (Active Edge Production)** |
+| **[`mobilenet_v4`](mobilenet_v4/)** | `mnv4_best_224.onnx` | MobileNetV4-Conv-Small | $3 \times 224 \times 224$ | **1,253,283** *(~1.25M)* | **~4.8 MB** | Thực nghiệm kiến trúc thế hệ mới |
+| **[`E1_v5_1_mnv3`](E1_v5_1_mnv3/)** | `mnv3_e1_...v5_1_best.onnx` | MobileNetV3-Large (Modified Head) | $3 \times 224 \times 224$ | **3,276,722** *(~3.28M)* | **~12.6 MB** | Đánh giá chuyên sâu 100K mẫu (E1 Preliminary) |
+| **[`E1_v0_mnv3_large`](E1_v0_mnv3_large/)** | `mnv3_large_3class_best.onnx` | MobileNetV3-Large (Full Classifier) | $3 \times 224 \times 224$ | **4,230,321** *(~4.23M)* | **~16.2 MB** | Mô hình Spatial Baseline ban đầu (10K Quick Test) |
+
+### 📌 Điểm nhấn phân tích kiến trúc:
+1. **Tối ưu hóa Edge:** Mô hình sản xuất [E1_v5_3_mnv3_small](E1_v5_3_mnv3_small/) giảm **~74%** số tham số so với MobileNetV3-Large (từ `4.23M` xuống `1.11M`), đưa độ trễ suy luận xuống mức cực thấp **~2.47 ms/ảnh** mà vẫn duy trì AUC $98.14\%$.
+2. **Miền tần số siêu gọn:** Mô hình [E2_dct_v1](E2_dct_v1/) chỉ tốn **17,187 tham số** (nhánh trích xuất `frequency_branch` chỉ **8,480 tham số**), chứng minh đặc trưng 2D-DCT nén thông tin giả mạo rất cô đọng mà không cần backbone tích chập sâu.

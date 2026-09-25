@@ -1,0 +1,35 @@
+{
+  "protocol_version": "e2_frequency_only_dct_v1",
+  "experiment": "E2_frequency_only",
+  "onnx_model": "e2_freq_only_preliminary_dct_v1_best.onnx",
+  "onnx_input": "frequency_map",
+  "onnx_input_shape": [
+    "batch",
+    1,
+    224,
+    224
+  ],
+  "onnx_fp32_size_mb": 0.036910057067871094,
+  "model_parameter_count": 17187,
+  "frequency_branch_parameter_count": 8480,
+  "pytorch_onnx_max_abs_logit_diff": 1.043081283569336e-06,
+  "host_cpu_ort_batch1_latency_ms": {
+    "mean_ms": 0.24345396002900088,
+    "median_ms": 0.23482699907617643,
+    "p90_ms": 0.27761320015997626
+  },
+  "benchmark_note": "Host CPU model-only diagnostic; excludes crop + luminance + DCT preprocessing.",
+  "dct_preprocess": {
+    "luminance_weights_rgb": [
+      0.299,
+      0.587,
+      0.114
+    ],
+    "dynamic_range": "sign(C)*log1p(abs(C))",
+    "normalization": "per-sample z-score",
+    "frequency_mask": "none"
+  },
+  "calibrated_logit_threshold": -0.6203932898564033,
+  "calibrated_probability_threshold": 0.34969200907386344,
+  "frequency_branch_artifact": "e2_freq_only_preliminary_dct_v1_frequency_branch_best.pth"
+}

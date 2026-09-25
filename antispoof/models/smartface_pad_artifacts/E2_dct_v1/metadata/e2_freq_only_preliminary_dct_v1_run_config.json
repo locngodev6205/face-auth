@@ -1,0 +1,64 @@
+{
+  "protocol_version": "e2_frequency_only_dct_v1",
+  "experiment": "E2_frequency_only",
+  "research_question": "Can frequency cues alone discriminate PAD classes?",
+  "e1_run_mode": "preliminary",
+  "e1_split_manifest": "celeba_spoof_preliminary_v5_3_edge_mnv3_small_seed42.npz",
+  "e1_scrfd_cache": "celeba_scrfd_bbox_cache_v5_3_preliminary_seed42.json",
+  "e1_split_fingerprints": {
+    "train": "4ecbcee78758366dd454c0e446444f6c74c82ac5c4d1c937730382b34d4e25f8",
+    "val": "4560d12efe0bb840c0584a38bda12097e2048f3066d89177cda62f8d931edf91",
+    "test": "394d6a5ba98cde1cfbda3b9c41c7824262c4c5bc648883b93581a9585400a26c"
+  },
+  "e1_cache_selected_fingerprint": "4ac3763a6c566c976de11dda1cbfdb8426f2df73d95347c7fe2c1b9629ab9b85",
+  "input_size": 224,
+  "input_type": "1-channel signed-log DCT map",
+  "dct_source": "RGB crop -> luminance",
+  "luminance_weights_rgb": [
+    0.299,
+    0.587,
+    0.114
+  ],
+  "dct_dynamic_range": "sign(C)*log1p(abs(C))",
+  "dct_normalization": "per-sample z-score over full map",
+  "frequency_mask": "none",
+  "frequency_dim": 64,
+  "hidden_dim": 128,
+  "num_classes": 3,
+  "model_parameter_count": 17187,
+  "frequency_branch_parameter_count": 8480,
+  "optimizer": "AdamW",
+  "lr": 0.0001,
+  "weight_decay": 0.0001,
+  "epochs": 24,
+  "batch_size": 128,
+  "scheduler": "WarmupCosineLambdaLR",
+  "warmup_epochs": 2,
+  "warmup_start_factor": 0.2,
+  "min_lr_factor": 0.1,
+  "early_stop_patience": 4,
+  "early_stop_min_delta": 0.0001,
+  "early_stop_min_epochs": 10,
+  "grad_clip_norm": 5.0,
+  "dropout": 0.2,
+  "label_smoothing": 0.1,
+  "class_weights": [
+    1.0,
+    1.0,
+    1.0
+  ],
+  "sample_seed": 42,
+  "augmentation": {
+    "horizontal_flip_p": 0.5,
+    "brightness_limit": 0.1,
+    "contrast_limit": 0.1,
+    "appearance_p": 0.3,
+    "bbox_jitter_p": 0.2,
+    "bbox_scale_jitter": [
+      0.95,
+      1.05
+    ],
+    "bbox_translate_fraction": 0.05
+  },
+  "score_definition": "real_minus_logsumexp_spoof"
+}

@@ -1,0 +1,13 @@
+{
+  "run_mode": "preliminary",
+  "input_size": 224,
+  "input_type": "normalized signed-log DCT map",
+  "gamma": false,
+  "scrfd_crop_factor": 1.55,
+  "celeba_fallback_crop_factor": 1.5,
+  "frequency_mask": "none",
+  "threshold_policy": "locked from E2 Validation; never calibrated on Test",
+  "locked_logit_threshold": -0.6203932898564033,
+  "locked_probability_threshold": 0.34969200907386344,
+  "test_fingerprint": "394d6a5ba98cde1cfbda3b9c41c7824262c4c5bc648883b93581a9585400a26c"
+}

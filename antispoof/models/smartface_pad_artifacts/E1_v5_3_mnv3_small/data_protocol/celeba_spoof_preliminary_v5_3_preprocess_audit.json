@@ -1,0 +1,4585 @@
+{
+  "protocol": {
+    "version": "scrfd_detector_aligned_v5_3_edge",
+    "detector": "SCRFD-500M / buffalo_s",
+    "primary_input_size": [
+      640,
+      640
+    ],
+    "fallback_input_sizes": [
+      [
+        480,
+        480
+      ],
+      [
+        320,
+        320
+      ]
+    ],
+    "det_threshold": 0.5,
+    "reliable_raw_iou_min": 0.5,
+    "reliable_center_shift_max": 0.2,
+    "scrfd_bbox_expansion_factor": 1.55,
+    "celeba_fallback_expansion_factor": 1.5,
+    "train_min_face_px": 48,
+    "train_small_face_policy": "drop",
+    "val_test_small_face_policy": "keep",
+    "detector_failure_policy": "CelebA bbox fallback; do not auto-drop",
+    "suspicious_train_policy": "drop from Train; retain Val/Test via CelebA fallback",
+    "gamma": false
+  },
+  "stats": {
+    "train_requested": 100000,
+    "train_retained": 98873,
+    "train_removed": 1127,
+    "train_filter_rate": 0.01127,
+    "train_filter_reason_counts": {
+      "TOO_SMALL": 973,
+      "SUSPICIOUS_GEOMETRY": 154
+    },
+    "class_filter_rates": {
+      "Real": 0.01433353621424224,
+      "Physical Spoof": 0.0022240150011992236,
+      "Digital Spoof": 0.02603750528739954
+    },
+    "train_source_counts": {
+      "SCRFD_640": 94068,
+      "SCRFD_480": 3609,
+      "CELEBA_FALLBACK_DET_FAIL": 929,
+      "SCRFD_320": 267
+    },
+    "val_source_counts": {
+      "CELEBA_FALLBACK_DET_FAIL": 177,
+      "SCRFD_640": 14265,
+      "SCRFD_480": 592,
+      "SCRFD_320": 58,
+      "CELEBA_FALLBACK_SUSPICIOUS": 24
+    },
+    "test_source_counts": {
+      "SCRFD_640": 9344,
+      "CELEBA_FALLBACK_DET_FAIL": 105,
+      "CELEBA_FALLBACK_SUSPICIOUS": 26,
+      "SCRFD_480": 500,
+      "SCRFD_320": 25
+    },
+    "train_detector_coverage": 0.9906041083005471,
+    "val_detector_coverage": 0.9867028314368881,
+    "test_detector_coverage": 0.9869
+  },
+  "split_fingerprints": {
+    "train": "4ecbcee78758366dd454c0e446444f6c74c82ac5c4d1c937730382b34d4e25f8",
+    "val": "4560d12efe0bb840c0584a38bda12097e2048f3066d89177cda62f8d931edf91",
+    "test": "394d6a5ba98cde1cfbda3b9c41c7824262c4c5bc648883b93581a9585400a26c"
+  },
+  "bbox_cache_selected_fingerprint": "4ac3763a6c566c976de11dda1cbfdb8426f2df73d95347c7fe2c1b9629ab9b85",
+  "removed_train_samples": [
+    {
+      "key": "Data/train/6423/live/440162.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/7427/live/268180.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/39/live/443965.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/846/live/023302.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/8801/spoof/247625.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/5683/live/096101.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8077/live/146746.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8815/spoof/422661.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/8208/spoof/111316.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/5233/spoof/231213.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/8159/spoof/310258.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8829/spoof/426635.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8194/spoof/199133.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/4700/spoof/202872.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/8186/spoof/020973.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8167/spoof/415233.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8809/spoof/458569.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/5986/live/116652.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8077/live/057189.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/9186/spoof/080057.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/5745/live/088964.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/3022/live/471288.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/10013/spoof/325579.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/6707/live/204248.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/5949/live/318024.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/694/live/442466.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8534/spoof/233751.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8551/spoof/260479.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8195/spoof/038631.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8971/spoof/211811.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8194/spoof/096072.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/4621/spoof/239712.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/8200/spoof/185487.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/701/live/294089.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/6398/live/065019.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8685/spoof/206817.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/6400/spoof/391432.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/6591/live/405657.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/1024/live/041014.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8166/spoof/168098.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8230/live/118587.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8207/spoof/362845.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/7493/live/321114.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/8748/spoof/247761.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/4621/spoof/205124.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/6202/live/412553.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/8185/spoof/122622.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/9092/spoof/009550.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8153/spoof/339608.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/1204/spoof/239891.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/4253/spoof/239648.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/7401/live/336003.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8800/spoof/458564.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8827/spoof/379334.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/3183/live/383154.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8158/spoof/132055.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8205/spoof/288893.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/10143/live/144992.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/5586/spoof/176244.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/1970/live/147282.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8174/spoof/152628.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8176/spoof/121129.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8748/spoof/018929.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/123/live/259567.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/6389/live/335526.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/7484/live/467649.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/131/live/234580.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8186/spoof/312484.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/455/spoof/316557.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/8719/spoof/296381.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/93/live/219602.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8166/spoof/042240.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8163/spoof/125822.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8163/spoof/164369.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8803/spoof/032609.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8190/spoof/369238.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/1721/live/164996.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/8196/spoof/457624.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8171/spoof/124627.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/9117/live/399047.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/3257/spoof/046551.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/8171/spoof/097967.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/3413/live/327442.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8153/spoof/022371.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8196/spoof/267815.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/6367/live/402152.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8189/spoof/459939.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/7976/live/357501.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/3071/spoof/053580.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8158/spoof/324071.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/9202/live/224520.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/9487/spoof/404043.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/6728/live/321905.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/186/live/216228.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8803/spoof/111670.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/7646/spoof/064601.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/8558/spoof/174897.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8562/spoof/255438.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/1949/live/174058.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/7450/live/171162.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8562/spoof/137779.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/1150/live/307937.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/528/live/339223.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/569/live/345835.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8879/spoof/008148.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8195/spoof/034606.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8719/spoof/162489.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8801/spoof/387304.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8158/spoof/300412.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8199/spoof/158523.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8021/live/211351.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/6916/live/396549.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/8173/spoof/014173.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/2741/spoof/317110.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8206/spoof/488113.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/3714/live/374791.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/9090/live/120033.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8304/live/412082.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8594/live/465760.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8739/spoof/088968.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8176/spoof/469599.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8177/spoof/439899.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/105/live/455581.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8838/spoof/215303.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/9830/spoof/019042.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8562/spoof/028462.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8217/spoof/439855.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8755/spoof/162992.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/7076/spoof/226827.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/6535/spoof/017678.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/8216/live/370770.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8165/spoof/328529.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/9776/live/061334.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8909/spoof/476581.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/8166/spoof/269711.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/4846/live/257520.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/8187/spoof/114631.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8094/live/200989.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8801/spoof/141783.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/2230/live/469714.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/10127/spoof/395078.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/8195/spoof/348818.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/1438/live/119534.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/2421/live/333674.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8155/spoof/074279.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8150/live/372806.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/98/live/427781.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8212/spoof/040531.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8217/spoof/264758.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8852/live/491738.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/5780/live/026513.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/1272/live/405023.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/8696/live/470359.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/6048/live/031362.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/6903/live/053736.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8159/spoof/439340.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8203/spoof/067261.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8202/spoof/024117.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8209/spoof/418729.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/6644/live/470208.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8827/spoof/212730.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8202/spoof/032121.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8129/live/134799.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8708/spoof/268862.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8160/spoof/185532.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/9825/spoof/256556.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/3160/live/127505.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/6599/live/014407.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8983/spoof/387323.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8213/spoof/235465.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8695/spoof/298994.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8202/spoof/282308.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/834/live/179243.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8732/spoof/192752.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/2038/live/334600.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8685/spoof/298220.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/1208/spoof/196179.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/8892/spoof/475254.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8026/live/353851.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8192/spoof/130862.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8158/live/080058.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8719/spoof/225289.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8799/spoof/440451.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/8815/spoof/383443.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8803/spoof/069635.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8186/spoof/375559.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/1796/live/205904.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/8987/spoof/066346.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8208/live/021218.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8190/spoof/414935.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8186/spoof/415729.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/6728/live/170360.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/872/live/068904.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/2458/spoof/132013.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8816/spoof/303026.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8181/spoof/071857.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/2711/live/223300.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/9302/spoof/281537.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/8887/spoof/372407.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/872/live/386251.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/7401/live/127635.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8166/spoof/369366.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8708/spoof/242140.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8220/spoof/420091.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8987/spoof/283908.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8206/spoof/223427.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8206/spoof/181944.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/113/live/206635.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8753/spoof/313389.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/9032/spoof/012990.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/6497/live/067619.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8207/spoof/229745.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8719/spoof/399725.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/7895/live/299546.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/7614/live/475125.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/680/live/130620.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/8196/spoof/357684.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/512/live/227626.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/1106/live/238088.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8176/spoof/491720.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/7773/live/170389.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8211/spoof/329317.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8740/spoof/102402.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/6238/live/009882.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/955/live/249171.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8178/spoof/361353.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8910/spoof/481080.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/8708/spoof/119871.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8202/spoof/064674.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8707/spoof/314707.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8157/spoof/370968.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8304/live/450547.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/6263/live/367142.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/7097/live/479145.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8121/live/122735.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/10029/live/238027.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/7104/spoof/224360.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/7222/live/241325.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/4041/live/095871.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/1030/live/301712.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/2038/spoof/259886.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8195/spoof/280361.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/249/spoof/174227.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/4391/live/398514.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8723/spoof/491813.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8218/spoof/050493.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/896/live/433723.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8166/spoof/449913.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8207/spoof/372650.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8802/spoof/217952.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/8157/spoof/227738.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8400/live/454179.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/8165/spoof/100346.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/1757/live/137525.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/4690/spoof/030835.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/2735/spoof/328262.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8892/spoof/480098.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8708/spoof/197711.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/9092/spoof/379903.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/2788/spoof/344434.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8166/spoof/430896.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/7157/live/071556.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/8809/spoof/045459.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/3472/live/097794.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/7443/live/158871.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/8153/spoof/414304.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8207/spoof/456141.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8987/spoof/151363.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/3071/spoof/036371.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8218/spoof/067239.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8720/spoof/313478.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8753/spoof/295247.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8706/spoof/274250.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8189/spoof/425409.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/1147/live/101454.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8753/spoof/423546.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8181/spoof/244485.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8210/spoof/278541.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/5213/live/272662.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/10126/spoof/156825.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/7173/spoof/236487.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/6263/live/232308.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/7139/live/359941.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/1771/live/098960.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/1578/live/255041.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8151/spoof/134878.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8158/spoof/206715.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/1840/live/368136.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8153/spoof/367108.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/5630/live/110988.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8952/live/071553.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8178/spoof/004355.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8200/spoof/145078.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8156/spoof/164073.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8247/live/002086.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/7124/live/344448.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/7774/live/115052.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8073/live/005260.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/6286/live/039388.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8160/spoof/351520.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8181/spoof/095476.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8400/live/481061.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/2229/live/243038.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/4694/spoof/171333.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/6903/live/048084.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/834/live/125529.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8170/spoof/265989.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/6298/live/093024.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/9071/live/034578.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8210/spoof/469906.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8830/live/113071.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8153/spoof/100107.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/7493/live/428921.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8206/spoof/026546.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/4689/spoof/047699.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/3919/live/409813.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/8695/spoof/069395.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8210/spoof/305332.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8185/spoof/017803.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8208/spoof/087212.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8202/spoof/437829.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8799/spoof/087264.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8819/spoof/487111.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/1714/spoof/178532.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/1301/spoof/091252.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/8829/spoof/428542.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/1453/live/336285.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/3504/live/297943.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/814/live/136816.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/1023/spoof/027352.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/8825/spoof/279820.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8195/spoof/103495.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8186/spoof/471304.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8162/spoof/404183.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8707/spoof/052386.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/2127/live/371209.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/834/live/060239.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8156/spoof/393602.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8815/spoof/343919.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8167/spoof/312664.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8220/spoof/139884.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/2735/spoof/271753.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/1405/spoof/379369.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/8688/spoof/101837.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/5573/live/116844.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/677/live/152439.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/7819/live/301302.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8826/spoof/183095.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/8170/spoof/026028.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8216/spoof/256475.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8176/spoof/156210.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/2038/spoof/075865.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/5213/live/073466.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/1091/live/265715.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8719/spoof/427564.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/7272/live/279632.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8190/spoof/322105.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8804/spoof/275624.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8892/spoof/273522.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8205/spoof/051080.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/6994/live/105252.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/6200/live/004766.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8193/spoof/287026.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8178/spoof/390399.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/7622/spoof/069319.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/8809/spoof/259410.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8217/spoof/312332.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/9979/live/157654.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/7233/live/423401.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8690/live/254275.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/398/live/361569.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8987/spoof/115472.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8153/spoof/111716.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/710/live/479263.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/7040/live/047952.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/4690/spoof/227993.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/6261/live/036800.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8151/spoof/298518.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8212/spoof/469756.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8202/spoof/121738.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/1970/live/030908.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/265/live/453860.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/8808/spoof/434891.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8165/spoof/422585.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/8077/live/120390.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/6096/live/335019.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8723/spoof/058248.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/7614/live/295746.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/9778/live/033180.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8706/spoof/432419.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/7934/live/277641.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/4515/live/288470.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/3053/spoof/167526.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8562/spoof/235766.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8217/spoof/315960.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8205/spoof/351496.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/9622/live/153703.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/2458/spoof/070886.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/4089/live/337015.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8682/spoof/111035.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/9783/live/206366.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/7260/live/110620.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8177/spoof/411174.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8824/spoof/231444.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/4961/live/347225.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8818/spoof/140440.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/7744/live/430383.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8695/spoof/145348.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/2038/spoof/467394.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/7424/live/384682.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8159/spoof/396707.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/7383/live/038205.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8206/live/442486.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/661/live/289101.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/410/live/045761.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/2735/spoof/345122.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8207/spoof/173888.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/6383/live/078107.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8735/spoof/317645.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8160/spoof/170968.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8682/spoof/036845.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/9794/live/151664.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/7630/live/018612.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/7491/live/205040.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8183/spoof/353984.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8171/spoof/322264.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8165/spoof/208650.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/6592/spoof/386801.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/2458/spoof/091770.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/7978/live/158654.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/198/live/484930.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8173/spoof/329739.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8707/spoof/359933.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/10174/live/199207.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8457/live/048432.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/542/live/417633.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8158/spoof/368390.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/6497/live/008275.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8167/spoof/063850.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/7685/live/077546.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/5932/live/200542.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8166/spoof/040068.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8194/spoof/291802.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/1747/spoof/391342.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8208/spoof/257305.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8729/spoof/032075.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/7642/live/344776.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/9032/spoof/195192.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8203/spoof/481621.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8193/live/167759.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8908/spoof/466436.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/2912/live/439614.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/86/live/332290.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/9092/spoof/122413.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/7685/live/237184.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/4969/live/382408.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8202/spoof/159585.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8772/live/436601.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/1105/spoof/418998.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/8156/spoof/005754.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/6363/live/026739.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8200/spoof/005640.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8879/spoof/042973.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8702/spoof/329464.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/896/live/242305.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/3392/live/228199.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8198/live/424064.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8365/live/080675.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/1101/spoof/093082.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/8158/live/177975.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8172/spoof/163149.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8193/spoof/204971.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/7773/live/151066.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/8168/spoof/422341.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8887/spoof/481914.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8209/spoof/189980.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8208/spoof/330734.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/4400/live/480402.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/8207/spoof/278918.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/6931/spoof/089552.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/1447/live/076080.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/8094/live/480417.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/6202/live/326965.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/1727/live/283725.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/8210/spoof/296352.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/5305/live/044199.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8198/spoof/025588.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/3854/live/198465.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/4338/live/386502.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8195/spoof/134061.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/9723/spoof/179109.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/8203/spoof/444079.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/2293/spoof/174543.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/8218/spoof/351334.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8167/spoof/219540.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/7272/live/071765.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8810/spoof/463909.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8719/spoof/137678.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/195/live/277092.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8076/live/177676.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8160/spoof/064695.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8209/spoof/232614.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/6159/live/144017.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8695/spoof/158248.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8021/live/217630.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/5648/live/490572.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/1459/spoof/248372.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/2118/live/272318.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/4245/live/176085.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8518/live/428418.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/9404/spoof/171905.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/8196/spoof/146424.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/122/spoof/025398.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/8159/spoof/272361.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8802/spoof/412668.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/440/live/228626.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/6508/live/487057.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/9212/live/471397.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8826/spoof/079497.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8172/spoof/338321.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/1093/spoof/295107.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/8823/spoof/145245.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8809/spoof/149754.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8724/live/349695.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8187/spoof/285626.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/1150/live/214155.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/8823/spoof/199027.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8772/live/018684.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8206/spoof/418268.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8725/spoof/481376.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8803/spoof/140566.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/6006/live/379606.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8800/spoof/436213.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8020/live/369572.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8824/spoof/256452.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8157/spoof/120964.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8177/spoof/322738.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8706/spoof/317218.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8206/spoof/046603.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8207/spoof/403622.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8186/spoof/013341.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/4265/live/223556.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8526/spoof/437411.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/6620/spoof/109281.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/6127/live/141581.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8824/spoof/180277.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8181/spoof/066337.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8400/live/458967.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8815/spoof/267330.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8195/spoof/280540.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/541/live/474953.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/5956/live/018366.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/757/live/420741.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/5819/live/255643.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/8207/spoof/477360.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/5939/live/378484.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8269/live/252261.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8157/spoof/167502.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/1969/live/340383.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8173/spoof/304235.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8735/spoof/320881.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/427/live/270674.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8879/spoof/252472.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8692/spoof/016667.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/5928/live/227363.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/3405/spoof/117676.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/6288/live/287957.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/9747/live/029230.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8189/spoof/144190.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8155/spoof/169351.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8158/live/165639.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/187/live/280709.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8159/spoof/129821.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/4324/live/176295.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8750/spoof/284572.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8857/spoof/333167.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/8815/spoof/171382.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/8183/spoof/308573.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/534/live/139218.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/9862/live/363957.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8171/spoof/485358.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/3405/spoof/366240.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/188/live/393787.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8825/spoof/222291.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/9247/live/436633.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8727/spoof/193039.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/999/live/303088.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/7312/live/145728.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8685/spoof/113684.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8198/spoof/403841.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8744/spoof/344041.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8706/spoof/102595.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/7612/live/160223.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/1741/spoof/373642.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8193/spoof/213832.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/7970/live/062183.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/2968/spoof/085286.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/7838/spoof/088074.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/1333/spoof/174733.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/7998/live/421727.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8173/spoof/195908.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8884/spoof/430572.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/2741/spoof/000886.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8181/spoof/246130.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8719/spoof/068792.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8198/spoof/410354.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/4245/live/128910.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8803/spoof/409960.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8158/spoof/296491.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8153/spoof/080735.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8705/spoof/302826.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/7920/live/279342.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/4004/live/244860.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/1438/live/115989.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/9873/live/234893.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8158/spoof/465539.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/2338/spoof/109104.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/3071/spoof/052524.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/4265/live/081624.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/9544/live/361175.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/3748/spoof/410430.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/172/live/340431.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/544/live/378362.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8829/spoof/373246.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/5356/live/202555.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/1969/live/019896.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8175/spoof/034988.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8883/spoof/475129.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/8156/spoof/064223.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/10127/live/123228.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8197/spoof/059214.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/6974/spoof/202730.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/8727/spoof/382065.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8823/live/289616.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8166/spoof/223188.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/43/live/249032.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/6903/live/037985.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8176/spoof/422678.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8160/spoof/013101.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/504/live/006732.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/9818/spoof/230033.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/8700/spoof/410854.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8153/spoof/052352.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/2038/spoof/431285.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8192/spoof/295948.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8033/live/428224.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8217/spoof/283288.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8151/spoof/302121.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8198/spoof/337899.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/6923/live/007874.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/3672/spoof/311708.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/1170/live/299400.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/8205/spoof/095692.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/3632/live/130880.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8723/spoof/476866.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/2968/spoof/386688.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/5926/live/347936.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/4255/spoof/199307.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/9644/live/138914.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/9893/live/111665.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/4961/live/217564.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8177/spoof/263457.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8210/spoof/445344.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/784/live/088381.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8203/spoof/224616.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/1969/live/031368.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8199/spoof/083850.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8196/spoof/074411.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/1539/live/389915.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/5278/live/318149.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/302/live/319257.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/408/live/193556.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/2038/spoof/344032.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/7621/live/261900.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/2118/live/302538.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8686/spoof/424331.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8815/spoof/227322.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8205/spoof/144795.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8808/spoof/112948.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8815/spoof/242506.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/1106/live/197639.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8094/live/463969.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8810/spoof/391675.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/9142/live/483580.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8199/spoof/385598.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8171/spoof/013324.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8181/spoof/372743.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8824/spoof/109673.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/249/live/007630.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8719/spoof/400648.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/123/live/471944.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8755/spoof/376879.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/6043/live/253451.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/7943/live/019654.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/7965/live/261204.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/7102/live/319108.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8812/spoof/199928.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8187/spoof/097520.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/2458/spoof/082780.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8158/spoof/064360.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/9902/live/396411.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8190/spoof/428090.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/9886/live/475675.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8791/live/128185.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/2735/spoof/167821.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/4262/spoof/454679.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/8171/spoof/188310.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8706/spoof/366145.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/4352/live/280919.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/5639/live/201361.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/6503/live/131888.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/3045/live/199225.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8756/spoof/143899.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/7684/live/185097.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/7665/live/294094.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/1301/spoof/233673.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/1327/live/309189.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/6232/live/382400.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8903/spoof/348297.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/5538/live/242030.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/2819/live/012705.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/9518/live/398025.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8562/spoof/091544.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/948/live/169733.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8211/spoof/485038.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8216/spoof/128014.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8983/spoof/367979.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8173/spoof/488093.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8809/spoof/113767.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/9922/live/368508.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/6435/live/406090.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/5700/live/250838.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/1949/live/290639.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8184/spoof/479823.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8781/live/449190.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/493/live/415643.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8683/spoof/318322.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8733/spoof/088962.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/1741/spoof/139246.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8153/spoof/267056.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/7946/live/275558.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8013/live/285425.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8196/spoof/446097.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/424/live/172605.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8762/live/408985.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/218/live/271515.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/3753/spoof/316502.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/4269/spoof/361761.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/8207/spoof/460219.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/10013/spoof/059607.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/4353/live/327817.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/138/live/438135.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8193/spoof/176025.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/5939/live/341688.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/703/live/118695.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/3071/spoof/180550.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/3047/live/378545.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8721/spoof/007551.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/1545/live/292217.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8371/live/297848.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/9200/live/363995.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8334/live/344589.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/594/live/124663.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8196/spoof/104756.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/895/live/399234.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/4703/spoof/378245.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/7594/live/011910.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8189/spoof/115405.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8526/spoof/412007.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/482/live/205357.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/9114/spoof/122477.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/7976/live/029716.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/7133/spoof/155188.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/8825/spoof/065867.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/3213/live/109375.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/7770/live/026294.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8710/spoof/128365.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8735/spoof/435276.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8171/spoof/252446.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/4352/live/073411.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8176/spoof/210593.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/771/live/267420.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8176/spoof/309087.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/6353/live/267344.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8815/spoof/258572.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8193/spoof/206368.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8151/spoof/233056.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8210/spoof/485236.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/2338/spoof/069420.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/6079/live/170749.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/7575/live/089519.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/7493/live/389971.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/6127/live/330038.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8987/spoof/390567.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8199/spoof/430266.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/2735/spoof/092914.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/7493/live/343316.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/3919/live/176359.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8193/spoof/095779.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/1394/spoof/268869.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/1949/live/249488.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8746/spoof/278941.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/5983/live/404287.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/6398/live/110237.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/547/live/196501.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/1290/live/405811.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/7131/spoof/440657.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/186/live/105829.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8176/spoof/462076.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8808/spoof/382225.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8808/spoof/472585.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8885/spoof/228033.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/9900/live/021042.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/2293/spoof/234412.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/118/live/184824.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/6240/live/370553.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8823/spoof/340208.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/8162/spoof/291696.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/6367/live/357499.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8203/spoof/346234.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8202/spoof/262759.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8176/spoof/270934.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/7619/live/107730.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/4425/live/057392.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/584/live/247280.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/5573/live/045756.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8885/spoof/417408.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8187/spoof/141214.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8213/spoof/470165.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/1220/live/031249.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8165/spoof/377199.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/3231/live/226189.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8732/spoof/081445.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8198/spoof/337283.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/5573/live/094061.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/1541/live/091754.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/3183/live/269008.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/7785/live/326299.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/3806/live/241346.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/9736/live/162966.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8196/spoof/008216.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8708/live/020442.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/6238/live/339092.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8988/live/200719.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/75/live/387946.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/4700/spoof/188251.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/8185/spoof/309611.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/6418/live/044577.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8177/spoof/451099.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8724/spoof/458663.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/4353/live/256102.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8702/spoof/208634.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8703/spoof/330579.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/1020/live/247174.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/2293/spoof/412706.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/4597/live/158810.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/7594/live/019337.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8739/spoof/011590.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/5833/live/404104.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8163/spoof/027145.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8803/spoof/270185.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8248/live/406958.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8160/spoof/306990.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8174/spoof/298059.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/5733/live/412847.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8815/spoof/352397.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/6759/live/303691.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/4993/live/339344.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8271/live/416973.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/186/live/478366.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/834/live/276216.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/7783/live/308682.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8855/live/474825.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/5430/live/201176.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/418/live/410000.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8115/live/462193.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/1091/live/034082.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/680/live/089373.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/1218/live/429264.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8190/spoof/281152.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/1299/live/235146.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8738/spoof/226576.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/8207/spoof/477964.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/3809/live/164986.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/5160/live/165150.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/6592/spoof/480999.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/93/live/132901.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/9723/spoof/177026.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/8746/spoof/099470.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8158/spoof/140084.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/4690/spoof/489452.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8167/spoof/137733.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/6552/live/049442.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/7135/spoof/072523.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/8170/spoof/229077.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/9884/live/433922.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8183/spoof/151104.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/7173/spoof/127288.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/839/live/418834.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/7039/live/378826.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/3652/live/030314.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/7471/live/011307.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8818/spoof/222030.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8178/spoof/159633.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/6967/live/342437.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8866/spoof/099176.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/7685/live/100254.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/1447/spoof/151428.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/9095/spoof/473861.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/7069/live/217203.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/8983/spoof/111325.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8205/spoof/258679.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8187/spoof/176230.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/129/live/242303.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/172/live/165885.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/5714/live/181567.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/504/live/214173.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8211/spoof/227023.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/3257/spoof/383466.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/8829/spoof/395343.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8206/spoof/007113.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/7909/live/219530.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/7646/spoof/132625.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/8518/spoof/050909.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8879/spoof/445823.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8823/spoof/144784.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8374/live/125050.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/8826/spoof/450741.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8158/spoof/032360.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8192/spoof/212150.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/1106/live/221211.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8746/spoof/469602.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/6592/spoof/005385.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/9950/live/304542.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/5815/live/234210.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8209/spoof/273131.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/681/live/191353.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/7794/live/151189.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8799/spoof/475015.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/7427/live/410814.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8199/spoof/428560.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8194/spoof/327846.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8212/spoof/260071.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/39/live/293882.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/5739/live/318096.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/7122/spoof/209819.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/9576/live/336990.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/427/live/124043.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8156/spoof/132218.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/282/live/445980.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8708/spoof/126533.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8205/spoof/330997.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8203/spoof/351697.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/9910/live/444156.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/6/live/490980.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8194/spoof/355644.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8811/spoof/468896.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/8825/spoof/452433.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8186/spoof/455208.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8810/spoof/178379.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8165/spoof/220564.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8216/spoof/208556.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/9854/live/062333.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8211/spoof/172969.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/1105/live/110307.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/1721/spoof/237772.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8562/spoof/040190.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/6082/live/422429.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/195/live/032463.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/6298/live/448158.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/7399/live/336732.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/6353/live/240950.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/9095/spoof/108431.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8181/spoof/251006.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8155/spoof/295367.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8159/spoof/038880.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/6320/live/305748.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/6337/live/326176.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8195/spoof/149305.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/10065/spoof/359844.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8153/spoof/481719.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8741/spoof/125328.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8205/spoof/255874.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8887/spoof/096163.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/9094/spoof/254721.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/617/live/002840.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/5527/live/083471.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8208/spoof/340250.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/5780/live/358484.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8683/spoof/007255.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/867/live/213575.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/7704/live/098845.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/5794/live/133920.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8202/spoof/220197.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/6296/live/040726.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8165/spoof/439143.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/7589/live/026352.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8879/spoof/246897.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8524/spoof/121894.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8883/spoof/490958.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/8879/spoof/187584.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8506/spoof/089849.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8181/spoof/158433.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/4316/spoof/414475.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/6931/spoof/250842.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/8218/spoof/275352.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/6240/live/486997.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/3672/spoof/269631.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/2038/spoof/226332.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8720/spoof/431216.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8755/live/028078.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8219/spoof/052315.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8708/spoof/176344.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/3765/live/209487.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8202/spoof/447891.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8576/live/438977.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8803/spoof/278582.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/1150/live/418686.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8198/spoof/227874.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8220/spoof/135113.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8199/spoof/281359.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/2564/live/339941.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8753/spoof/087569.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/302/live/035828.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8185/spoof/421942.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/6256/live/482578.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8700/spoof/360648.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/1724/live/179711.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8185/spoof/446023.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/6298/live/441928.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/7069/live/119815.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/6363/live/171713.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/9524/live/256769.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8189/spoof/232201.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/6993/live/343158.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8185/spoof/416904.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8205/spoof/006322.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/530/spoof/220640.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/9854/live/052753.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/5700/live/165605.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8815/spoof/091026.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/7984/live/424088.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/9072/spoof/212994.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/8815/spoof/371127.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8732/spoof/085416.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8562/spoof/029884.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/6620/spoof/174194.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8756/spoof/183080.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/1193/spoof/210977.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/8186/spoof/468703.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8885/spoof/125299.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/7649/live/156886.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8189/spoof/490285.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/7435/live/027517.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/8811/spoof/220929.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8550/spoof/282370.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8202/spoof/369594.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8170/spoof/073122.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8200/spoof/401752.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8153/spoof/369515.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8824/spoof/435410.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8186/spoof/253111.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/4136/live/485411.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/7321/spoof/399832.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/25/live/141041.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8708/spoof/378808.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/6916/live/206785.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/1727/live/452362.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/8732/spoof/427633.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/7125/live/472124.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/1300/live/371531.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/9095/spoof/494077.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8987/spoof/197096.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8197/spoof/079284.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/9200/live/324960.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/9187/live/182671.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8747/live/320522.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8016/live/419542.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8181/spoof/168130.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8334/live/002071.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8160/spoof/360641.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8809/spoof/167380.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8165/spoof/419099.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8216/spoof/250657.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/5586/spoof/443941.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/8756/spoof/414350.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/3572/spoof/202317.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8203/spoof/306941.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8703/spoof/331516.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/6320/live/043504.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8879/spoof/477170.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8172/spoof/360047.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8809/spoof/108396.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8724/spoof/183396.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/8219/spoof/113254.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/1984/live/069759.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/6136/live/125850.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/5729/live/035328.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/6889/live/102386.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/9241/spoof/427049.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/677/live/000817.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8719/spoof/007768.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8682/spoof/227547.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8168/spoof/450439.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/7039/live/328938.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8213/spoof/389333.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8562/spoof/343912.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/493/live/461786.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8190/spoof/108776.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/7634/live/424051.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/6288/live/331210.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/8706/spoof/150320.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/576/live/107245.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8190/spoof/027956.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8219/spoof/381344.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/5526/live/077070.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8182/spoof/080266.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/5939/live/144550.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/8177/spoof/404581.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/1294/spoof/334627.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/8196/spoof/023220.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8151/spoof/467817.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/3958/live/226734.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/8184/spoof/263475.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/6334/live/142343.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    },
+    {
+      "key": "Data/train/8206/spoof/260112.jpg",
+      "reason": "TOO_SMALL"
+    },
+    {
+      "key": "Data/train/9930/spoof/416974.jpg",
+      "reason": "SUSPICIOUS_GEOMETRY"
+    }
+  ]
+}

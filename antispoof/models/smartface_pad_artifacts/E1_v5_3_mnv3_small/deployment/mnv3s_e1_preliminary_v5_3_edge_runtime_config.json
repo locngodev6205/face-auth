@@ -1,0 +1,20 @@
+{
+  "protocol_version": "spatial_e1_mnv3_small_v5_3_edge_final",
+  "model_file": "mnv3s_e1_preliminary_v5_3_edge_best.onnx",
+  "model_img_size": 224,
+  "bbox_expansion_factor": 1.55,
+  "color_order": "RGB",
+  "mean": [
+    0.5931,
+    0.469,
+    0.4229
+  ],
+  "std": [
+    0.2471,
+    0.2214,
+    0.2157
+  ],
+  "apply_gamma": false,
+  "calibrated_logit_threshold": -0.4650222063064575,
+  "predictor_threshold_probability": 0.38579509526467753
+}

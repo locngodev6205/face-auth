@@ -1,0 +1,66 @@
+{
+  "protocol_version": "spatial_e1_optimized_v5_1_time_balanced",
+  "best_epoch": 9,
+  "calibrated_logit_threshold": -0.682607114315033,
+  "calibrated_probability_threshold": 0.3356796703127529,
+  "validation_metrics_percent": {
+    "Accuracy": 99.84784334480021,
+    "APCER": 0.16771902131018154,
+    "BPCER": 0.12048192771084339,
+    "ACER": 0.14410047451051247,
+    "AUC": 99.98512201925303
+  },
+  "confusion_matrix": [
+    [
+      4974,
+      6
+    ],
+    [
+      17,
+      10119
+    ]
+  ],
+  "score_definition": "pad_score = real_logit - logsumexp([physical_spoof_logit, digital_spoof_logit]); Real iff pad_score >= logit_threshold",
+  "predictor_contract": {
+    "threshold_argument": 0.3356796703127529,
+    "apply_gamma": false,
+    "color_order": "RGB",
+    "model_img_size": 224,
+    "bbox_expansion_factor": 1.5,
+    "mean": [
+      0.5931,
+      0.469,
+      0.4229
+    ],
+    "std": [
+      0.2471,
+      0.2214,
+      0.2157
+    ]
+  },
+  "gamma_policy": "Research baseline is calibrated without gamma. If deployment uses apply_gamma=True, recalibrate a separate threshold on Validation under gamma preprocessing.",
+  "train_samples": 100000,
+  "val_samples": 15116,
+  "test_samples_configured": 10000,
+  "train_subjects": 7923,
+  "val_subjects": 249,
+  "sample_seed": 42,
+  "input_size": 224,
+  "bbox_expansion_factor": 1.5,
+  "normalization_mean": [
+    0.5931,
+    0.469,
+    0.4229
+  ],
+  "normalization_std": [
+    0.2471,
+    0.2214,
+    0.2157
+  ],
+  "split_fingerprints": {
+    "train": "47d331c8dd3c250367768209bc4ac0b8413cd9d26bc737ffa814f2ee9a30b7aa",
+    "val": "4560d12efe0bb840c0584a38bda12097e2048f3066d89177cda62f8d931edf91",
+    "test": "394d6a5ba98cde1cfbda3b9c41c7824262c4c5bc648883b93581a9585400a26c"
+  },
+  "split_manifest": "celeba_spoof_subject_disjoint_preliminary_split_seed42.npz"
+}

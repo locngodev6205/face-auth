@@ -1,0 +1,68 @@
+{
+  "protocol_version": "spatial_e1_optimized_v5_1_time_balanced",
+  "epochs": 24,
+  "backbone_lr": 1e-05,
+  "head_lr": 0.0001,
+  "weight_decay": 0.0001,
+  "optimizer": "AdamW",
+  "scheduler": "WarmupCosineLambdaLR",
+  "warmup_epochs": 2,
+  "warmup_start_factor": 0.2,
+  "min_lr_factor": 0.1,
+  "early_stop_patience": 4,
+  "early_stop_min_delta": 0.0001,
+  "early_stop_min_epochs": 10,
+  "grad_clip_norm": 5.0,
+  "strict_determinism": false,
+  "cudnn_benchmark": true,
+  "run_mode": "preliminary",
+  "batch_size": 128,
+  "input_size": 224,
+  "bbox_expansion_factor": 1.5,
+  "normalization_mean": [
+    0.5931,
+    0.469,
+    0.4229
+  ],
+  "normalization_std": [
+    0.2471,
+    0.2214,
+    0.2157
+  ],
+  "num_classes": 3,
+  "spatial_dim": 256,
+  "hidden_dim": 128,
+  "dropout_rate": 0.2,
+  "label_smoothing": 0.1,
+  "class_weights": [
+    1.0,
+    1.0,
+    1.0
+  ],
+  "train_sample_size": 100000,
+  "val_target_size": 15000,
+  "val_actual_size": 15116,
+  "test_sample_size": 10000,
+  "sample_seed": 42,
+  "research_apply_gamma": false,
+  "augmentation": {
+    "horizontal_flip_p": 0.5,
+    "brightness_limit": 0.1,
+    "contrast_limit": 0.1,
+    "appearance_p": 0.3,
+    "bbox_jitter_p": 0.2,
+    "bbox_scale_jitter": [
+      0.95,
+      1.05
+    ],
+    "bbox_translate_fraction": 0.05,
+    "affine_rotation": false
+  },
+  "score_definition": "real_minus_logsumexp_spoof",
+  "split_fingerprints": {
+    "train": "47d331c8dd3c250367768209bc4ac0b8413cd9d26bc737ffa814f2ee9a30b7aa",
+    "val": "4560d12efe0bb840c0584a38bda12097e2048f3066d89177cda62f8d931edf91",
+    "test": "394d6a5ba98cde1cfbda3b9c41c7824262c4c5bc648883b93581a9585400a26c"
+  },
+  "split_manifest": "celeba_spoof_subject_disjoint_preliminary_split_seed42.npz"
+}

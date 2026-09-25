@@ -1,0 +1,141 @@
+{
+  "protocol_version": "spatial_e1_mnv3_small_v5_3_edge_final",
+  "backbone_name": "MobileNetV3-Small",
+  "backbone_weights": "MobileNet_V3_Small_Weights.DEFAULT",
+  "backbone_feature_dim": 576,
+  "model_parameter_count": 1108515,
+  "epochs": 24,
+  "backbone_lr": 1e-05,
+  "head_lr": 0.0001,
+  "weight_decay": 0.0001,
+  "optimizer": "AdamW",
+  "scheduler": "WarmupCosineLambdaLR",
+  "warmup_epochs": 2,
+  "warmup_start_factor": 0.2,
+  "min_lr_factor": 0.1,
+  "early_stop_patience": 4,
+  "early_stop_min_delta": 0.0001,
+  "early_stop_min_epochs": 10,
+  "grad_clip_norm": 5.0,
+  "strict_determinism": false,
+  "cudnn_benchmark": true,
+  "run_mode": "preliminary",
+  "batch_size": 128,
+  "input_size": 224,
+  "bbox_expansion_factor": 1.55,
+  "normalization_mean": [
+    0.5931,
+    0.469,
+    0.4229
+  ],
+  "normalization_std": [
+    0.2471,
+    0.2214,
+    0.2157
+  ],
+  "preprocess_policy": {
+    "version": "scrfd_detector_aligned_v5_3_edge",
+    "detector": "SCRFD-500M / buffalo_s",
+    "primary_input_size": [
+      640,
+      640
+    ],
+    "fallback_input_sizes": [
+      [
+        480,
+        480
+      ],
+      [
+        320,
+        320
+      ]
+    ],
+    "det_threshold": 0.5,
+    "reliable_raw_iou_min": 0.5,
+    "reliable_center_shift_max": 0.2,
+    "scrfd_bbox_expansion_factor": 1.55,
+    "celeba_fallback_expansion_factor": 1.5,
+    "train_min_face_px": 48,
+    "train_small_face_policy": "drop",
+    "val_test_small_face_policy": "keep",
+    "detector_failure_policy": "CelebA bbox fallback; do not auto-drop",
+    "suspicious_train_policy": "drop from Train; retain Val/Test via CelebA fallback",
+    "gamma": false
+  },
+  "preprocess_stats": {
+    "train_requested": 100000,
+    "train_retained": 98873,
+    "train_removed": 1127,
+    "train_filter_rate": 0.01127,
+    "train_filter_reason_counts": {
+      "TOO_SMALL": 973,
+      "SUSPICIOUS_GEOMETRY": 154
+    },
+    "class_filter_rates": {
+      "Real": 0.01433353621424224,
+      "Physical Spoof": 0.0022240150011992236,
+      "Digital Spoof": 0.02603750528739954
+    },
+    "train_source_counts": {
+      "SCRFD_640": 94068,
+      "SCRFD_480": 3609,
+      "CELEBA_FALLBACK_DET_FAIL": 929,
+      "SCRFD_320": 267
+    },
+    "val_source_counts": {
+      "CELEBA_FALLBACK_DET_FAIL": 177,
+      "SCRFD_640": 14265,
+      "SCRFD_480": 592,
+      "SCRFD_320": 58,
+      "CELEBA_FALLBACK_SUSPICIOUS": 24
+    },
+    "test_source_counts": {
+      "SCRFD_640": 9344,
+      "CELEBA_FALLBACK_DET_FAIL": 105,
+      "CELEBA_FALLBACK_SUSPICIOUS": 26,
+      "SCRFD_480": 500,
+      "SCRFD_320": 25
+    },
+    "train_detector_coverage": 0.9906041083005471,
+    "val_detector_coverage": 0.9867028314368881,
+    "test_detector_coverage": 0.9869
+  },
+  "bbox_cache_file": "celeba_scrfd_bbox_cache_v5_3_preliminary_seed42.json",
+  "bbox_cache_selected_fingerprint": "4ac3763a6c566c976de11dda1cbfdb8426f2df73d95347c7fe2c1b9629ab9b85",
+  "num_classes": 3,
+  "spatial_dim": 256,
+  "hidden_dim": 128,
+  "dropout_rate": 0.2,
+  "label_smoothing": 0.1,
+  "class_weights": [
+    1.0,
+    1.0,
+    1.0
+  ],
+  "train_sample_size": 100000,
+  "val_target_size": 15000,
+  "val_actual_size": 15116,
+  "test_sample_size": 10000,
+  "sample_seed": 42,
+  "research_apply_gamma": false,
+  "augmentation": {
+    "horizontal_flip_p": 0.5,
+    "brightness_limit": 0.1,
+    "contrast_limit": 0.1,
+    "appearance_p": 0.3,
+    "bbox_jitter_p": 0.2,
+    "bbox_scale_jitter": [
+      0.95,
+      1.05
+    ],
+    "bbox_translate_fraction": 0.05,
+    "affine_rotation": false
+  },
+  "score_definition": "real_minus_logsumexp_spoof",
+  "split_fingerprints": {
+    "train": "4ecbcee78758366dd454c0e446444f6c74c82ac5c4d1c937730382b34d4e25f8",
+    "val": "4560d12efe0bb840c0584a38bda12097e2048f3066d89177cda62f8d931edf91",
+    "test": "394d6a5ba98cde1cfbda3b9c41c7824262c4c5bc648883b93581a9585400a26c"
+  },
+  "split_manifest": "celeba_spoof_preliminary_v5_3_edge_mnv3_small_seed42.npz"
+}

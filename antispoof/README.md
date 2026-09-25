@@ -35,15 +35,24 @@ Module **Anti-Spoofing (Chống giả mạo khuôn mặt)** được tích hợp
 
 ```text
 face_auth/antispoof/
-├── README.md                      # Tài liệu hướng dẫn này
-├── requirements.txt               # Các thư viện phụ thuộc siêu nhẹ
+├── README.md                      # Tài liệu tổng quan
+├── compare_model.md               # Bảng so sánh MiniFASNet vs MobileNetV3 / YuNet vs SCRFD
+├── requirements.txt               # Các thư viện phụ thuộc
 ├── __init__.py                    # Export các lớp và hàm API chính
 ├── predictor.py                   # Class AntiSpoofPredictor chính
-├── preprocess.py                  # Hàm crop 1.55x và tiền xử lý ảnh 128x128
+├── preprocess.py                  # Hàm crop 1.55x và tiền xử lý ảnh cho PAD
 ├── loader.py                      # Hàm load ONNX Runtime Session (GPU/CPU)
 ├── system.py                      # Tiện ích đọc thông tin phần cứng (CPU/GPU)
-└── models/
-    └── best_model_quantized.onnx  # File trọng số mô hình INT8 (600 KB)
+├── models/                        # Chứa model ONNX runtime và kho lưu trữ Artifacts
+│   ├── smartface_pad_artifacts/   # Kho lưu trữ dài hạn E1/E2/E3 (weights, data protocol, metadata)
+│   └── v3 -> ...                  # Symlink model đang chạy trong production
+└── notebooks/                     # Toàn bộ Jupyter Notebook và tài liệu thực nghiệm E1/E2
+    ├── 01_eda/                    # Phân tích dữ liệu CelebA-Spoof
+    ├── 02_quick_test/             # Thử nghiệm nhanh 10K mẫu
+    ├── 03_e1_spatial_v5_1/        # Huấn luyện và đánh giá sâu E1 v5.1
+    ├── 04_e1_spatial_v5_2/        # Thử nghiệm E1 v5.2 Detector-aligned
+    ├── 05_e2_frequency_dct/       # Huấn luyện E2 (2D-DCT) và Held-out Test E1/E2
+    └── diagnostics/               # Script chẩn đoán độ trễ và camera thực tế
 ```
 
 ---

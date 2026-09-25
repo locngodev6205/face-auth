@@ -17,7 +17,7 @@ import math
 import sys
 import time
 import cv2
-import config
+import config 
 from pathlib import Path
 from collections import deque
 from recognition.embedder import FaceEmbedder

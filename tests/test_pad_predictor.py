@@ -20,7 +20,7 @@ class TestPadMathAndPredictor(unittest.TestCase):
             mock_load.return_value = (mock_session, "input")
 
             predictor = AntiSpoofPredictor(
-                model_path="antispoof/models/best_model_quantized.onnx",
+                model_path="antispoof/models/smartface_pad_artifacts/minifasnet_v2se/deployment/best_model_quantized.onnx",
                 threshold=0.5,
             )
             self.assertAlmostEqual(predictor.logit_threshold, 0.0, places=6)
@@ -49,7 +49,7 @@ class TestPadMathAndPredictor(unittest.TestCase):
 
             for p in [0.3, 0.5, 0.7, 0.85]:
                 predictor = AntiSpoofPredictor(
-                    model_path="antispoof/models/mnv3_large_3class_best.onnx",
+                    model_path="antispoof/models/smartface_pad_artifacts/E1_v0_mnv3_large/deployment/mnv3_large_3class_best.onnx",
                     threshold=p,
                 )
                 expected_logit_thresh = math.log(p / (1.0 - p))
@@ -85,14 +85,14 @@ class TestPadMathAndPredictor(unittest.TestCase):
             mock_load.return_value = (mock_session, "input")
 
             pred_minifas = AntiSpoofPredictor(
-                model_path="antispoof/models/best_model_quantized.onnx",
+                model_path="antispoof/models/smartface_pad_artifacts/minifasnet_v2se/deployment/best_model_quantized.onnx",
             )
             self.assertEqual(pred_minifas.color_order, "BGR")
             self.assertFalse(pred_minifas.convert_rgb)
 
             mock_input.shape = [1, 3, 224, 224]
             pred_mnv3 = AntiSpoofPredictor(
-                model_path="antispoof/models/mnv3_large_3class_best.onnx",
+                model_path="antispoof/models/smartface_pad_artifacts/E1_v0_mnv3_large/deployment/mnv3_large_3class_best.onnx",
             )
             self.assertEqual(pred_mnv3.color_order, "RGB")
             self.assertTrue(pred_mnv3.convert_rgb)
@@ -105,7 +105,7 @@ class TestPadMathAndPredictor(unittest.TestCase):
             mock_load.return_value = (mock_session, "input")
 
             predictor = AntiSpoofPredictor(
-                model_path="antispoof/models/mnv3_e1_preliminary_v5_1_best.onnx",
+                model_path="antispoof/models/smartface_pad_artifacts/E1_v5_1_mnv3/deployment/mnv3_e1_preliminary_v5_1_best.onnx",
             )
             self.assertEqual(predictor.bbox_expansion_factor, 1.55)
 

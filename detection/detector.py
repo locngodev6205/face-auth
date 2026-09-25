@@ -43,7 +43,7 @@ class FaceDetector:
         )
         app.prepare(ctx_id=ctx_id, det_size=det_size, det_thresh=conf_thresh)
 
-        self._model = app.models.get("detection")
+        self._model = app.models.get("detection") # nạp det_500m.onnx
         self.min_face_size = max(int(min_face_size), 0)
         if self._model is None:
             raise RuntimeError(

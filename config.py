@@ -76,7 +76,7 @@ MODEL_CTX_ID = _get_env_int("MODEL_CTX_ID", -1)
 # DETECTOR_MODEL_PATH: None = dùng đường dẫn mặc định trong detection/models/
 DETECTOR_MODEL_PATH = _get_env_str("DETECTOR_MODEL_PATH", None)
 DETECTOR_CONF_THRESH = _get_env_float("DETECTOR_CONF_THRESH", 0.5)
-DETECTOR_NMS_THRESH = _get_env_float("DETECTOR_NMS_THRESH", 0.3)
+DETECTOR_NMS_THRESH = _get_env_float("DETECTOR_NMS_THRESH", 0.3) # trùng lặp 30% thì bỏ trùng lặp, gửi lại bbox có acc lớn nhất
 DETECTOR_TOP_K = _get_env_int("DETECTOR_TOP_K", 5000)
 
 # Kích thước khuôn mặt tối thiểu (pixel chiều rộng & chiều cao), áp dụng cho
@@ -121,7 +121,8 @@ PAD_ENABLED = _get_env_bool("PAD_ENABLED", True)
 
 # PAD_MODEL_FILENAME: checkpoint E1 là runtime contract hiện tại.
 PAD_MODEL_FILENAME  = _get_env_str(
-    "PAD_MODEL_FILENAME", "mnv3_e1_preliminary_v5_1_best.onnx"
+    "PAD_MODEL_FILENAME",
+    "smartface_pad_artifacts/E1_v5_3_mnv3_small/deployment/mnv3s_e1_preliminary_v5_3_edge_best.onnx",
 )
 # PAD_THRESHOLD luôn là xác suất P(REAL), không phải logit difference.
 # Với E1, operating point đã calibrate: p=0.3356796703127529,

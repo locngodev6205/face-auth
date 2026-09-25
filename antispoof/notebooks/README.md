@@ -11,7 +11,7 @@ Mỗi thư mục đại diện cho một phân hệ độc lập, trong đó **m
 ```text
 face_auth/antispoof/notebooks/
 ├── eda/                        <-- Khám phá Dữ liệu CelebA-Spoof & Khảo sát Bộ dò SCRFD
-├── quick_test/                 <-- Kiểm thử Nhanh 10K Mẫu Sơ bộ
+├── e1_spatial_v0/              <-- Kiểm thử Nhanh E1 v0 Baseline (MobileNetV3-Large, 10K Mẫu Sơ bộ)
 ├── e1_spatial_v5_1/            <-- Thực nghiệm & Đánh giá sâu E1 v5.1 Baseline (MobileNetV3-Large, GT BBox)
 ├── e1_spatial_v5_2/            <-- Huấn luyện & Protocol E1 v5.2 Detector-Aligned (MobileNetV3-Large)
 ├── e1_spatial_v5_3/            <-- Thực nghiệm & Đánh giá Held-out E1 v5.3 (MobileNetV3-Small Edge — Active Model)
@@ -33,13 +33,15 @@ Khảo sát phân phối dữ liệu CelebA-Spoof và phân tích tương quan h
 
 ---
 
-### `quick_test/` — Kiểm thử Nhanh Mô hình Sơ bộ (10K Samples)
-Thực nghiệm nhanh trên tập con 10,000 mẫu để kiểm tra tính khả thi và đo lường độ trễ:
-* [celeba_spoof_quicktest_10k.ipynb](quick_test/celeba_spoof_quicktest_10k.ipynb): Pipeline đánh giá nhanh mô hình trên 10,000 ảnh kiểm thử ngẫu nhiên có chia tầng (stratified) nhằm kiểm chứng pipeline tiền xử lý và đo thời gian inference.
-* [quick_test_summary.json](quick_test/quick_test_summary.json): Báo cáo số liệu nghiệm thu của đợt test nhanh: Accuracy, APCER (tỉ lệ lọt giả mạo), BPCER (tỉ lệ từ chối mặt thật), HTER và độ trễ trung bình.
-* [quick_test_evaluation_plots.png](quick_test/quick_test_evaluation_plots.png): Biểu đồ đường cong ROC, phân phối xác suất dự đoán (Real score distribution) và đường cong đánh đổi APCER vs BPCER.
-* [threshold_sweep_results.csv](quick_test/threshold_sweep_results.csv): Bảng dữ liệu quét ngưỡng phân loại $p \in [0.0, 1.0]$ với bước nhảy mịn, ghi nhận chi tiết số ca False Accept, False Reject và HTER tương ứng ở từng mốc.
-* [worst_failure_cases.png](quick_test/worst_failure_cases.png): Lưới hình ảnh hiển thị các trường hợp dự đoán sai lệch nghiêm trọng nhất để phân tích nguyên nhân gốc rễ.
+### `e1_spatial_v0/` — Huấn luyện & Đánh giá E1 v0 Baseline (MobileNetV3-Large, 10K Mẫu Sơ bộ)
+Nghiên cứu mô hình baseline đời đầu của nhánh Không gian (Spatial Domain) MobileNetV3-Large (3 class):
+* [e1_v5_0_training_executed.ipynb](e1_spatial_v0/e1_v5_0_training_executed.ipynb): Nhật ký chạy huấn luyện hoàn chỉnh của mô hình E1 v0 (MobileNetV3-Large 3-class) trên Kaggle GPU kèm trích xuất ONNX.
+* [celeba_spoof_quicktest_10k.ipynb](e1_spatial_v0/celeba_spoof_quicktest_10k.ipynb): Pipeline đánh giá nhanh mô hình trên 10,000 ảnh kiểm thử ngẫu nhiên có chia tầng (stratified) nhằm kiểm chứng pipeline tiền xử lý và đo thời gian inference của mô hình E1 v0.
+* Toàn bộ kết quả đầu ra nghiệm thu (biểu đồ ROC/DET, phân phối điểm, quét ngưỡng và phân tích ca lỗi) được lưu trữ tập trung tại [E1_v0_mnv3_large/test/](../models/smartface_pad_artifacts/E1_v0_mnv3_large/test/):
+  * `quick_test_summary.json`: Báo cáo chỉ số (Accuracy 94.83%, AUC 97.34%, ACER 4.13%, Latency 17.53 ms/ảnh).
+  * `quick_test_evaluation_plots.png`: Biểu đồ ROC, phân phối logit diff và trade-off APCER vs BPCER.
+  * `threshold_sweep_results.csv`: Bảng quét 500 ngưỡng logit difference và chi tiết lỗi.
+  * `worst_failure_cases.png`: Lưới các ca dự đoán sai lệch nghiêm trọng nhất.
 
 ---
 

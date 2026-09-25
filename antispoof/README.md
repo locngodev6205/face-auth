@@ -47,11 +47,12 @@ face_auth/antispoof/
 │   ├── smartface_pad_artifacts/   # Kho lưu trữ dài hạn E1/E2/E3 (weights, data protocol, metadata)
 │   └── v3 -> ...                  # Symlink model đang chạy trong production
 └── notebooks/                     # Toàn bộ Jupyter Notebook và tài liệu thực nghiệm E1/E2
-    ├── 01_eda/                    # Phân tích dữ liệu CelebA-Spoof
-    ├── 02_quick_test/             # Thử nghiệm nhanh 10K mẫu
-    ├── 03_e1_spatial_v5_1/        # Huấn luyện và đánh giá sâu E1 v5.1
-    ├── 04_e1_spatial_v5_2/        # Thử nghiệm E1 v5.2 Detector-aligned
-    ├── 05_e2_frequency_dct/       # Huấn luyện E2 (2D-DCT) và Held-out Test E1/E2
+    ├── eda/                       # Phân tích dữ liệu CelebA-Spoof & khảo sát SCRFD
+    ├── e1_spatial_v0/             # Kiểm thử nhanh E1 v0 Baseline (10K mẫu sơ bộ)
+    ├── e1_spatial_v5_1/           # Huấn luyện và đánh giá sâu E1 v5.1
+    ├── e1_spatial_v5_2/           # Thử nghiệm E1 v5.2 Detector-aligned
+    ├── e1_spatial_v5_3/           # Huấn luyện & Held-out Test E1 v5.3 (Edge Model)
+    ├── e2_frequency_dct/          # Huấn luyện E2 (2D-DCT) và Held-out Test E1/E2
     └── diagnostics/               # Script chẩn đoán độ trễ và camera thực tế
 ```
 

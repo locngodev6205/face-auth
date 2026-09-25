@@ -19,10 +19,15 @@ smartface_pad_artifacts/
 │   ├── pytorch/
 │   │   ├── best_mnv3_large_3class.pth                 <-- Checkpoint PyTorch (~17 MB)
 │   │   └── checkpoint_last.pth                        <-- Last checkpoint (~50 MB)
-│   └── metadata/
-│       ├── training_history.png                       <-- Biểu đồ Loss & Accuracy
-│       └── plots/
-│           └── __results___13_2.png
+│   ├── metadata/
+│   │   ├── training_history.png                       <-- Biểu đồ Loss & Accuracy
+│   │   └── plots/
+│   │       └── __results___13_2.png
+│   └── test/                                          <-- [ĐÃ HOÀN TẤT] Kết quả Quick Test 10.000 mẫu sơ bộ
+│       ├── quick_test_summary.json                    <-- Test AUC: 97.34%, ACER: 4.13%, Latency: 17.53 ms/ảnh
+│       ├── quick_test_evaluation_plots.png            <-- Biểu đồ ROC, phân phối logit diff và lỗi
+│       ├── threshold_sweep_results.csv                <-- Quét ngưỡng logit diff và chi tiết lỗi
+│       └── worst_failure_cases.png                    <-- Các ca dự đoán sai lệch nghiêm trọng nhất
 │
 ├── E1_v5_1_mnv3/                                      <-- [E1 v5.1 Preliminary] MobileNetV3 (224px, 100k samples)
 │   ├── data_protocol/                                 <-- Split manifest seed 42

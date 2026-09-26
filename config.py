@@ -1,5 +1,7 @@
+import json
 import math
 import os
+from pathlib import Path
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -43,6 +45,94 @@ def _get_env_bool(key: str, default: bool) -> bool:
     if val is None or val == "":
         return default
     return val.lower() in ("true", "1", "yes", "y", "on")
+
+
+def _load_pad_runtime_config():
+    raw_path = _get_env_str("PAD_RUNTIME_CONFIG_PATH", None)
+    if raw_path is None or raw_path.lower() in ("none", "null"):
+        return None, {}, None
+
+    path = Path(raw_path).expanduser()
+    if not path.is_absolute():
+        path = Path(__file__).resolve().parent / path
+    path = path.resolve()
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        raise ValueError(f"Không thể đọc PAD runtime config '{path}': {exc}") from exc
+    if not isinstance(data, dict):
+        raise ValueError(f"PAD runtime config phải là JSON object: '{path}'")
+    return str(path), data, path.parent
+
+
+def _runtime_float(data: dict, key: str, default: float) -> float:
+    if key not in data:
+        return default
+    try:
+        return float(data[key])
+    except (TypeError, ValueError) as exc:
+        raise ValueError(f"PAD runtime config field '{key}' phải là số") from exc
+
+
+def _runtime_str(data: dict, key: str, default: str) -> str:
+    if key not in data:
+        return default
+    value = data[key]
+    if not isinstance(value, str) or not value.strip():
+        raise ValueError(f"PAD runtime config field '{key}' phải là chuỗi không rỗng")
+    return value.strip()
+
+
+def _runtime_int(data: dict, key: str, default: int) -> int:
+    if key not in data:
+        return default
+    value = data[key]
+    if isinstance(value, bool):
+        raise ValueError(f"PAD runtime config field '{key}' phải là số nguyên")
+    try:
+        parsed = int(value)
+    except (TypeError, ValueError) as exc:
+        raise ValueError(f"PAD runtime config field '{key}' phải là số nguyên") from exc
+    if parsed != value:
+        raise ValueError(f"PAD runtime config field '{key}' phải là số nguyên")
+    return parsed
+
+
+def _runtime_bool(data: dict, key: str, default: bool) -> bool:
+    if key not in data:
+        return default
+    value = data[key]
+    if not isinstance(value, bool):
+        raise ValueError(f"PAD runtime config field '{key}' phải là true/false")
+    return value
+
+
+def _runtime_vector(data: dict, key: str):
+    if key not in data:
+        return None
+    value = data[key]
+    if not isinstance(value, list) or len(value) != 3:
+        raise ValueError(f"PAD runtime config field '{key}' phải có đúng 3 giá trị")
+    try:
+        return [float(item) for item in value]
+    except (TypeError, ValueError) as exc:
+        raise ValueError(f"PAD runtime config field '{key}' phải chứa số") from exc
+
+
+def _get_env_float_vector(key: str, default):
+    raw = _get_env_str(key, None)
+    if raw is None:
+        return default
+    try:
+        values = [float(value.strip()) for value in raw.split(",")]
+    except ValueError as exc:
+        raise ValueError(f"Cấu hình {key} phải là 3 số phân cách bằng dấu phẩy") from exc
+    if len(values) != 3:
+        raise ValueError(f"Cấu hình {key} phải có đúng 3 giá trị")
+    return values
+
+
+PAD_RUNTIME_CONFIG_PATH, _PAD_RUNTIME_CONFIG, _PAD_RUNTIME_CONFIG_DIR = _load_pad_runtime_config()
 
 
 # Database Config
@@ -119,24 +209,59 @@ APP_DETECTOR = (_get_env_str("APP_DETECTOR", "scrfd") or "scrfd").lower()
 # Set "true"/"1" để bật mặc định, "false"/"0" để tắt mặc định.
 PAD_ENABLED = _get_env_bool("PAD_ENABLED", True)
 
-# PAD_MODEL_FILENAME: checkpoint E1 là runtime contract hiện tại.
-PAD_MODEL_FILENAME  = _get_env_str(
+# PAD_RUNTIME_CONFIG_PATH (optional) loads the model's runtime contract JSON.
+# Explicit PAD_* environment variables override fields from the JSON.
+PAD_MODEL_FILENAME = _get_env_str(
     "PAD_MODEL_FILENAME",
-    "smartface_pad_artifacts/E1_v5_3_mnv3_small/deployment/mnv3s_e1_preliminary_v5_3_edge_best.onnx",
+    _runtime_str(
+        _PAD_RUNTIME_CONFIG,
+        "model_file",
+        "mnv3s_e1_preliminary_v5_3_edge_best.onnx",
+    ),
 )
+PAD_MODEL_IMG_SIZE = _get_env_int(
+    "PAD_MODEL_IMG_SIZE", _runtime_int(_PAD_RUNTIME_CONFIG, "model_img_size", 128)
+)
+if PAD_MODEL_IMG_SIZE <= 0:
+    raise ValueError("PAD_MODEL_IMG_SIZE phải lớn hơn 0")
+
 # PAD_THRESHOLD luôn là xác suất P(REAL), không phải logit difference.
-# Với E1, operating point đã calibrate: p=0.3356796703127529,
-# tương đương d=-0.682607114315033.
-PAD_THRESHOLD       = _get_env_float("PAD_THRESHOLD", 0.3356796703127529)
-_default_pad_threshold_logit = (
-    math.log(PAD_THRESHOLD / (1.0 - PAD_THRESHOLD))
-    if 0.0 < PAD_THRESHOLD < 1.0
-    else 0.0
+_runtime_pad_threshold = _runtime_float(
+    _PAD_RUNTIME_CONFIG, "predictor_threshold_probability", 0.38579509526467753
 )
-PAD_THRESHOLD_LOGIT = _get_env_float(
-    "PAD_THRESHOLD_LOGIT",
-    _default_pad_threshold_logit,
+if not 0.0 < _runtime_pad_threshold < 1.0:
+    raise ValueError(
+        "PAD runtime config field 'predictor_threshold_probability' "
+        "phải nằm trong khoảng (0, 1)"
+    )
+_runtime_pad_threshold_logit = _runtime_float(
+    _PAD_RUNTIME_CONFIG,
+    "calibrated_logit_threshold",
+    math.log(_runtime_pad_threshold / (1.0 - _runtime_pad_threshold)),
 )
+_pad_threshold_env = _get_env_str("PAD_THRESHOLD", None)
+_pad_threshold_logit_env = _get_env_str("PAD_THRESHOLD_LOGIT", None)
+if _pad_threshold_env is not None and _pad_threshold_logit_env is None:
+    PAD_THRESHOLD = _get_env_float("PAD_THRESHOLD", _runtime_pad_threshold)
+    PAD_THRESHOLD_LOGIT = (
+        math.log(PAD_THRESHOLD / (1.0 - PAD_THRESHOLD))
+        if 0.0 < PAD_THRESHOLD < 1.0
+        else 0.0
+    )
+elif _pad_threshold_logit_env is not None and _pad_threshold_env is None:
+    PAD_THRESHOLD_LOGIT = _get_env_float(
+        "PAD_THRESHOLD_LOGIT", _runtime_pad_threshold_logit
+    )
+    if PAD_THRESHOLD_LOGIT >= 0.0:
+        PAD_THRESHOLD = 1.0 / (1.0 + math.exp(-PAD_THRESHOLD_LOGIT))
+    else:
+        exp_logit = math.exp(PAD_THRESHOLD_LOGIT)
+        PAD_THRESHOLD = exp_logit / (1.0 + exp_logit)
+else:
+    PAD_THRESHOLD = _get_env_float("PAD_THRESHOLD", _runtime_pad_threshold)
+    PAD_THRESHOLD_LOGIT = _get_env_float(
+        "PAD_THRESHOLD_LOGIT", _runtime_pad_threshold_logit
+    )
 
 if not (0.0 < PAD_THRESHOLD < 1.0):
     raise ValueError(
@@ -150,7 +275,10 @@ if abs(PAD_THRESHOLD_LOGIT - _expected_pad_threshold_logit) > 1e-6:
         f"received {PAD_THRESHOLD_LOGIT:.12f}."
     )
 
-_raw_color_order = _get_env_str("PAD_COLOR_ORDER", None)
+_runtime_color_order = _PAD_RUNTIME_CONFIG.get("color_order")
+if _runtime_color_order is not None and not isinstance(_runtime_color_order, str):
+    raise ValueError("PAD runtime config field 'color_order' phải là chuỗi")
+_raw_color_order = _get_env_str("PAD_COLOR_ORDER", _runtime_color_order)
 if _raw_color_order is not None and _raw_color_order != "":
     PAD_COLOR_ORDER = _raw_color_order.strip().upper()
     if PAD_COLOR_ORDER not in ("RGB", "BGR"):
@@ -165,18 +293,43 @@ else:
 # Bật để robust hơn với điều kiện ánh sáng khác nhau (tối / sáng quá).
 # Gamma được tính động theo perceived luma (kênh V của HSV), target về ~110/255.
 # Set "true"/"1" để bật, "false"/"0" để tắt.
-PAD_GAMMA_ENABLED = _get_env_bool("PAD_GAMMA_ENABLED", False)
+PAD_GAMMA_ENABLED = _get_env_bool(
+    "PAD_GAMMA_ENABLED",
+    _runtime_bool(_PAD_RUNTIME_CONFIG, "apply_gamma", False),
+)
 
 # Target luma (kênh V, [0-255]) mà adaptive gamma hướng đến.
 # 110 ≈ 43% — đủ sáng để model học texture, không bị over-expose.
 PAD_GAMMA_TARGET  = _get_env_float("PAD_GAMMA_TARGET", 110.0)
 
 # Hệ số mở rộng bbox khi crop khuôn mặt đưa vào PAD.
-PAD_BBOX_EXPANSION_FACTOR = _get_env_float("PAD_BBOX_EXPANSION_FACTOR", 1.55)
+PAD_BBOX_EXPANSION_FACTOR = _get_env_float(
+    "PAD_BBOX_EXPANSION_FACTOR",
+    _runtime_float(_PAD_RUNTIME_CONFIG, "bbox_expansion_factor", 1.55),
+)
+PAD_MEAN = _get_env_float_vector(
+    "PAD_MEAN", _runtime_vector(_PAD_RUNTIME_CONFIG, "mean")
+)
+PAD_STD = _get_env_float_vector(
+    "PAD_STD", _runtime_vector(_PAD_RUNTIME_CONFIG, "std")
+)
+if (PAD_MEAN is None) != (PAD_STD is None):
+    raise ValueError("PAD_MEAN và PAD_STD phải được cấu hình cùng nhau")
 
 # Đường dẫn thư mục chứa tất cả model anti-spoofing
-_ANTISPOOF_MODELS_DIR = os.path.join(os.path.dirname(__file__), "antispoof", "models")
-PAD_MODEL_PATH = os.path.join(_ANTISPOOF_MODELS_DIR, PAD_MODEL_FILENAME)
+_ANTISPOOF_MODELS_DIR = Path(__file__).resolve().parent / "antispoof" / "models"
+if (
+    _get_env_str("PAD_MODEL_FILENAME", None) is None
+    and "model_file" in _PAD_RUNTIME_CONFIG
+    and _PAD_RUNTIME_CONFIG_DIR is not None
+):
+    _PAD_MODEL_BASE_DIR = _PAD_RUNTIME_CONFIG_DIR
+else:
+    _PAD_MODEL_BASE_DIR = _ANTISPOOF_MODELS_DIR
+_pad_model_path = Path(PAD_MODEL_FILENAME).expanduser()
+if not _pad_model_path.is_absolute():
+    _pad_model_path = _PAD_MODEL_BASE_DIR / _pad_model_path
+PAD_MODEL_PATH = str(_pad_model_path.resolve())
 
 # Alias tương thích ngược (từ biến LIVENESS_* cũ)
 LIVENESS_MODEL_PATH = PAD_MODEL_PATH

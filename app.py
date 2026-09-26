@@ -226,8 +226,8 @@ def parse_args():
         help="Tắt module PAD anti-spoofing"
     )
     parser.add_argument(
-        "--pad-model", type=str, default=config.PAD_MODEL_FILENAME,
-        help=f"Tên file model PAD trong antispoof/models/ (mặc định: {config.PAD_MODEL_FILENAME})"
+        "--pad-model", type=str, default=config.PAD_MODEL_PATH,
+        help=f"Đường dẫn model PAD (mặc định: {config.PAD_MODEL_PATH})"
     )
     parser.add_argument(
         "--pad-threshold", type=float, default=config.PAD_THRESHOLD,
@@ -315,7 +315,10 @@ def main():
                 model_path=str(_pad_model_path.resolve()),
                 threshold=args.pad_threshold,
                 threshold_logit=effective_pad_threshold_logit,
+                model_img_size=config.PAD_MODEL_IMG_SIZE,
                 bbox_expansion_factor=config.PAD_BBOX_EXPANSION_FACTOR,
+                mean=config.PAD_MEAN,
+                std=config.PAD_STD,
                 apply_gamma=config.PAD_GAMMA_ENABLED,
                 color_order=config.PAD_COLOR_ORDER,
             )
@@ -598,7 +601,10 @@ def main():
                             model_path=str(_pad_model_path.resolve()),
                             threshold=args.pad_threshold,
                             threshold_logit=effective_pad_threshold_logit,
+                            model_img_size=config.PAD_MODEL_IMG_SIZE,
                             bbox_expansion_factor=config.PAD_BBOX_EXPANSION_FACTOR,
+                            mean=config.PAD_MEAN,
+                            std=config.PAD_STD,
                             apply_gamma=config.PAD_GAMMA_ENABLED,
                             color_order=config.PAD_COLOR_ORDER,
                         )

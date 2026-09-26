@@ -29,9 +29,10 @@ from antispoof.predictor import AntiSpoofPredictor
 from antispoof.preprocess import crop, preprocess_batch
 
 
-E1_MEAN = [0.5931, 0.4690, 0.4229]
-E1_STD = [0.2471, 0.2214, 0.2157]
-E1_THRESHOLD_LOGIT = -0.682607114315033
+E1_MEAN = config.PAD_MEAN or [0.5931, 0.4690, 0.4229]
+E1_STD = config.PAD_STD or [0.2471, 0.2214, 0.2157]
+E1_THRESHOLD_LOGIT = config.PAD_THRESHOLD_LOGIT
+E1_COLOR_ORDER = config.PAD_COLOR_ORDER or "RGB"
 
 
 def sha256(path: Path) -> str:
@@ -156,8 +157,8 @@ def main() -> None:
     probe = AntiSpoofPredictor(
         model_path=str(model_path),
         threshold_logit=E1_THRESHOLD_LOGIT,
-        apply_gamma=False,
-        color_order="RGB",
+        apply_gamma=config.PAD_GAMMA_ENABLED,
+        color_order=E1_COLOR_ORDER,
         mean=E1_MEAN,
         std=E1_STD,
     )
@@ -175,8 +176,8 @@ def main() -> None:
         "A CORRECT E1",
         model_path,
         face_crop,
-        apply_gamma=False,
-        color_order="RGB",
+        apply_gamma=config.PAD_GAMMA_ENABLED,
+        color_order=E1_COLOR_ORDER,
         mean=E1_MEAN,
         std=E1_STD,
         threshold_logit=E1_THRESHOLD_LOGIT,
@@ -186,7 +187,7 @@ def main() -> None:
         model_path,
         face_crop,
         apply_gamma=True,
-        color_order="RGB",
+        color_order=E1_COLOR_ORDER,
         mean=E1_MEAN,
         std=E1_STD,
         threshold_logit=E1_THRESHOLD_LOGIT,
@@ -195,7 +196,7 @@ def main() -> None:
         "C WRONG BGR",
         model_path,
         face_crop,
-        apply_gamma=False,
+        apply_gamma=config.PAD_GAMMA_ENABLED,
         color_order="BGR",
         mean=E1_MEAN,
         std=E1_STD,
@@ -205,8 +206,8 @@ def main() -> None:
         "D THRESHOLD 0.5",
         model_path,
         face_crop,
-        apply_gamma=False,
-        color_order="RGB",
+        apply_gamma=config.PAD_GAMMA_ENABLED,
+        color_order=E1_COLOR_ORDER,
         mean=E1_MEAN,
         std=E1_STD,
         threshold=0.5,
@@ -215,8 +216,8 @@ def main() -> None:
         "E LEGACY NORMALIZATION (no mean/std)",
         model_path,
         face_crop,
-        apply_gamma=False,
-        color_order="RGB",
+        apply_gamma=config.PAD_GAMMA_ENABLED,
+        color_order=E1_COLOR_ORDER,
         mean=[0.0, 0.0, 0.0],
         std=[1.0, 1.0, 1.0],
         threshold_logit=E1_THRESHOLD_LOGIT,

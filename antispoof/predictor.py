@@ -13,11 +13,12 @@ import onnxruntime as ort
 from pathlib import Path
 from typing import List, Dict, Tuple, Optional
 
+import config as _cfg
 from .loader import load_model
 from .preprocess import preprocess_batch, preprocess_dct_batch, crop
 
 # Đường dẫn mặc định tới checkpoint PAD của runtime hiện tại.
-DEFAULT_MODEL_PATH = Path(__file__).parent / "models" / "mnv3_e1_preliminary_v5_1_best.onnx"
+DEFAULT_MODEL_PATH = Path(_cfg.PAD_MODEL_PATH)
 
 
 def _stable_logsumexp(a: np.ndarray) -> float:
@@ -46,8 +47,8 @@ class AntiSpoofPredictor:
         self,
         model_path: Optional[str] = None,
         threshold: Optional[float] = None,
-        model_img_size: int = 128,
-        bbox_expansion_factor: float = 1.55,
+        model_img_size: Optional[int] = None,
+        bbox_expansion_factor: Optional[float] = None,
         mean: Optional[List[float]] = None,
         std: Optional[List[float]] = None,
         apply_gamma: Optional[bool] = None,
@@ -60,15 +61,16 @@ class AntiSpoofPredictor:
         Tham số:
             model_path (Optional[str]): Đường dẫn tới file .onnx.
             threshold (float): Ngưỡng xác suất P(REAL). Không phải logit difference.
-            model_img_size (int): Kích thước ảnh vuông đầu vào của mô hình (mặc định 128x128).
-            bbox_expansion_factor (float): Tỷ lệ mở rộng khung bao bbox khi crop mặt (mặc định 1.55x).
+            model_img_size (Optional[int]): Kích thước đầu vào; None dùng config runtime
+                                             hoặc phát hiện từ ONNX.
+            bbox_expansion_factor (Optional[float]): Tỷ lệ mở rộng bbox; None dùng config.
             mean (Optional[List[float]]): Giá trị mean chuẩn hóa kênh màu [R, G, B].
             std (Optional[List[float]]): Giá trị std chuẩn hóa kênh màu [R, G, B].
             apply_gamma (Optional[bool]): Bật/tắt adaptive gamma correction. Khi None,
-                                          E1/MNV profiles mặc định tắt gamma còn legacy
-                                          128px profiles giữ hành vi cũ.
-            color_order (Optional[str]): Thứ tự kênh màu mong muốn của model ("BGR" hoặc "RGB").
-                                         Nếu None, tự động nhận diện dựa trên tên model/kích thước.
+                                          runtime đã chọn dùng cấu hình; model khác dùng
+                                          heuristic theo profile.
+            color_order (Optional[str]): Thứ tự kênh màu mong muốn ("BGR" hoặc "RGB").
+                                         Nếu None, dùng runtime config hoặc tự nhận diện.
             threshold_logit (Optional[float]): Nếu có, dùng trực tiếp ngưỡng d thay cho
                                                ``threshold``. Dùng để tránh nhầm đơn vị.
         """
@@ -77,14 +79,21 @@ class AntiSpoofPredictor:
             if model_path
             else DEFAULT_MODEL_PATH.resolve()
         )
+        uses_default_runtime = self.model_path == DEFAULT_MODEL_PATH.resolve()
 
         if not self.model_path.exists():
             raise FileNotFoundError(
                 f"Không tìm thấy file trọng số Anti-Spoofing tại: '{self.model_path}'"
             )
 
-        self.model_img_size = model_img_size
-        self.bbox_expansion_factor = bbox_expansion_factor
+        self.model_img_size = (
+            _cfg.PAD_MODEL_IMG_SIZE if model_img_size is None else model_img_size
+        )
+        self.bbox_expansion_factor = (
+            _cfg.PAD_BBOX_EXPANSION_FACTOR
+            if bbox_expansion_factor is None
+            else bbox_expansion_factor
+        )
 
         # Nạp mô hình ONNX qua hàm load_model
         self.session, self.input_name = load_model(str(self.model_path))
@@ -114,11 +123,15 @@ class AntiSpoofPredictor:
         if "freq" in model_name_lower or "dct" in model_name_lower:
             self.is_frequency_model = True
         if threshold_logit is None and threshold is None:
-            threshold = (
-                0.3356796703127529
-                if "mnv" in model_name_lower or self.model_img_size == 224
-                else 0.5
-            )
+            if uses_default_runtime:
+                threshold = _cfg.PAD_THRESHOLD
+                threshold_logit = _cfg.PAD_THRESHOLD_LOGIT
+            else:
+                threshold = (
+                    0.38579509526467753
+                    if "mnv" in model_name_lower or self.model_img_size == 224
+                    else 0.5
+                )
         if threshold_logit is not None:
             self.threshold = None if threshold is None else float(threshold)
             self.logit_threshold = float(threshold_logit)
@@ -131,11 +144,17 @@ class AntiSpoofPredictor:
             self.threshold_probability = float(p)
             self.threshold_input_type = "probability"
         if apply_gamma is None:
-            self.apply_gamma = not ("mnv" in model_name_lower or self.model_img_size == 224)
+            self.apply_gamma = (
+                _cfg.PAD_GAMMA_ENABLED
+                if uses_default_runtime
+                else not ("mnv" in model_name_lower or self.model_img_size == 224)
+            )
         else:
             self.apply_gamma = bool(apply_gamma)
         if color_order is not None:
             self.color_order = color_order.upper()
+        elif uses_default_runtime and _cfg.PAD_COLOR_ORDER is not None:
+            self.color_order = _cfg.PAD_COLOR_ORDER
         elif "mnv" in model_name_lower or self.model_img_size == 224:
             self.color_order = "RGB"
         else:
@@ -146,6 +165,9 @@ class AntiSpoofPredictor:
         if mean is not None and std is not None:
             self.mean = mean
             self.std = std
+        elif uses_default_runtime and _cfg.PAD_MEAN is not None and _cfg.PAD_STD is not None:
+            self.mean = _cfg.PAD_MEAN
+            self.std = _cfg.PAD_STD
         elif "mnv" in model_name_lower or self.model_img_size == 224:
             self.mean = [0.5931, 0.4690, 0.4229]
             self.std = [0.2471, 0.2214, 0.2157]

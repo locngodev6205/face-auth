@@ -1,13 +1,15 @@
+> Tài liệu lịch sử/giải thích; có thể khác source hiện tại. Đọc [context hiện tại](../current_codebase_state.md) trước khi sửa code.
+
 # SmartFace AIoT — Hướng Dẫn Chi Tiết Kiến Trúc & Luồng Thực Thi Real-time (app.py)
 
 > **Mục đích tài liệu:**  
-> Tài liệu này tổng hợp toàn bộ các nội dung phân tích chuyên sâu về luồng hoạt động của [app.py](face_auth/app.py) từ đầu phiên làm việc đến nay. Bạn có thể sử dụng tài liệu này để tự học, ôn tập và tự tin thuyết trình bảo vệ đồ án trước Hội đồng / Giảng viên mà không sợ quên chi tiết.
+> Tài liệu này tổng hợp toàn bộ các nội dung phân tích chuyên sâu về luồng hoạt động của [app.py](../../app.py) từ đầu phiên làm việc đến nay. Bạn có thể sử dụng tài liệu này để tự học, ôn tập và tự tin thuyết trình bảo vệ đồ án trước Hội đồng / Giảng viên mà không sợ quên chi tiết.
 
 ---
 
 ## 🗺️ TỔNG QUAN DÂY CHUYỀN XỬ LÝ (PIPELINE)
 
-Ứng dụng [app.py](face_auth/app.py) là **bộ điều phối trung tâm (Pipeline Coordinator)**, liên kết 9 giai đoạn theo thời gian thực:
+Ứng dụng [app.py](../../app.py) là **bộ điều phối trung tâm (Pipeline Coordinator)**, liên kết 9 giai đoạn theo thời gian thực:
 
 ```text
 [Module 1: Load Once & Config] 
@@ -39,12 +41,12 @@
 ### MODULE 1: Nạp Cấu Hình & Khởi Tạo Tài Nguyên (Nguyên Tắc Load-Once)
 
 - **Mã nguồn liên quan:** 
-  - Khởi tạo trong app: [app.py:L265-L336](face_auth/app.py#L265-L336)
-  - Cấu hình hệ thống: [config.py:L8-L38](face_auth/config.py#L8-L38)
-  - Biến môi trường: [.env](face_auth/.env)
+  - Khởi tạo trong app: [app.py:L265-L336](../../app.py)
+  - Cấu hình hệ thống: [config.py:L8-L38](../../config.py)
+  - Biến môi trường: [.env](../../.env)
 
 #### 1. Nạp cấu hình an toàn chuỗi:
-- Hàm [_clean_env_val()](face_auth/config.py#L8-L13) dùng regex loại bỏ khoảng trắng và xử lý comment phía sau, giữ nguyên nếu mật khẩu DB có chứa ký tự `#` đặc biệt.
+- Hàm [_clean_env_val()](../../config.py) dùng regex loại bỏ khoảng trắng và xử lý comment phía sau, giữ nguyên nếu mật khẩu DB có chứa ký tự `#` đặc biệt.
 
 #### 2. Triết lý "LOAD ONCE":
 - **Tuyệt đối không** nạp lại mô hình AI hay tạo mới kết nối Database bên trong vòng lặp `while True`.
@@ -56,14 +58,14 @@
   5. `AntiSpoofPredictor` (Mô hình MobileNetV3 3-class, input 224×224)
 
 #### 3. Cơ chế phòng thủ lỗi (Defensive Fail-Safe):
-- Nếu `--pad` bật mà file model `.onnx` bị lỗi/thiếu, hệ thống **chủ động gọi `sys.exit(1)` dừng chương trình ngay lập tức** ([app.py:L328-L333](face_auth/app.py#L328-L333)).
+- Nếu `--pad` bật mà file model `.onnx` bị lỗi/thiếu, hệ thống **chủ động gọi `sys.exit(1)` dừng chương trình ngay lập tức** ([app.py:L328-L333](../../app.py)).
 - *Lý do:* Không cho phép app "chạy cố" khi thiếu lớp bảo vệ liveness, tránh bị giả mạo.
 
 ---
 
 ### MODULE 2: Thu Nhận Luồng Camera & Chẩn Đoán Phần Cứng (`cv2.VideoCapture`)
 
-- **Mã nguồn liên quan:** [app.py:L337-L426](face_auth/app.py#L337-L426)
+- **Mã nguồn liên quan:** [app.py:L337-L426](../../app.py)
 
 #### 1. Đàm phán phần cứng & Chống trễ (Buffer Size = 1):
 - Thiết lập:
@@ -81,10 +83,10 @@
   - Đủ sắc nét cho ArcFace và PAD nhận diện.
 
 #### 3. Phòng thủ Backend (OS Hardware Abstraction):
-- Gọi lại `cap.getBackendName()`, `cap.get(...)` để in thông số thực tế ([app.py:L352-L367](face_auth/app.py#L352-L367)) vì OpenCV không báo lỗi nếu camera không hỗ trợ đúng resolution.
+- Gọi lại `cap.getBackendName()`, `cap.get(...)` để in thông số thực tế ([app.py:L352-L367](../../app.py)) vì OpenCV không báo lỗi nếu camera không hỗ trợ đúng resolution.
 
 #### 4. Đo FPS trượt chính xác (Rolling FPS):
-- Dùng `frame_time_deque` với cửa sổ trượt 30 frame ([app.py:L385](face_auth/app.py#L385)).
+- Dùng `frame_time_deque` với cửa sổ trượt 30 frame ([app.py:L385](../../app.py)).
 - Công thức:
   $$\text{FPS} = \frac{\text{len}(deque)}{\sum \Delta t}$$
 - Giúp con số FPS hiển thị màu vàng trên màn hình không bị giật nháy loạn xạ.
@@ -94,8 +96,8 @@
 ### MODULE 3: Phát Hiện Khuôn Mặt (Face Detection — SCRFD 640×640)
 
 - **Mã nguồn liên quan:**
-  - Điều phối nhịp trong app: [app.py:L428-L455](face_auth/app.py#L428-L455)
-  - Class detector: [detection/detector.py:L14-L88](face_auth/detection/detector.py#L14-L88)
+  - Điều phối nhịp trong app: [app.py:L428-L455](../../app.py)
+  - Class detector: [detection/detector.py:L14-L88](../../detection/detector.py)
 
 #### 1. Nhịp thực thi (Detection Cadence):
 - SCRFD ngốn ~42.7 ms/lần.
@@ -106,7 +108,7 @@
 - **Nguồn gốc & Bản chất:** 
   - `det_500m.onnx` là file trọng số Deep Learning (Pre-trained weights) đã được nhóm tác giả InsightFace huấn luyện sẵn trên hàng triệu khuôn mặt.
   - Khi cài đặt thư viện `insightface`, mô hình tự động được tải (auto-download) về thư mục cache hệ thống tại `~/.insightface/models/buffalo_s/det_500m.onnx`, không cần tải thủ công.
-  - Trong code [detection/detector.py:L39-L46](face_auth/detection/detector.py#L39-L46), lệnh `self._model = app.models.get("detection")` chính là nơi nạp file ONNX này vào runtime.
+  - Trong code [detection/detector.py:L39-L46](../../detection/detector.py), lệnh `self._model = app.models.get("detection")` chính là nơi nạp file ONNX này vào runtime.
 - **Ý nghĩa tên gọi & Khái niệm MegaFLOPs:**
   - `det`: Detection (Bộ phát hiện khuôn mặt).
   - **MegaFLOPs (MFLOPs)**: Đơn vị đo khối lượng tính toán của mạng Deep Learning (Floating-point Operations). $500\text{ MFLOPs} = 500\text{ triệu phép tính}$ cộng/nhân số thực dấu phẩy động cho 1 bức ảnh.
@@ -128,56 +130,56 @@
 - **Thuật toán NMS (Non-Maximum Suppression) giải quyết ra sao?**
   - Chọn hộp có điểm tin cậy cao nhất (Maximum Confidence).
   - So sánh độ trùng lặp diện tích (IoU) của hộp này với các hộp xung quanh.
-  - Nếu trùng lặp $\text{IoU} \ge \text{ngưỡng}$ (ví dụ `0.3` trong [config.py:L154](face_auth/config.py#L154)) $\rightarrow$ **Xóa bỏ các hộp thừa**, chỉ giữ lại 1 hộp chuẩn nhất.
+  - Nếu trùng lặp $\text{IoU} \ge \text{ngưỡng}$ (ví dụ `0.3` trong [config.py:L154](../../config.py)) $\rightarrow$ **Xóa bỏ các hộp thừa**, chỉ giữ lại 1 hộp chuẩn nhất.
 - **Vị trí áp dụng trong code:**
-  - **Với YunNet:** Truyền trực tiếp vào tham số `nms_threshold` tại [detection/yunnet_detector.py:L43](face_auth/detection/yunnet_detector.py#L43).
-  - **Với SCRFD:** Bên trong hàm `self._model.detect()` ([detection/detector.py:L55](face_auth/detection/detector.py#L55)) đã tích hợp sẵn NMS của InsightFace (mặc định thuộc tính `self._model.nms_thresh = 0.4`).
+  - **Với YunNet:** Truyền trực tiếp vào tham số `nms_threshold` tại [detection/yunnet_detector.py:L43](../../detection/yunnet_detector.py).
+  - **Với SCRFD:** Bên trong hàm `self._model.detect()` ([detection/detector.py:L55](../../detection/detector.py)) đã tích hợp sẵn NMS của InsightFace (mặc định thuộc tính `self._model.nms_thresh = 0.4`).
 
 #### 4. Bộ lọc chất lượng khuôn mặt (Face Quality Gate — 4 tiêu chuẩn vàng):
 Hệ thống không tiếp nhận bừa bãi mọi khuôn mặt mà áp dụng bộ lọc 4 tiêu chuẩn khắt khe trước khi bàn giao cho Tracker:
 1. **Kích thước tối thiểu (`min_face_size = 60px`):**
-   - Code tại: [detector.py:L70-L75](face_auth/detection/detector.py#L70-L75) và [yunnet_detector.py:L170-L171](face_auth/detection/yunnet_detector.py#L170-L171).
+   - Code tại: [detector.py:L70-L75](../../detection/detector.py) và [yunnet_detector.py:L170-L171](../../detection/yunnet_detector.py).
    - *Tác dụng:* Loại bỏ các khuôn mặt đứng quá xa (dưới 60×60 px), vì ảnh mặt quá mờ/nhỏ sẽ gây sai số lớn cho Anti-Spoofing và trích xuất vector ArcFace.
 2. **Khoảng cách an toàn tới 4 mép viền ảnh (`margin = 5px`):**
-   - Code tại: [yunnet_detector.py:L165-L167](face_auth/detection/yunnet_detector.py#L165-L167) ([config.py:L84](face_auth/config.py#L84)).
+   - Code tại: [yunnet_detector.py:L165-L167](../../detection/yunnet_detector.py) ([config.py:L84](../../config.py)).
    - *Tác dụng:* Bắt buộc mặt phải cách viền ảnh $\ge 5$ px, loại bỏ trường hợp người mới bước vào hoặc sắp đi ra chỉ lộ nửa mặt (bị cụt tai, mất trán), tránh việc AI đoán mò trên dữ liệu khuyết tật.
 3. **Loại bỏ hộp bao tràn viền (Out-of-bounds):**
-   - Code tại: [yunnet_detector.py:L160-L162](face_auth/detection/yunnet_detector.py#L160-L162) và [tracker.py:L346-L354](face_auth/tracking/tracker.py#L346-L354).
+   - Code tại: [yunnet_detector.py:L160-L162](../../detection/yunnet_detector.py) và [tracker.py:L346-L354](../../tracking/tracker.py).
    - *Tác dụng:* Loại bỏ ngay các tọa độ bị âm (`x1 < 0, y1 < 0`) hoặc vượt quá chiều rộng/cao của ảnh (`x2 > 640, y2 > 480`).
 4. **Ngưỡng tự tin phát hiện (`conf_thresh = 0.5`):**
-   - Code tại: [detector.py:L36](face_auth/detection/detector.py#L36) và [yunnet_detector.py:L97](face_auth/detection/yunnet_detector.py#L97) ([config.py:L78](face_auth/config.py#L78)).
+   - Code tại: [detector.py:L36](../../detection/detector.py) và [yunnet_detector.py:L97](../../detection/yunnet_detector.py) ([config.py:L78](../../config.py)).
    - *Tác dụng:* AI phải tự tin từ 50% trở lên mới công nhận là mặt người, loại bỏ các vật thể gây nhiễu (hoa văn áo, bóng râm, đồ vật...).
 
 ---
 
 ### MODULE 4: Bám Vết & Điều Phối Nhịp (Face Tracking — IoU + Optical Flow)
 
-- **Mã nguồn liên quan:** [tracking/tracker.py](face_auth/tracking/tracker.py)
+- **Mã nguồn liên quan:** [tracking/tracker.py](../../tracking/tracker.py)
 
 Đây là "bộ não điều phối tốc độ" của hệ thống, kết hợp 2 thuật toán:
 
 #### 1. Khi Detector CHẠY (`detector_called = True`) — Thuật toán IoU Greedy Matching:
 - **Công thức IoU (Intersection over Union):**
   $$\text{IoU} = \frac{\text{Area}(A \cap B)}{\text{Area}(A \cup B)} = \frac{\text{Diện tích phần Giao (Intersection)}}{\text{Tổng diện tích 2 hộp bao phủ (Union)}}$$
-  - Cài đặt tại: [tracker.py:L9-L30](face_auth/tracking/tracker.py#L9-L30).
-  - **Ý nghĩa ngưỡng 30% (`TRACK_IOU_THRESHOLD = 0.3`):** Con số 30% là tỷ lệ giữa *diện tích phần chồng đè lên nhau* so với *tổng diện tích cả 2 hộp cộng lại*. Giữa 2 frame cách nhau chỉ 0.1s, người chuyển động nhẹ sẽ có độ trùng lặp từ 50%–80%. Đặt ngưỡng 30% ([config.py:L174](face_auth/config.py#L174)) đảm bảo kết luận chính xác 2 hộp là cùng một người.
+  - Cài đặt tại: [tracker.py:L9-L30](../../tracking/tracker.py).
+  - **Ý nghĩa ngưỡng 30% (`TRACK_IOU_THRESHOLD = 0.3`):** Con số 30% là tỷ lệ giữa *diện tích phần chồng đè lên nhau* so với *tổng diện tích cả 2 hộp cộng lại*. Giữa 2 frame cách nhau chỉ 0.1s, người chuyển động nhẹ sẽ có độ trùng lặp từ 50%–80%. Đặt ngưỡng 30% ([config.py:L174](../../config.py)) đảm bảo kết luận chính xác 2 hộp là cùng một người.
 - **Khớp nối (Greedy Matching):**
   - Ghép cặp có IoU cao nhất nếu $\ge 0.3$.
   - **Khớp thành công:** Cập nhật vị trí, reset `missing_frames = 0`.
   - **Người mới:** Cấp `Track ID` mới toanh, chuyển về `PAD_PENDING`.
   - **Người biến mất:** Tăng `missing_frames += 1`. Nếu mất dấu quá 10 frame liên tiếp (`missing_frames > 10`), **xóa sổ khỏi RAM** để giải phóng tài nguyên.
 - **Tính độc lập của `missing_frames` (Rất quan trọng):**
-  - **Mỗi một người đứng trước camera sẽ được cấp một đối tượng `Track` riêng với một biến đếm `missing_frames` hoàn toàn độc lập** ([tracker.py:L56](face_auth/tracking/tracker.py#L56)).
+  - **Mỗi một người đứng trước camera sẽ được cấp một đối tượng `Track` riêng với một biến đếm `missing_frames` hoàn toàn độc lập** ([tracker.py:L56](../../tracking/tracker.py)).
   - *Ví dụ thực tế:* Người A đứng yên trước camera (`Track #1: missing = 0`), người B quay lưng bước ra khỏi phòng (`Track #2: missing` tăng 1, 2, 3... 11). Khi người B mất tích quá 10 frame, hệ thống **chỉ xóa duy nhất `Track #2` của người B khỏi RAM**, đối tượng `Track #1` của người A vẫn tồn tại độc lập và hoạt động bình thường, không bao giờ bị ảnh hưởng!
 
 #### 2. Khi Detector NGHỈ (`detector_called = False`) — Lucas–Kanade Optical Flow:
-Hàm [_propagate()](face_auth/tracking/tracker.py#L277-L323) chỉ tốn **~2.7 ms**, giúp hệ thống duy trì tốc độ khung hình cao (30 FPS) mà không cần chạy detector liên tục:
+Hàm [_propagate()](../../tracking/tracker.py) chỉ tốn **~2.7 ms**, giúp hệ thống duy trì tốc độ khung hình cao (30 FPS) mà không cần chạy detector liên tục:
 
 - **Tại sao phải chuyển ảnh sang Grayscale (`_gray()`):**
   - *Bản chất thuật toán:* Lucas-Kanade dựa trên giả định bảo toàn độ sáng ($I(x,y,t) = I(x+\Delta x, y+\Delta y, t+\Delta t)$). Thuật toán chỉ cần đo gradient độ sáng không gian và thời gian trên kênh cường độ (Intensity - 1 kênh), thông tin màu sắc (BGR - 3 kênh) là dư thừa.
   - *Tối ưu tài nguyên:* Chuyển sang ảnh 1 kênh 8-bit giúp giảm ~66% dung lượng bộ nhớ đệm CPU/RAM và giảm 3 lần khối lượng phép tính vi phân ma trận, đảm bảo xử lý mượt mà thời gian thực.
 
-- **Đầu vào và Đầu ra của hàm `cv2.calcOpticalFlowPyrLK` ([tracker.py:L295-L303](face_auth/tracking/tracker.py#L295-L303)):**
+- **Đầu vào và Đầu ra của hàm `cv2.calcOpticalFlowPyrLK` ([tracker.py:L295-L303](../../tracking/tracker.py)):**
   - **Inputs:**
     1. `prevImg` (`self._previous_gray`): Frame trước dạng ảnh xám 8-bit `uint8`.
     2. `nextImg` (`gray`): Frame hiện tại dạng ảnh xám 8-bit `uint8`.
@@ -219,7 +221,7 @@ Trong điều kiện thuật toán Optical Flow bám vết **hoàn toàn trơn t
   - **Detector (SCRFD):** Chỉ chạy khoảng **$33\%$** tổng số khung hình.
   - **Optical Flow (LK):** Đảm nhiệm tới **$67\%$** số khung hình còn lại.
   - **Hiệu quả:** Giải phóng ~70% tải tính toán của CPU/GPU, đảm bảo duy trì tốc độ khung hình chuẩn 30 FPS.
-- **Công thức tính thời gian trong code ([config.py:L229-L238](face_auth/config.py#L229-L238), [app.py:L430-L435](face_auth/app.py#L430-L435)):**
+- **Công thức tính thời gian trong code ([config.py:L229-L238](../../config.py), [app.py:L430-L435](../../app.py)):**
   $$\text{DETECTION\_INTERVAL\_SECONDS} = \frac{\text{RECOGNIZE\_INTERVAL (0.5s)}}{\text{PAD\_SMOOTH\_WINDOW (5)}} = \mathbf{0.1\text{ giây}}$$
   $$\text{Số frame giữa 2 lần detect} = \frac{0.1\text{s}}{1/30\text{s}} \approx \mathbf{3\text{ frames}}$$
 - **Ưu điểm của việc điều phối theo Thời gian thực (`time.monotonic()`) thay vì đếm số frame cứng:**
@@ -240,18 +242,18 @@ Trong điều kiện thuật toán Optical Flow bám vết **hoàn toàn trơn t
 #### 5. Phân biệt: Bám vết liên tục vs Khóa Điểm Danh 15 Phút (Attendance Cooldown):
 - **Bám vết (Detection & Tracking):** **KHÔNG BAO GIỜ DỪNG**. Hệ thống vẫn liên tục duy trì Track ID, vẽ khung bounding box xanh lá bám theo mặt người đó và phát hiện thời điểm người đó rời đi.
 - **Khóa Điểm Danh (Attendance Cooldown - 15 phút):**
-  - Cài đặt tại: [tracker.py:L160-L164](face_auth/tracking/tracker.py#L160-L164), [app.py:L170-L198](face_auth/app.py#L170-L198), và [database/vector_db.py:L178-L193](face_auth/database/vector_db.py#L178-L193).
+  - Cài đặt tại: [tracker.py:L160-L164](../../tracking/tracker.py), [app.py:L170-L198](../../app.py), và [database/vector_db.py:L178-L193](../../database/vector_db.py).
   - Khi đã nhận diện đúng nhân viên (`Nguyễn Văn A`) và ghi log thành công vào DB, hệ thống gán mốc `track.last_attendance_time = time.time()`.
   - Trong vòng **15 phút** (`ATTENDANCE_GAP_MINUTES = 15`), hàm `can_log_attendance(15)` trả về `False` $\to$ **Chặn hoàn toàn các câu lệnh ghi log vào PostgreSQL**. Người dùng dù có đứng trước camera cả ngày thì DB cũng không bị ghi trùng lặp.
   - **Bộ đệm chống mất Cooldown (`_unknown_streak`):** Nếu nhân viên chớp mắt hoặc quay mặt khiến 1-2 frame bị nháy `UNKNOWN`, hệ thống **chưa xóa timer cooldown ngay**, mà yêu cầu phải liên tục `UNKNOWN > 3 chu kỳ (~1.5s)` thì mới reset timer, tránh việc vừa điểm danh xong bị mất timer đếm ngược.
 
 - **Chu trình khi người dùng đi ra khỏi phòng rồi quay lại (Đồng bộ RAM ⟷ Database):**
-  1. *Khi đi ra ngoài:* Biến đếm `missing_frames` tăng dần. Khi `missing_frames > 10` (~0.33s), đối tượng `Track #1` bị xóa sổ hoàn toàn khỏi RAM để giải phóng bộ nhớ ([tracker.py:L390](face_auth/tracking/tracker.py#L390)).
+  1. *Khi đi ra ngoài:* Biến đếm `missing_frames` tăng dần. Khi `missing_frames > 10` (~0.33s), đối tượng `Track #1` bị xóa sổ hoàn toàn khỏi RAM để giải phóng bộ nhớ ([tracker.py:L390](../../tracking/tracker.py)).
   2. *Khi quay trở lại (ví dụ sau 2 phút, vẫn trong 15 phút cooldown):*
      - SCRFD phát hiện khuôn mặt và cấp một đối tượng mới toanh trong RAM: `Track #2` (với `last_attendance_time = None`).
      - Qua bước PAD (REAL) $\to$ ArcFace nhận diện ra nhân viên `EMP001` (Nguyễn Văn A).
      - `app.py` gọi hàm `db.log_attendance(...)` để kiểm tra.
-  3. *Database PostgreSQL kiểm tra đĩa cứng ([vector_db.py:L180-L192](face_auth/database/vector_db.py#L180-L192)):*
+  3. *Database PostgreSQL kiểm tra đĩa cứng ([vector_db.py:L180-L192](../../database/vector_db.py)):*
      ```sql
      SELECT timestamp FROM attendance_logs
      WHERE employee_id = 'EMP001' AND action = 'CHECKIN'
@@ -259,14 +261,14 @@ Trong điều kiện thuật toán Optical Flow bám vết **hoàn toàn trơn t
      ORDER BY timestamp DESC LIMIT 1;
      ```
      DB thấy nhân viên này đã CHECKIN cách đây 2 phút $\to$ **Từ chối ghi log (`success = False`)**, nhưng **trả về timestamp cũ (`last_ts`)**.
-  4. *Đồng bộ ngược DB ➔ RAM ([app.py:L196-L197](face_auth/app.py#L196-L197)):*
+  4. *Đồng bộ ngược DB ➔ RAM ([app.py:L196-L197](../../app.py)):*
      - `app.py` nhận được `last_ts` liền gán ngược lại cho Track mới: `track.last_attendance_time = last_ts.timestamp()`.
      - Các frame tiếp theo, `Track #2` đã biết mình còn đang dính cooldown ngay trong RAM $\to$ không gửi query xuống DB nữa, tiết kiệm 100% băng thông mạng/CPU.
   5. *Hiển thị trên màn hình (HUD):* Khung Bbox vẫn hiện màu xanh lá kèm tên `"Nguyễn Văn A"`, đồng thời bật dải thông báo màu cam cảnh báo trong 3 giây:  
      ⚠️ **`Nguyễn Văn A: Đã CHECKIN gần đây. Vui lòng đợi 15 phút.`**
 
 #### 6. Cửa Sổ Trượt Độc Lập (Rolling Window 5 Votes) Cho Từng Khuôn Mặt:
-- **Cài đặt tại:** [tracker.py:L60-L130](face_auth/tracking/tracker.py#L60-L130).
+- **Cài đặt tại:** [tracker.py:L60-L130](../../tracking/tracker.py).
 - **Khởi tạo bên trong mỗi đối tượng `Track`:**
   ```python
   self._pad_window: deque = deque(maxlen=pad_smooth_window)  # Mặc định maxlen = 5
@@ -276,7 +278,7 @@ Trong điều kiện thuật toán Optical Flow bám vết **hoàn toàn trơn t
   - *Ví dụ:* Nhân viên thật (`Track #1`) tích lũy `[True, True, True, True, True]` $\to$ `REAL`. Kẻ gian đứng ngay cạnh cầm điện thoại chiếu ảnh giả (`Track #2`) tích lũy `[False, False, False, False, False]` $\to$ `SPOOF`. Kẻ gian đứng cạnh **hoàn toàn không làm ảnh hưởng hay vấy bẩn** kết quả biểu quyết của nhân viên thật bên cạnh!
 - **Ba cơ chế kiểm soát chất lượng của Rolling Window:**
   1. *Hàng đợi FIFO (First-In, First-Out):* Tự động đẩy phán quyết cũ nhất ra khi có phán quyết thứ 6 nạp vào, luôn giữ đúng 5 phiếu bầu gần nhất trong vòng 0.5 giây.
-  2. *Cổng chặn an toàn (`PAD_PENDING`):* Trong 4 frame đầu tiên khi người mới bước vào (`len < 5`), hệ thống giữ trạng thái `PAD_PENDING` và **chặn đứng module nhận diện ArcFace** ([tracker.py:L149](face_auth/tracking/tracker.py#L149)). Tuyệt đối không cho phép điểm danh khi chưa đủ 5 phiếu bầu!
+  2. *Cổng chặn an toàn (`PAD_PENDING`):* Trong 4 frame đầu tiên khi người mới bước vào (`len < 5`), hệ thống giữ trạng thái `PAD_PENDING` và **chặn đứng module nhận diện ArcFace** ([tracker.py:L149](../../tracking/tracker.py)). Tuyệt đối không cho phép điểm danh khi chưa đủ 5 phiếu bầu!
   3. *Chống dùng phiếu cũ (Stale Timeout - 3.0s):* Nếu người đó quay mặt đi hoặc mất dấu quá 3 giây, window cũ tự động bị xóa sạch (`_pad_window.clear()`) để bầu lại từ đầu, ngăn chặn việc kẻ gian tráo ảnh giả vào vị trí người thật vừa rời đi.
   4. *Ngưỡng biểu quyết Spoof (`PAD_SPOOF_MIN_RATIO = 0.6`):* Cần $\ge 60\%$ số phiếu kết luận giả mạo (tối thiểu 3/5 phiếu SPOOF) thì hệ thống mới phán quyết là `SPOOF`. Người thật cử động tự nhiên đôi khi bị nhiễu 1 phiếu (20%) thì vẫn được bảo vệ ở trạng thái `REAL`.
 
@@ -285,10 +287,10 @@ Trong điều kiện thuật toán Optical Flow bám vết **hoàn toàn trơn t
 ### MODULE 5: Cơ Chế Chống Giả Mạo Khuôn Mặt (Face Anti-Spoofing / PAD)
 
 - **Mã nguồn liên quan:**
-  - [antispoof/predictor.py](face_auth/antispoof/predictor.py) — Lớp dự đoán `AntiSpoofPredictor`, công thức `LogSumExp` và quản lý phiên ONNX.
-  - [antispoof/preprocess.py](face_auth/antispoof/preprocess.py) — Quy trình cắt crop $1.55\times$, đệm viền `BORDER_REFLECT_101` và chuẩn hóa RGB.
-  - [antispoof/loader.py](face_auth/antispoof/loader.py) — Nạp mô hình ONNX Runtime tối ưu với CPU/GPU provider.
-  - **Trọng số Runtime hiện tại:** [antispoof/models/v3/mnv3s_e1_preliminary_v5_3_edge_best.onnx](face_auth/antispoof/models/v3/mnv3s_e1_preliminary_v5_3_edge_best.onnx) (MobileNetV3-Small v5.3 Edge).
+  - [antispoof/predictor.py](../../antispoof/predictor.py) — Lớp dự đoán `AntiSpoofPredictor`, công thức `LogSumExp` và quản lý phiên ONNX.
+  - [antispoof/preprocess.py](../../antispoof/preprocess.py) — Quy trình cắt crop $1.55\times$, đệm viền `BORDER_REFLECT_101` và chuẩn hóa RGB.
+  - [antispoof/loader.py](../../antispoof/loader.py) — Nạp mô hình ONNX Runtime tối ưu với CPU/GPU provider.
+  - **Trọng số Runtime hiện tại:** [antispoof/models/v3/mnv3s_e1_preliminary_v5_3_edge_best.onnx](../../antispoof/models/mnv3s_e1_preliminary_v5_3_edge_best.onnx) (MobileNetV3-Small v5.3 Edge).
 
 Module PAD đóng vai trò **"Người gác cổng an ninh" (Security Gatekeeper)**: Khuôn mặt chỉ được phép đi tiếp sang bước Căn chỉnh & Nhận diện (Module 6 & 7) khi và chỉ khi đã được xác thực là **NGƯỜI THẬT (REAL)**.
 
@@ -345,7 +347,7 @@ Khác với Module nhận diện ArcFace (cắt sát và xoay thẳng theo 5 đi
   - *Tại sao code vẫn giữ sẵn hàm `adaptive_gamma()`?*
     1. *Tương thích ngược (Backward Compatibility):* Cho phép chạy lại các model 128px thế hệ cũ (`best_model_quantized.onnx`).
     2. *Làm thí nghiệm đối chứng (Ablation Study):* Cung cấp số liệu so sánh giữa BẬT vs TẮT Gamma trong báo cáo đồ án để chứng minh giải pháp tối ưu.
-    3. *Tùy biến môi trường cực đoan:* Chỉ khi camera lắp ở nơi quá tối hoặc ngược sáng cực đoan mới cần cân nhắc bật trong [.env](face_auth/.env).
+    3. *Tùy biến môi trường cực đoan:* Chỉ khi camera lắp ở nơi quá tối hoặc ngược sáng cực đoan mới cần cân nhắc bật trong [.env](../../.env).
   - ⚠️ *Nguyên tắc sống còn:* Nếu bật Gamma ở môi trường thực tế, phân phối logit sẽ bị lệch $\to$ **bắt buộc phải chạy lại bước Hiệu chuẩn ngưỡng (Threshold Calibration) trên tập Validation**, tuyệt đối không được dùng lại ngưỡng $p=0.3858$!
 
 - **Chuyển đổi không gian màu BGR ➔ RGB:**
@@ -367,7 +369,7 @@ Khác với Module nhận diện ArcFace (cắt sát và xoay thẳng theo 5 đi
 
 Đầu ra của mô hình là một vector gồm 3 logits thô: $[z_0, z_1, z_2]$ tương ứng với $[\text{Real}, \text{Physical}, \text{Digital}]$.
 
-Hệ thống tính toán **Điểm số PAD (PAD Score - ký hiệu là $d$)** tại [antispoof/predictor.py:L149-L165](face_auth/antispoof/predictor.py#L149-L165):
+Hệ thống tính toán **Điểm số PAD (PAD Score - ký hiệu là $d$)** tại [antispoof/predictor.py:L149-L165](../../antispoof/predictor.py):
 
 $$d = z_{\text{real}} - \text{LogSumExp}(z_{\text{physical}}, z_{\text{digital}}) = z_0 - \ln\left(e^{z_1} + e^{z_2}\right)$$
 
@@ -472,7 +474,7 @@ $$d = z_{\text{real}} - \text{LogSumExp}(z_{\text{physical}}, z_{\text{digital}}
 Khi một khuôn mặt bị kết luận là **`SPOOF`**, hệ thống sẽ kích hoạt phản ứng phòng thủ đa tầng từ cấp độ **Thuật toán $\to$ Mô hình AI $\to$ Cơ sở dữ liệu $\to$ Giao diện HUD**:
 
 1. **Tầng AI — Ngắt hoàn toàn ArcFace & Database (Gatekeeper Pattern):**
-   Tại [face_auth/tracking/tracker.py:L149](face_auth/tracking/tracker.py#L149), hàm `needs_recognition()` lập tức trả về `False`:
+   Tại [face_auth/tracking/tracker.py:L149](../../tracking/tracker.py), hàm `needs_recognition()` lập tức trả về `False`:
    ```python
    if pad_enabled and (not self.pad_ready or not self.is_real):
        return False
@@ -482,7 +484,7 @@ Khi một khuôn mặt bị kết luận là **`SPOOF`**, hệ thống sẽ kíc
    - **Reset độ tin cậy:** Reset biến đếm nhận diện ổn định về 0 (`track.stable_recognitions = 0`). Kẻ giả mạo tuyệt đối không được gán danh tính của bất kỳ nhân viên nào.
 
 2. **Tầng Nghiệp vụ — Khóa chặt quy trình Điểm danh (Attendance Blocking):**
-   Tại [face_auth/app.py:L167-L175](face_auth/app.py#L167-L175):
+   Tại [face_auth/app.py:L167-L175](../../app.py):
    ```python
    if (app_mode != "NONE" and not is_spoof and not is_pad_pending and ...):
        db.log_attendance(...)
@@ -490,12 +492,12 @@ Khi một khuôn mặt bị kết luận là **`SPOOF`**, hệ thống sẽ kíc
    - Do `is_spoof = True`, điều kiện `not is_spoof` bị vi phạm. Lệnh ghi điểm danh `db.log_attendance()` bị **chặn đứng 100%**. Bảng `attendance_logs` hoàn toàn không bị ô nhiễm bởi các lượt điểm danh giả mạo.
 
 3. **Tầng Trực quan (HUD) — Bật Báo động Đỏ trên Màn hình:**
-   Tại [face_auth/app.py:L64-L66](face_auth/app.py#L64-L66):
+   Tại [face_auth/app.py:L64-L66](../../app.py):
    - **Khung Bounding Box:** Chuyển ngay sang **MÀU ĐỎ RỰC** `COLOR_SPOOF = (0, 0, 220)`.
    - **Nhãn hiển thị:** Dán nhãn **`⚠ SPOOF`** (nền đỏ chữ trắng), đè lên mọi nhãn danh tính khác với độ ưu tiên tuyệt đối.
 
 4. **Tầng Nhật ký Chẩn đoán (Security Logging):**
-   Khi bật `PAD_DIAGNOSTIC_LOG=true` trong [.env](face_auth/.env), hệ thống in bằng chứng tấn công lên Console:
+   Khi bật `PAD_DIAGNOSTIC_LOG=true` trong [.env](../../.env), hệ thống in bằng chứng tấn công lên Console:
    ```text
    [PAD] frame_id=1420 track_id=2 bbox=[180, 110, 360, 290] 
          d=-3.821054 p_real=0.021430 raw=SPOOF smoothed=SPOOF
@@ -564,7 +566,7 @@ Khi một khuôn mặt bị kết luận là **`SPOOF`**, hệ thống sẽ kíc
 
 ## MODULE 6: CĂN CHỈNH KHUÔN MẶT 5 ĐIỂM (FACE ALIGNMENT & SIMILARITY TRANSFORM)
 
-> **File nguồn:** [face_auth/alignment/aligner.py](face_auth/alignment/aligner.py)  
+> **File nguồn:** [face_auth/alignment/aligner.py](../../alignment/aligner.py)  
 > **Hàm cốt lõi:** `align_face()`, `get_input_face()`  
 > **Nhiệm vụ:** Chuẩn hóa hình học (Geometric Normalization) — khử góc xoay đầu (Roll), triệt tiêu sự chênh lệch kích thước (Scale) và vị trí (Translation), biến đổi ảnh khuôn mặt bất kỳ về ma trận chuẩn **$112 \times 112$** pixel cho mạng ArcFace.
 
@@ -594,7 +596,7 @@ Trong kiến trúc tổng thể, Module 5 và Module 6 có triết lý xử lý 
 
 ### 2. Tọa độ "Vàng" — Template chuẩn ArcFace 112×112 (`ARCFACE_DST_112`)
 
-Tại [face_auth/alignment/aligner.py:L10-L16](face_auth/alignment/aligner.py#L10-L16), hệ thống định nghĩa 5 điểm mốc mục tiêu trên khung ảnh $112 \times 112$:
+Tại [face_auth/alignment/aligner.py:L10-L16](../../alignment/aligner.py), hệ thống định nghĩa 5 điểm mốc mục tiêu trên khung ảnh $112 \times 112$:
 
 ```python
 ARCFACE_DST_112 = np.array([
@@ -678,7 +680,7 @@ Sau khi tìm được ma trận $M$, hàm `cv2.warpAffine(image, matrix, (112, 1
 
 ### 4. Cơ chế Dự phòng an toàn (Fallback Mechanism)
 
-Tại [face_auth/alignment/aligner.py:L46-L73](face_auth/alignment/aligner.py#L46-L73), hàm `get_input_face()` được lập trình phòng thủ:
+Tại [face_auth/alignment/aligner.py:L46-L73](../../alignment/aligner.py), hàm `get_input_face()` được lập trình phòng thủ:
 - **Trường hợp chuẩn (Đủ 5 landmarks):** Thực hiện Similarity Transform qua `align_face()`.
 - **Trường hợp ngoại lệ (Mất landmarks hoặc detector bị lỗi):**
   - Tự động kích hoạt nhánh **Fallback theo Bbox**:
@@ -715,7 +717,7 @@ Module 6 không hoạt động độc lập, mà là "bệ phóng" quyết đị
 
 ## MODULE 7: TRÍCH XUẤT ĐẶC TRƯNG ARCFACE 512-D (FACE FEATURE EMBEDDING)
 
-> **File nguồn:** [face_auth/recognition/embedder.py](face_auth/recognition/embedder.py)  
+> **File nguồn:** [face_auth/recognition/embedder.py](../../recognition/embedder.py)  
 > **Lớp cốt lõi:** `FaceEmbedder`  
 > **Mô hình AI:** ArcFace (`buffalo_s` pack / `w600k_r50.onnx` hoặc MobileFaceNet)  
 > **Đầu vào:** Ảnh khuôn mặt chuẩn BGR $112 \times 112$ (từ Module 6).  
@@ -736,7 +738,7 @@ Module 6 không hoạt động độc lập, mà là "bệ phóng" quyết đị
 
 ### 1. Kiến trúc Bóc tách Thông minh (Recognition-Only Wrapper — Cách B)
 
-Tại [face_auth/recognition/embedder.py:L7-L38](face_auth/recognition/embedder.py#L7-L38), hệ thống áp dụng kỹ thuật bóc tách kiến trúc để tránh chạy trùng lặp:
+Tại [face_auth/recognition/embedder.py:L7-L38](../../recognition/embedder.py), hệ thống áp dụng kỹ thuật bóc tách kiến trúc để tránh chạy trùng lặp:
 
 - **Hạn chế của thư viện InsightFace mặc định:**
   Hàm tích hợp sẵn `FaceAnalysis.get(image)` là một "hộp đen": mỗi khi gọi, nó tự động chạy lại submodel SCRFD detector để tìm landmarks rồi mới align và trích xuất embedding.
@@ -782,7 +784,7 @@ Khi người đó đổi kiểu tóc, đeo kính, già đi, hoặc đổi góc n
 
 ### 3. Chuẩn hóa L2-Normalization ($\|\mathbf{e}\|_2 = 1.0$)
 
-Tại [face_auth/recognition/embedder.py:L48-L54](face_auth/recognition/embedder.py#L48-L54):
+Tại [face_auth/recognition/embedder.py:L48-L54](../../recognition/embedder.py):
 ```python
 feat = self._model.get_feat(aligned_face)   # Vector 512 chiều thô
 embedding = np.asarray(feat).flatten()
@@ -820,7 +822,7 @@ Nhờ việc vector 512 chiều đã được chuẩn hóa L2 ngay tại Module 
 
 ## MODULE 8: CƠ SỞ DỮ LIỆU VECTOR & ĐỐI SOÁT DANH TÍNH (POSTGRESQL + PGVECTOR)
 
-> **File nguồn:** [face_auth/database/vector_db.py](face_auth/database/vector_db.py), [face_auth/database/schema.sql](face_auth/database/schema.sql)  
+> **File nguồn:** [face_auth/database/vector_db.py](../../database/vector_db.py), [face_auth/database/schema.sql](../../database/schema.sql)  
 > **Lớp cốt lõi:** `VectorDB`, hàm `decide_identity()`  
 > **Công nghệ:** PostgreSQL 16+, Extension `pgvector`, Thư viện `psycopg_pool`  
 > **Nhiệm vụ:** Quản lý kết nối Connection Pool, tìm kiếm đối soát vector 1:N bằng khoảng cách Cosine, quản lý dữ liệu nhân viên và kiểm soát logic điểm danh (Cooldown 15 phút, audit trail).
@@ -864,7 +866,7 @@ Khi đăng ký nhân viên (`upsert`), hệ thống chụp 5 - 10 ảnh mẫu �
   Lưu vào database với `embedding_type = 'CENTROID'`.
 
 👉 **Tối ưu hóa tìm kiếm 1:N (`search`):**
-Tại [face_auth/database/vector_db.py:L72](face_auth/database/vector_db.py#L72), câu lệnh SQL **CHỈ quét trên các vector `CENTROID`**:
+Tại [face_auth/database/vector_db.py:L72](../../database/vector_db.py), câu lệnh SQL **CHỈ quét trên các vector `CENTROID`**:
 ```sql
 SELECT e.employee_id, e.full_name, 1 - (f.embedding <=> %s::vector) AS similarity
 FROM face_embeddings f
@@ -885,7 +887,7 @@ LIMIT %s;
 - Do vector đã được chuẩn hóa L2 ở Module 7 ($\|\mathbf{u}\| = \|\mathbf{v}\| = 1$), độ tương đồng **Cosine Similarity** được tính trực tiếp trong SQL bằng:
   $$\text{Similarity} = 1 - (f.embedding \Leftrightarrow \%s::\text{vector}) = \cos \theta = \mathbf{u} \cdot \mathbf{v}$$
 
-Hàm `decide_identity(rows, threshold)` ([face_auth/database/vector_db.py:L215-L228](face_auth/database/vector_db.py#L215-L228)):
+Hàm `decide_identity(rows, threshold)` ([face_auth/database/vector_db.py:L215-L228](../../database/vector_db.py)):
 - Lấy kết quả đứng đầu có độ tương đồng lớn nhất (`best_similarity`).
 - Nếu $\text{best\_similarity} \ge \mathbf{MATCH\_THRESHOLD = 0.45}$: 
   $\implies$ Trả về `(employee_id, full_name, similarity)` $\to$ **Nhận diện thành công!**
@@ -905,7 +907,7 @@ Hàm `decide_identity(rows, threshold)` ([face_auth/database/vector_db.py:L215-L
 
 ### 5. Nghiệp vụ Điểm danh: Cooldown 15 phút & Composite Index
 
-Hàm `log_attendance()` ([face_auth/database/vector_db.py:L180-L207](face_auth/database/vector_db.py#L180-L207)) đảm bảo an toàn tuyệt đối cho quy trình chấm công:
+Hàm `log_attendance()` ([face_auth/database/vector_db.py:L180-L207](../../database/vector_db.py)) đảm bảo an toàn tuyệt đối cho quy trình chấm công:
 
 1. **Kiểm tra Cooldown chống gian lận/spam điểm danh:**
    ```sql
@@ -918,7 +920,7 @@ Hàm `log_attendance()` ([face_auth/database/vector_db.py:L180-L207](face_auth/d
    Dùng hàm `make_interval(mins => %s)` chuẩn của PostgreSQL. Nếu nhân viên đó đã CHECKIN trong vòng 15 phút vừa qua, DB lập tức từ chối và trả về lý do: `"Đã CHECKIN gần đây. Vui lòng đợi 15 phút."` kèm mốc thời gian gần nhất `last_ts`.
 
 2. **Tối ưu hóa bằng Composite Index:**
-   Tại [face_auth/database/schema.sql:L37-L38](face_auth/database/schema.sql#L37-L38):
+   Tại [face_auth/database/schema.sql:L37-L38](../../database/schema.sql):
    ```sql
    CREATE INDEX IF NOT EXISTS idx_attendance_lookup 
    ON attendance_logs (employee_id, action, timestamp DESC);
@@ -936,7 +938,7 @@ Hàm `log_attendance()` ([face_auth/database/vector_db.py:L180-L207](face_auth/d
 
 ## MODULE 9: GIAO DIỆN TRỰC QUAN HUD, OVERLAY & ĐIỀU KHIỂN THỜI GIAN THỰC
 
-> **File nguồn:** [face_auth/app.py](face_auth/app.py)  
+> **File nguồn:** [face_auth/app.py](../../app.py)  
 > **Hàm cốt lõi:** `draw_track()`, `draw_fps()`, `draw_pad_badge()`, vòng lặp xử lý phím tắt `cv2.waitKey()`  
 > **Nhiệm vụ:** Hiển thị trực quan trạng thái an ninh của từng khuôn mặt trên luồng video camera, cung cấp thông tin giám sát hiệu năng (FPS, badge PAD, mode) và hỗ trợ tương tác nóng (Runtime Hotkeys).
 
@@ -961,7 +963,7 @@ Hàm `log_attendance()` ([face_auth/database/vector_db.py:L180-L207](face_auth/d
 
 ### 1. Hệ Thống 5 Màu Trạng Thái Bounding Box & Thác Ưu Tiên (Priority Cascade)
 
-Tại [face_auth/app.py:L50-L95](face_auth/app.py#L50-L95), hàm `draw_track()` quyết định màu sắc viền và nhãn hiển thị theo một cấu trúc thác điều kiện ưu tiên nghiêm ngặt:
+Tại [face_auth/app.py:L50-L95](../../app.py), hàm `draw_track()` quyết định màu sắc viền và nhãn hiển thị theo một cấu trúc thác điều kiện ưu tiên nghiêm ngặt:
 
 | Thứ tự ưu tiên | Trạng thái hiển thị | Mã màu BGR | Nhãn hiển thị | Ý nghĩa kỹ thuật |
 | :---: | :--- | :--- | :--- | :--- |
@@ -979,7 +981,7 @@ Tại [face_auth/app.py:L50-L95](face_auth/app.py#L50-L95), hàm `draw_track()` 
 
 ### 2. Banner Thông Báo Điểm Danh Tức Thì (Attendance Toast Notification)
 
-Tại [face_auth/app.py:L571-L575](face_auth/app.py#L571-L575):
+Tại [face_auth/app.py:L571-L575](../../app.py):
 - Khi một lượt điểm danh diễn ra (thành công hoặc bị từ chối), hệ thống hiển thị một dòng thông báo nổi ở đáy màn hình trong đúng **3.0 giây**:
   - **Thành công:** Màu xanh lá `(0, 255, 0)`:
     `"Loc Ngo: CHECKIN SUCCESS lúc 08:30:15"`
@@ -991,7 +993,7 @@ Tại [face_auth/app.py:L571-L575](face_auth/app.py#L571-L575):
 
 ### 3. Đo Lường FPS Trung Bình Trượt (Rolling Average FPS)
 
-Tại [face_auth/app.py:L584-L586](face_auth/app.py#L584-L586):
+Tại [face_auth/app.py:L584-L586](../../app.py):
 ```python
 t1 = time.perf_counter()
 frame_time_deque.append(max(t1 - t0, 1e-6))
@@ -1053,4 +1055,4 @@ Qua 9 module chuyên sâu, luồng dữ liệu của một frame hình ảnh t�
 ```
 
 ---
-*Toàn bộ 9 module kiến trúc của hệ thống SmartFace AIoT đã được phân tích đầy đủ và chuẩn hóa phục vụ bảo vệ đồ án tốt nghiệp tại [face_auth/md/app_execution_flow_walkthrough.md](face_auth/md/app_execution_flow_walkthrough.md).*
+*Toàn bộ 9 module kiến trúc của hệ thống SmartFace AIoT đã được phân tích đầy đủ và chuẩn hóa phục vụ bảo vệ đồ án tốt nghiệp tại [face_auth/md/archive/app_execution_flow_walkthrough.md](app_execution_flow_walkthrough.md).*

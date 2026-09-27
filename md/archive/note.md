@@ -1,3 +1,5 @@
+> Tài liệu lịch sử/giải thích; có thể khác source hiện tại. Đọc [context hiện tại](../current_codebase_state.md) trước khi sửa code.
+
 # Sổ tay Kiến thức & Giải đáp Kỹ thuật (Q&A Notes)
 
 Tài liệu tổng hợp các câu hỏi - trả lời về kiến trúc Face Anti-Spoofing (PAD), Face Recognition, Tracking và Vector Database trong hệ thống **SmartFace**.

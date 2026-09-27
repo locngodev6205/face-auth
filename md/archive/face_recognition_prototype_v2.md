@@ -1,3 +1,5 @@
+> Tài liệu lịch sử/giải thích; có thể khác source hiện tại. Đọc [context hiện tại](../current_codebase_state.md) trước khi sửa code.
+
 # Prototype V2 — Secure Face Authentication with Anti-Spoofing (PAD)
 
 ## 1. Mục tiêu V2

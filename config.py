@@ -192,13 +192,15 @@ DETECTOR_DET_SIZE = (640, 640)
 CAMERA_INDEX  = _get_env_int("CAMERA_INDEX", 0)
 CAMERA_WIDTH  = _get_env_int("CAMERA_WIDTH", 640)
 CAMERA_HEIGHT = _get_env_int("CAMERA_HEIGHT", 480)
+# False preserves the camera backend's default resolution; True restores width/height requests.
+CAMERA_FORCE_RESOLUTION = _get_env_bool("CAMERA_FORCE_RESOLUTION", True)
 CAMERA_FPS    = _get_env_int("CAMERA_FPS", 30)
 # Giảm số frame cũ nằm trong hàng đợi backend camera. Một số backend có thể bỏ qua.
 CAMERA_BUFFER_SIZE = _get_env_int("CAMERA_BUFFER_SIZE", 1)
 
 # Detector cho app.py (real-time inference).
 # - "yunnet": cv2.FaceDetectorYN, ~122 KB, nhanh trên edge, nhưng cần resize frame nhỏ trước khi detect.
-#             App.py sẽ set CAMERA_WIDTH × CAMERA_HEIGHT qua cap.set() để giới hạn frame size.
+#             CAMERA_FORCE_RESOLUTION=true giới hạn frame size theo CAMERA_WIDTH × CAMERA_HEIGHT.
 # - "scrfd" : InsightFace SCRFD (buffalo_s), resize nội bộ qua det_size nhưng vẫn nhận
 #             frame camera theo kích thước cấu hình; app in kích thước thực tế vì backend
 #             Windows/Linux/macOS có thể không hỗ trợ mọi lệnh cap.set().
@@ -371,6 +373,8 @@ PAD_SPOOF_MIN_RATIO = _get_env_float("PAD_SPOOF_MIN_RATIO", 0.6)
 # khi người dùng rời khỏi frame rồi quay lại (gương/ảnh mới).
 PAD_STALE_TIMEOUT_SECONDS = _get_env_float("PAD_STALE_TIMEOUT_SECONDS", 3.0)
 PAD_DIAGNOSTIC_LOG = _get_env_bool("PAD_DIAGNOSTIC_LOG", False)
+# Experiment: stabilize small PAD crop jitter without altering tracking/cadence.
+PAD_CROP_SMOOTHING = _get_env_bool("PAD_CROP_SMOOTHING", False)
 
 # PAD_INTERVAL_SECONDS: khoảng cách giữa 2 lần chạy PAD inference cho cùng 1 track.
 #

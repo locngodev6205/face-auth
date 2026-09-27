@@ -1,3 +1,5 @@
+> Tài liệu lịch sử/giải thích; có thể khác source hiện tại. Đọc [context hiện tại](../current_codebase_state.md) trước khi sửa code.
+
 # Prototype V1 — Secure Face Authentication (chưa có PAD)
 
 ## 1. Mục tiêu
@@ -378,7 +380,7 @@ So sánh với Threshold để dự đoán (MATCH / MISMATCH)
 
 ### 16.2 LFW Identity Recognition & Threshold Benchmark (Custom Open-Set Protocol)
 
-Bên cạnh benchmark verification theo cặp ảnh (1:1), hệ thống đã xây dựng một benchmark nhận diện danh tính (1:N Identification & Open-Set Rejection) độc lập tại [`evaluation/lfw_identity_benchmark.ipynb`](file:///Users/coding/PBL6/face_auth/evaluation/lfw_identity_benchmark.ipynb) để phục vụ trực tiếp việc chốt cấu hình production cho hệ thống Face Authentication.
+Bên cạnh benchmark verification theo cặp ảnh (1:1), hệ thống đã xây dựng một benchmark nhận diện danh tính (1:N Identification & Open-Set Rejection) độc lập tại [`evaluation/lfw_identity_benchmark.ipynb`](../../evaluation/lfw_identity_benchmark.ipynb) để phục vụ trực tiếp việc chốt cấu hình production cho hệ thống Face Authentication.
 
 #### 1. Thiết kế thực nghiệm (Experimental Protocol)
 - **Danh tính Enrolled (100 người)**: Chia ảnh thành `Gallery` (1, 2, 3, 5 ảnh), `Calibration query` (2 ảnh), và `Test query` (2 ảnh).

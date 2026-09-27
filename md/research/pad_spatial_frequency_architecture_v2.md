@@ -1,3 +1,5 @@
+> Thiết kế/tham khảo nghiên cứu; không phải mô tả runtime đang active. Đọc [context hiện tại](../current_codebase_state.md) trước khi sửa code.
+
 # Lightweight Spatial–Frequency Face Anti-Spoofing (PAD)
 
 

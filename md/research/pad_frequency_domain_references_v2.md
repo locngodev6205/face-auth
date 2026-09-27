@@ -1,8 +1,10 @@
+> Thiết kế/tham khảo nghiên cứu; không phải mô tả runtime đang active. Đọc [context hiện tại](../current_codebase_state.md) trước khi sửa code.
+
 # Tài liệu Tham khảo: Vai trò của Đặc trưng Miền Tần số trong Face Presentation Attack Detection (PAD)
 
 > **Tài liệu tham chiếu lý thuyết & thực nghiệm cho kiến trúc Dual-Branch Spatial–Frequency PAD**  
-> Liên kết kiến trúc: [pad_spatial_frequency_architecture.md](file:///Users/coding/PBL6/face_auth/md/pad_spatial_frequency_architecture.md)  
-> Tổng quan hệ thống: [README.md](file:///Users/coding/PBL6/README.md)
+> Liên kết kiến trúc: [pad_spatial_frequency_architecture_v2.md](pad_spatial_frequency_architecture_v2.md)  
+> Tổng quan hệ thống: [README.md](../../../README.md)
 
 ---
 
@@ -143,7 +145,7 @@ Dưới đây là 5 công trình nghiên cứu tiêu biểu chứng minh hiệu 
 
 ## 4. Đối chiếu với Thiết kế Kiến trúc Đồ án (SmartFace Dual-Branch PAD)
 
-Kiến trúc PAD đề xuất trong tài liệu [pad_spatial_frequency_architecture.md](file:///Users/coding/PBL6/face_auth/md/pad_spatial_frequency_architecture.md) được xây dựng dựa trên sự kế thừa và tinh gọn từ các nghiên cứu trên:
+Kiến trúc PAD đề xuất trong tài liệu [pad_spatial_frequency_architecture_v2.md](pad_spatial_frequency_architecture_v2.md) được xây dựng dựa trên sự kế thừa và tinh gọn từ các nghiên cứu trên:
 
 ```text
                224×224 RGB Face Image

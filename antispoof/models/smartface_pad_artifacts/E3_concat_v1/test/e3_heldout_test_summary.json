@@ -1,0 +1,27 @@
+{
+  "Accuracy": 0.8736,
+  "APCER": 0.17756610747796417,
+  "BPCER": 0.0050573162508428865,
+  "ACER": 0.09131171186440352,
+  "AUC": 0.985668588616202,
+  "confusion_matrix": [
+    [
+      5785,
+      1249
+    ],
+    [
+      15,
+      2951
+    ]
+  ],
+  "N": 10000,
+  "N_real": 2966,
+  "N_attack": 7034,
+  "HTER": 0.09131171186440352,
+  "Accuracy3Class": 0.7914,
+  "threshold_origin": "CelebA-Spoof Validation",
+  "locked_logit_threshold": -0.2214865378279831,
+  "locked_probability_threshold": 0.44485362115051885,
+  "evaluation_unit": "image",
+  "test_threshold_tuning": false
+}

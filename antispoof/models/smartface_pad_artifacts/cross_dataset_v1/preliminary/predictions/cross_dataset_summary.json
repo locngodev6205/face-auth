@@ -1,0 +1,127 @@
+{
+  "experiment": "Project cross-dataset / zero-shot stress test",
+  "source": "CelebA-Spoof",
+  "e1_run_mode": "preliminary",
+  "threshold_origin": "CelebA-Spoof Validation",
+  "target_threshold_tuning": false,
+  "target_fine_tuning": false,
+  "comparison": [
+    {
+      "dataset": "lcc_fasd",
+      "model": "E1",
+      "evaluation_unit": "image",
+      "candidate_units": 3766,
+      "excluded_units": 4,
+      "frame_detector_coverage": 0.9989378651088688,
+      "unit_detector_coverage": 0.9989378651088688,
+      "locked_logit_threshold": -0.4650222063064575,
+      "Accuracy": 0.6140350877192983,
+      "APCER": 0.40438778535428405,
+      "BPCER": 0.2262210796915167,
+      "ACER": 0.31530443252290036,
+      "AUC": 0.753307110678555,
+      "confusion_matrix": [
+        [
+          2009,
+          1364
+        ],
+        [
+          88,
+          301
+        ]
+      ],
+      "N": 3762,
+      "N_real": 389,
+      "N_attack": 3373,
+      "HTER": 0.31530443252290036
+    },
+    {
+      "dataset": "lcc_fasd",
+      "model": "E3",
+      "evaluation_unit": "image",
+      "candidate_units": 3766,
+      "excluded_units": 4,
+      "frame_detector_coverage": 0.9989378651088688,
+      "unit_detector_coverage": 0.9989378651088688,
+      "locked_logit_threshold": -0.2214865378279831,
+      "Accuracy": 0.6557682083997873,
+      "APCER": 0.35339460420990215,
+      "BPCER": 0.2647814910025707,
+      "ACER": 0.3090880476062364,
+      "AUC": 0.7443253052175258,
+      "confusion_matrix": [
+        [
+          2181,
+          1192
+        ],
+        [
+          103,
+          286
+        ]
+      ],
+      "N": 3762,
+      "N_real": 389,
+      "N_attack": 3373,
+      "HTER": 0.3090880476062364
+    }
+  ],
+  "deltas": [
+    {
+      "dataset": "lcc_fasd",
+      "delta_AUC_E3_minus_E1": -0.008981805461029224,
+      "delta_HTER_E3_minus_E1": -0.006216384916663931,
+      "interpretation": "descriptive; no significance claim"
+    }
+  ],
+  "coverage": [
+    {
+      "dataset": "lcc_fasd",
+      "model": "E1",
+      "label": 0,
+      "candidate_units": 389,
+      "evaluable_units": 389,
+      "excluded_units": 0,
+      "low_coverage_units": 0,
+      "candidate_frames": 389,
+      "valid_frames": 389
+    },
+    {
+      "dataset": "lcc_fasd",
+      "model": "E1",
+      "label": 1,
+      "candidate_units": 3377,
+      "evaluable_units": 3373,
+      "excluded_units": 4,
+      "low_coverage_units": 0,
+      "candidate_frames": 3377,
+      "valid_frames": 3373
+    },
+    {
+      "dataset": "lcc_fasd",
+      "model": "E3",
+      "label": 0,
+      "candidate_units": 389,
+      "evaluable_units": 389,
+      "excluded_units": 0,
+      "low_coverage_units": 0,
+      "candidate_frames": 389,
+      "valid_frames": 389
+    },
+    {
+      "dataset": "lcc_fasd",
+      "model": "E3",
+      "label": 1,
+      "candidate_units": 3377,
+      "evaluable_units": 3373,
+      "excluded_units": 4,
+      "low_coverage_units": 0,
+      "candidate_frames": 3377,
+      "valid_frames": 3373
+    }
+  ],
+  "primary_targets_complete": false,
+  "HTER_definition": "(FAR + FRR)/2; attack acceptance and real rejection; equals ACER here",
+  "conditional_PAD_metrics": "common successfully preprocessed frames; zero-valid-face units excluded and retained in coverage",
+  "face_size_note": "video face-size rows are frame diagnostics; native pixels do not measure common physical distance",
+  "in_domain_comparison": []
+}

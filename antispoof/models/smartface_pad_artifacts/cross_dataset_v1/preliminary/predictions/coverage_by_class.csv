@@ -1,0 +1,5 @@
+dataset,model,label,candidate_units,evaluable_units,excluded_units,low_coverage_units,candidate_frames,valid_frames
+lcc_fasd,E1,0,389,389,0,0,389,389
+lcc_fasd,E1,1,3377,3373,4,0,3377,3373
+lcc_fasd,E3,0,389,389,0,0,389,389
+lcc_fasd,E3,1,3377,3373,4,0,3377,3373

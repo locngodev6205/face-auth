@@ -1,0 +1,163 @@
+{
+  "protocol_version": "e3_concat_v1",
+  "e1_run_mode": "preliminary",
+  "init_mode": "independent",
+  "seed": 42,
+  "split_fingerprints": {
+    "train": "4ecbcee78758366dd454c0e446444f6c74c82ac5c4d1c937730382b34d4e25f8",
+    "val": "4560d12efe0bb840c0584a38bda12097e2048f3066d89177cda62f8d931edf91",
+    "test": "394d6a5ba98cde1cfbda3b9c41c7824262c4c5bc648883b93581a9585400a26c"
+  },
+  "bbox_cache_selected_fingerprint": "4ac3763a6c566c976de11dda1cbfdb8426f2df73d95347c7fe2c1b9629ab9b85",
+  "class_counts": {
+    "train": {
+      "0": 32389,
+      "1": 45761,
+      "2": 20723
+    },
+    "val": {
+      "0": 4980,
+      "1": 6957,
+      "2": 3179
+    },
+    "test": {
+      "0": 2966,
+      "1": 5284,
+      "2": 1750
+    }
+  },
+  "manifest_sha256": "7799486ebcae0babe09e061579ac05db7c1dc61e10746be0755bcddc10b2df9e",
+  "cache_file_sha256": "1625ccc00c6c909cfe745b29e02df2cab0328db5705445c88a6733a4c998a128",
+  "dct_spec": {
+    "implementation": "cv2.dct float32 orthonormal 2D",
+    "luminance_weights_rgb": [
+      0.299,
+      0.587,
+      0.114
+    ],
+    "rgb_range": "uint8 -> float32 / 255",
+    "dynamic_range": "sign(C)*log1p(abs(C))",
+    "normalization": "per-sample z-score over full map, population std",
+    "epsilon": 1e-06,
+    "mask": "none",
+    "resize": "longest side 224; LANCZOS4 upscale, AREA downscale; REFLECT_101 letterbox"
+  },
+  "normalization_mean": [
+    0.5931,
+    0.469,
+    0.4229
+  ],
+  "normalization_std": [
+    0.2471,
+    0.2214,
+    0.2157
+  ],
+  "gamma": false,
+  "architecture": "MobileNetV3-Small 576->256 + exact E2 64; concat 320->128->3",
+  "parameter_counts": {
+    "spatial": 1075232,
+    "frequency": 8480,
+    "fusion": 41475,
+    "total": 1125187
+  },
+  "training": {
+    "optimizer": "AdamW",
+    "backbone_lr": 1e-05,
+    "new_layers_lr": 0.0001,
+    "weight_decay": 0.0001,
+    "batch_size": 128,
+    "epochs": 24,
+    "warmup_epochs": 2,
+    "warmup_start_factor": 0.2,
+    "min_lr_factor": 0.1,
+    "early_stop_patience": 4,
+    "early_stop_min_delta": 0.0001,
+    "early_stop_min_epochs": 10,
+    "grad_clip": 5.0,
+    "label_smoothing": 0.1,
+    "class_weights": [
+      1,
+      1,
+      1
+    ]
+  },
+  "augmentation": {
+    "horizontal_flip_p": 0.5,
+    "brightness_limit": 0.1,
+    "contrast_limit": 0.1,
+    "appearance_p": 0.3,
+    "bbox_jitter_p": 0.2,
+    "bbox_scale_jitter": [
+      0.95,
+      1.05
+    ],
+    "bbox_translate_fraction": 0.05,
+    "affine_rotation": false
+  },
+  "strict_determinism": false,
+  "cudnn_benchmark": true,
+  "source_notebook_hashes": {
+    "antispoof/notebooks/e1_spatial_v5_3/e1_v5_3_training.ipynb": "971d4bbf0ff709ab073b0a7266f26132cf7e23cc05ad73bf08f86d3ff509d539",
+    "antispoof/notebooks/e2_frequency_dct/e2_frequency_only_dct_train.ipynb": "5dacdb5386e18209455c8c51594bf066289e2f85b1f23fc3473a681e5de3612c"
+  },
+  "environment": {
+    "python": "3.12.13 (main, Mar  4 2026, 09:23:07) [GCC 11.4.0]",
+    "torch": "2.10.0+cu128",
+    "opencv": "4.13.0",
+    "albumentations": "2.0.8",
+    "torchvision": "0.25.0+cu128",
+    "gpu": "Tesla T4"
+  },
+  "best_epoch": 12,
+  "validation_metrics": {
+    "Accuracy": 0.9968907118285261,
+    "APCER": 0.0022691397000789266,
+    "BPCER": 0.004819277108433735,
+    "ACER": 0.0035442084042563307,
+    "AUC": 0.9997330284040662,
+    "confusion_matrix": [
+      [
+        10113,
+        23
+      ],
+      [
+        24,
+        4956
+      ]
+    ],
+    "N": 15116,
+    "N_real": 4980,
+    "N_attack": 10136,
+    "HTER": 0.0035442084042563307
+  },
+  "calibrated_logit_threshold": -0.2214865378279831,
+  "calibrated_probability_threshold": 0.44485362115051885,
+  "threshold_origin": "CelebA-Spoof Validation",
+  "onnx_sha256": "ffa4d93059d616a3cbaeba9eac30ad65f8d9372207cfd2864b11421fd6b129f0",
+  "onnx_inputs": [
+    {
+      "name": "rgb_input",
+      "shape": [
+        "N",
+        3,
+        224,
+        224
+      ]
+    },
+    {
+      "name": "frequency_map",
+      "shape": [
+        "N",
+        1,
+        224,
+        224
+      ]
+    }
+  ],
+  "onnx_output": "logits",
+  "external_dct_required": true,
+  "current_app_compatible": false,
+  "pad_score": "real_logit - logsumexp(spoof_logits)",
+  "decision": "Real iff d >= calibrated_logit_threshold",
+  "onnx_parity_max_abs": 1.1324882507324219e-06
+}

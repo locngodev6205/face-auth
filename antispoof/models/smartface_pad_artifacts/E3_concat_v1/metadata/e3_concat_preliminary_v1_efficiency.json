@@ -1,0 +1,77 @@
+{
+  "settings": {
+    "provider": "CPUExecutionProvider",
+    "intra_op_threads": 2,
+    "inter_op_threads": 1,
+    "batch_size": 1,
+    "warmup": 10,
+    "timed_samples": 100,
+    "host": "Linux-6.12.90+-x86_64-with-glibc2.35",
+    "processor": "x86_64",
+    "includes_detector": false,
+    "includes_io": false,
+    "notes": "Host diagnostic; no target-device/camera claim. Same actual Validation image/crop for both models."
+  },
+  "parameters": {
+    "spatial": 1075232,
+    "frequency": 8480,
+    "fusion": 41475,
+    "total": 1125187
+  },
+  "E3": {
+    "timing": {
+      "crop_resize_spatial": {
+        "mean_ms": 3.7677723402339325,
+        "p50_ms": 3.7303119997886824,
+        "p95_ms": 4.15757045002465
+      },
+      "luminance_dct": {
+        "mean_ms": 2.877879139923607,
+        "p50_ms": 2.86760799917829,
+        "p95_ms": 3.03444409983058
+      },
+      "model_only": {
+        "mean_ms": 2.208628799980943,
+        "p50_ms": 2.1931814999334165,
+        "p95_ms": 2.415301249948243
+      },
+      "total_pad": {
+        "mean_ms": 8.854280280138482,
+        "p50_ms": 8.845845999530866,
+        "p95_ms": 9.440680349416652
+      }
+    },
+    "rss_before_bytes": 15217160192,
+    "sampled_peak_process_rss_bytes": 15217172480,
+    "memory_method": "psutil RSS sampled after each iteration; whole notebook process, not isolated model allocation",
+    "onnx_fp32_bytes": 4516592
+  },
+  "E1": {
+    "timing": {
+      "crop_resize_spatial": {
+        "mean_ms": 3.839048900135822,
+        "p50_ms": 3.853338501357939,
+        "p95_ms": 4.169214048670256
+      },
+      "luminance_dct": {
+        "mean_ms": 0.0005757399958383758,
+        "p50_ms": 0.0005734991646022536,
+        "p95_ms": 0.0006832014150859322
+      },
+      "model_only": {
+        "mean_ms": 2.025225929883163,
+        "p50_ms": 2.0047265006724047,
+        "p95_ms": 2.221080650269869
+      },
+      "total_pad": {
+        "mean_ms": 5.8648505700148235,
+        "p50_ms": 5.880545999389142,
+        "p95_ms": 6.317858999409509
+      }
+    },
+    "rss_before_bytes": 15217250304,
+    "sampled_peak_process_rss_bytes": 15217586176,
+    "memory_method": "psutil RSS sampled after each iteration; whole notebook process, not isolated model allocation",
+    "onnx_fp32_bytes": 4701297
+  }
+}

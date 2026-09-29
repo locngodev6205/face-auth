@@ -1,0 +1,32 @@
+{
+  "schema": "pad_micro_concat_meta_v1",
+  "candidate_id": "M0",
+  "checkpoint_sha256": "c88b645f23df4833857ca2bd2b01986c3fd03b4740c79843a575128e2c4fc51e",
+  "selected_global_epoch": 4,
+  "locked_validation_logit_threshold": -0.709600567817688,
+  "threshold_source": "CelebA micro-Val only",
+  "resource_hashes": {
+    "parent_e1_manifest_sha256": "7799486ebcae0babe09e061579ac05db7c1dc61e10746be0755bcddc10b2df9e",
+    "parent_e1_train_fingerprint": "4ecbcee78758366dd454c0e446444f6c74c82ac5c4d1c937730382b34d4e25f8",
+    "parent_e1_val_fingerprint": "4560d12efe0bb840c0584a38bda12097e2048f3066d89177cda62f8d931edf91",
+    "micro_manifest_sha256": "7c1eed4abaab7ee193758ea4bf4a0c36b98e43b5fb8d84c5c0e7d424607a0aa3",
+    "micro_train_keys_fingerprint": "9ce47155516d265dc9d6eccbc0ea4105684afe7c9f87ae00cb53789830a53caf",
+    "micro_val_keys_fingerprint": "51f43df4b705e6b36d551eb59e5daf1d3a8852d6cb1e8ea4e654524a75f82274",
+    "celeba_bbox_cache_sha256": "ee176ce62c62d64c922fefde38a260356b0fd35da696ebf0553db3e92932fd1a",
+    "lcc_manifest_sha256": "af864ab57bf26af800ceac46c00d9724c8c60f5d0c63037394a1d8708a35abe5",
+    "lcc_cache_sha256": "277993f3c8ac436c7fc4f852892a64299b6ccb23063b1774e055a4317c29f78c",
+    "lcc_detector_sha256": "5e4447f50245bbd7966bd6c0fa52938c61474a04ec7def48753668a9d8b4ea3a",
+    "lcc_valid_path_fingerprint_sha256": "cf74fb7d56cad5164b984c50697d0cd6674662a196469ccf7c3f90b66d720a8b",
+    "lcc_candidate_n": 3766,
+    "lcc_valid_face_n": 3762,
+    "shared_micro_e1_checkpoint_sha256": "4fc6a179213a210a95950f90714276f316e173b596842fad8e7e6ccd833ab7e2"
+  },
+  "spatial_frozen_all_phase_b": true,
+  "concat_dims": [
+    256,
+    64,
+    320,
+    128,
+    3
+  ]
+}

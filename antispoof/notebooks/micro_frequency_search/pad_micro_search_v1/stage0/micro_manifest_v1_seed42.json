@@ -1,0 +1,81 @@
+{
+  "schema": "pad_micro_manifest_v1",
+  "seed": 42,
+  "source_run_mode": "preliminary",
+  "parent_e1_manifest_path": "/kaggle/input/datasets/locngodev/e1-v5-3-artifacts/E1_v5_3_mnv3_small/data_protocol/celeba_spoof_preliminary_v5_3_edge_mnv3_small_seed42.npz",
+  "parent_e1_manifest_sha256": "7799486ebcae0babe09e061579ac05db7c1dc61e10746be0755bcddc10b2df9e",
+  "parent_train_fingerprint": "4ecbcee78758366dd454c0e446444f6c74c82ac5c4d1c937730382b34d4e25f8",
+  "parent_val_fingerprint": "4560d12efe0bb840c0584a38bda12097e2048f3066d89177cda62f8d931edf91",
+  "micro_train_n": 5000,
+  "micro_val_n": 2000,
+  "micro_train_class_counts": {
+    "1": 2314,
+    "2": 1048,
+    "0": 1638
+  },
+  "micro_val_class_counts": {
+    "0": 659,
+    "1": 920,
+    "2": 421
+  },
+  "micro_train_allocation": [
+    1638,
+    2314,
+    1048
+  ],
+  "micro_val_allocation": [
+    659,
+    920,
+    421
+  ],
+  "source_train_class_counts": [
+    32389,
+    45761,
+    20723
+  ],
+  "source_val_class_counts": [
+    4980,
+    6957,
+    3179
+  ],
+  "micro_train_keys_fingerprint": "9ce47155516d265dc9d6eccbc0ea4105684afe7c9f87ae00cb53789830a53caf",
+  "micro_val_keys_fingerprint": "51f43df4b705e6b36d551eb59e5daf1d3a8852d6cb1e8ea4e654524a75f82274",
+  "bbox_status_audit": {
+    "overall_status_counts": {
+      "VALID": 6927,
+      "FALLBACK_DET_FAIL": 70,
+      "FALLBACK_SUSPICIOUS": 3
+    },
+    "train_status_counts": {
+      "VALID": 4953,
+      "FALLBACK_DET_FAIL": 47
+    },
+    "val_status_counts": {
+      "VALID": 1974,
+      "FALLBACK_DET_FAIL": 23,
+      "FALLBACK_SUSPICIOUS": 3
+    },
+    "crop_factor_counts_by_status": {
+      "VALID": {
+        "1.55": 6927
+      },
+      "FALLBACK_DET_FAIL": {
+        "1.50": 70
+      },
+      "FALLBACK_SUSPICIOUS": {
+        "1.50": 3
+      }
+    },
+    "accepted_status_factor_policy": {
+      "VALID": 1.55,
+      "FALLBACK_DET_FAIL": 1.5,
+      "FALLBACK_SUSPICIOUS": 1.5
+    }
+  },
+  "overlap_checks": {
+    "train_subset_of_parent_train": true,
+    "val_subset_of_parent_val": true,
+    "train_val_key_overlap_n": 0,
+    "train_val_subject_overlap_n": 0
+  }
+}

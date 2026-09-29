@@ -1,0 +1,191 @@
+{
+  "schema": "pad_micro_m0_m4_review_packet_v1",
+  "lcc_dataset_role": "LCC-FASD external-dev / cross-domain stress set",
+  "stage1_spatial_reference": {
+    "summary_path": "/kaggle/input/datasets/maithanhphuong/micro-summaries-bundle-full/micro_summaries_bundle/stage1_shared_micro_e1/micro_e1_v1_summary.json",
+    "checkpoint_sha256": "4fc6a179213a210a95950f90714276f316e173b596842fad8e7e6ccd833ab7e2",
+    "val_acer": 0.02107513813780172,
+    "val_auc": 0.99733625733972,
+    "lcc_auc": 0.6937734024237537,
+    "lcc_hter": 0.34631052429812736,
+    "lcc_candidate_n": 3766,
+    "lcc_valid_face_n": 3762
+  },
+  "resource_hashes": {
+    "parent_e1_manifest_sha256": "7799486ebcae0babe09e061579ac05db7c1dc61e10746be0755bcddc10b2df9e",
+    "parent_e1_train_fingerprint": "4ecbcee78758366dd454c0e446444f6c74c82ac5c4d1c937730382b34d4e25f8",
+    "parent_e1_val_fingerprint": "4560d12efe0bb840c0584a38bda12097e2048f3066d89177cda62f8d931edf91",
+    "micro_manifest_sha256": "7c1eed4abaab7ee193758ea4bf4a0c36b98e43b5fb8d84c5c0e7d424607a0aa3",
+    "micro_train_keys_fingerprint": "9ce47155516d265dc9d6eccbc0ea4105684afe7c9f87ae00cb53789830a53caf",
+    "micro_val_keys_fingerprint": "51f43df4b705e6b36d551eb59e5daf1d3a8852d6cb1e8ea4e654524a75f82274",
+    "celeba_bbox_cache_sha256": "ee176ce62c62d64c922fefde38a260356b0fd35da696ebf0553db3e92932fd1a",
+    "lcc_manifest_sha256": "af864ab57bf26af800ceac46c00d9724c8c60f5d0c63037394a1d8708a35abe5",
+    "lcc_cache_sha256": "277993f3c8ac436c7fc4f852892a64299b6ccb23063b1774e055a4317c29f78c",
+    "lcc_detector_sha256": "5e4447f50245bbd7966bd6c0fa52938c61474a04ec7def48753668a9d8b4ea3a",
+    "lcc_valid_path_fingerprint_sha256": "cf74fb7d56cad5164b984c50697d0cd6674662a196469ccf7c3f90b66d720a8b",
+    "lcc_candidate_n": 3766,
+    "lcc_valid_face_n": 3762,
+    "shared_micro_e1_checkpoint_sha256": "4fc6a179213a210a95950f90714276f316e173b596842fad8e7e6ccd833ab7e2"
+  },
+  "source_summaries": {
+    "Stage1": "/kaggle/input/datasets/maithanhphuong/micro-summaries-bundle-full/micro_summaries_bundle/stage1_shared_micro_e1/micro_e1_v1_summary.json",
+    "M0": "/kaggle/input/datasets/maithanhphuong/micro-summaries-bundle-full/micro_summaries_bundle/M0_global_dct_gap/summary.json",
+    "M1": "/kaggle/input/datasets/maithanhphuong/micro-summaries-bundle-full/micro_summaries_bundle/M1_dct_pool4x4/summary.json",
+    "M2": "/kaggle/input/datasets/maithanhphuong/micro-summaries-bundle-full/micro_summaries_bundle/M2_coord_dct_pool4x4/summary.json",
+    "M3": "/kaggle/input/datasets/maithanhphuong/micro-summaries-bundle-full/micro_summaries_bundle/M3_band_aware_dct/summary.json",
+    "M4": "/kaggle/input/datasets/maithanhphuong/micro-summaries-bundle-full/micro_summaries_bundle/M4_block_dct_8x8/summary.json"
+  },
+  "screening_heuristics": {
+    "m0_role": "Frequency-representation control.",
+    "stage1_role": "Spatial-only reference for whether frequency fusion helps spatial E1 at all.",
+    "lcc_gain_vs_m0": "concat LCC AUC >= M0 + 0.020 OR (concat LCC HTER <= M0 - 0.020 AND AUC > M0)",
+    "validation_guardrail": "concat micro-Val ACER regression <= 0.015",
+    "branch_evidence": "FULL LCC AUC exceeds both FREQ_ZERO and FREQ_SHUFFLE by > 0.002",
+    "spatial_match_tolerance": {
+      "lcc_auc_abs_delta": 0.002,
+      "lcc_hter_abs_delta": 0.005
+    },
+    "interpretation": "descriptive screening heuristics only; not statistical significance; no composite score",
+    "borderline": "directional LCC AUC/HTER improvement >= 0.005 with micro-Val ACER regression <= 0.030, or larger gain with weak branch evidence"
+  },
+  "candidates": {
+    "M0": {
+      "status": "CONTROL",
+      "reason": "Frequency-representation control for all candidate deltas.",
+      "beats_m0_auc": false,
+      "beats_m0_hter": false,
+      "beats_m0_on_both_auc_and_hter": false,
+      "delta_lcc_auc_vs_m0": 0.0,
+      "delta_lcc_hter_vs_m0": 0.0,
+      "spatial_reference": {
+        "delta_lcc_auc_vs_spatial_e1": -0.008003981412959549,
+        "lcc_auc_relation": "WORSE",
+        "delta_lcc_hter_vs_spatial_e1": 0.005970595161790659,
+        "lcc_hter_relation": "WORSE",
+        "joint_relation": "BELOW_ON_BOTH_AUC_AND_HTER",
+        "note": "FREQ_ZERO is a CONCAT-model ablation and is not the independent Stage 1 spatial baseline."
+      },
+      "delta_lcc_apcer_vs_m0": 0.0,
+      "delta_lcc_bpcer_vs_m0": 0.0,
+      "apcer_bpcer_tradeoff_vs_m0": false,
+      "auc_hter_interpretation_vs_m0": "NO_AUC_OR_HTER_GAIN_VS_M0",
+      "concat_val_acer_regression_vs_m0": 0.0,
+      "full_minus_freq_zero_lcc_auc": -0.006108923349416928,
+      "full_minus_freq_shuffle_lcc_auc": -0.005447386892889816,
+      "weak_branch_evidence": true,
+      "branch_evidence_supported": false
+    },
+    "M1": {
+      "status": "KILL",
+      "reason": "No sufficient screening signal under the descriptive M0 heuristics.",
+      "beats_m0_auc": false,
+      "beats_m0_hter": false,
+      "beats_m0_on_both_auc_and_hter": false,
+      "delta_lcc_auc_vs_m0": -0.0027619909198786097,
+      "delta_lcc_hter_vs_m0": 0.006685862401941245,
+      "spatial_reference": {
+        "delta_lcc_auc_vs_spatial_e1": -0.010765972332838158,
+        "lcc_auc_relation": "WORSE",
+        "delta_lcc_hter_vs_spatial_e1": 0.012656457563731904,
+        "lcc_hter_relation": "WORSE",
+        "joint_relation": "BELOW_ON_BOTH_AUC_AND_HTER",
+        "note": "FREQ_ZERO is a CONCAT-model ablation and is not the independent Stage 1 spatial baseline."
+      },
+      "delta_lcc_apcer_vs_m0": -0.04832493329380377,
+      "delta_lcc_bpcer_vs_m0": 0.061696658097686374,
+      "apcer_bpcer_tradeoff_vs_m0": true,
+      "auc_hter_interpretation_vs_m0": "NO_AUC_OR_HTER_GAIN_VS_M0",
+      "concat_val_acer_regression_vs_m0": 0.00042490882282716566,
+      "full_minus_freq_zero_lcc_auc": -0.011294134503775366,
+      "full_minus_freq_shuffle_lcc_auc": -0.007574897282746629,
+      "weak_branch_evidence": true,
+      "branch_evidence_supported": false
+    },
+    "M2": {
+      "status": "KILL",
+      "reason": "No sufficient screening signal under the descriptive M0 heuristics.",
+      "beats_m0_auc": true,
+      "beats_m0_hter": true,
+      "beats_m0_on_both_auc_and_hter": true,
+      "delta_lcc_auc_vs_m0": 0.0036742710333154127,
+      "delta_lcc_hter_vs_m0": -0.001591345761784435,
+      "spatial_reference": {
+        "delta_lcc_auc_vs_spatial_e1": -0.004329710379644136,
+        "lcc_auc_relation": "WORSE",
+        "delta_lcc_hter_vs_spatial_e1": 0.004379249400006224,
+        "lcc_hter_relation": "WITHIN_DESCRIPTIVE_TOLERANCE",
+        "joint_relation": "MIXED_AUC_HTER_TRADE_OFF",
+        "note": "FREQ_ZERO is a CONCAT-model ablation and is not the independent Stage 1 spatial baseline."
+      },
+      "delta_lcc_apcer_vs_m0": 0.03794841387488879,
+      "delta_lcc_bpcer_vs_m0": -0.0411311053984576,
+      "apcer_bpcer_tradeoff_vs_m0": true,
+      "auc_hter_interpretation_vs_m0": "AUC_AND_HTER_IMPROVE_VS_M0",
+      "concat_val_acer_regression_vs_m0": 0.0014784111238979845,
+      "full_minus_freq_zero_lcc_auc": -0.001502937663907522,
+      "full_minus_freq_shuffle_lcc_auc": 0.00014785492231128572,
+      "weak_branch_evidence": true,
+      "branch_evidence_supported": false
+    },
+    "M3": {
+      "status": "KILL",
+      "reason": "No sufficient screening signal under the descriptive M0 heuristics.",
+      "beats_m0_auc": false,
+      "beats_m0_hter": false,
+      "beats_m0_on_both_auc_and_hter": false,
+      "delta_lcc_auc_vs_m0": -0.0038236502331764344,
+      "delta_lcc_hter_vs_m0": 0.0060403308596848615,
+      "spatial_reference": {
+        "delta_lcc_auc_vs_spatial_e1": -0.011827631646135983,
+        "lcc_auc_relation": "WORSE",
+        "delta_lcc_hter_vs_spatial_e1": 0.012010926021475521,
+        "lcc_hter_relation": "WORSE",
+        "joint_relation": "BELOW_ON_BOTH_AUC_AND_HTER",
+        "note": "FREQ_ZERO is a CONCAT-model ablation and is not the independent Stage 1 spatial baseline."
+      },
+      "delta_lcc_apcer_vs_m0": -0.036762525941298585,
+      "delta_lcc_bpcer_vs_m0": 0.048843187660668363,
+      "apcer_bpcer_tradeoff_vs_m0": true,
+      "auc_hter_interpretation_vs_m0": "NO_AUC_OR_HTER_GAIN_VS_M0",
+      "concat_val_acer_regression_vs_m0": 0.0007847517140629583,
+      "full_minus_freq_zero_lcc_auc": -0.009061067893608499,
+      "full_minus_freq_shuffle_lcc_auc": -0.006732733936591573,
+      "weak_branch_evidence": true,
+      "branch_evidence_supported": false
+    },
+    "M4": {
+      "status": "KILL",
+      "reason": "No sufficient screening signal under the descriptive M0 heuristics.",
+      "beats_m0_auc": false,
+      "beats_m0_hter": false,
+      "beats_m0_on_both_auc_and_hter": false,
+      "delta_lcc_auc_vs_m0": -0.023053935798953873,
+      "delta_lcc_hter_vs_m0": 0.025853271518797738,
+      "spatial_reference": {
+        "delta_lcc_auc_vs_spatial_e1": -0.03105791721191342,
+        "lcc_auc_relation": "WORSE",
+        "delta_lcc_hter_vs_spatial_e1": 0.0318238666805884,
+        "lcc_hter_relation": "WORSE",
+        "joint_relation": "BELOW_ON_BOTH_AUC_AND_HTER",
+        "note": "FREQ_ZERO is a CONCAT-model ablation and is not the independent Stage 1 spatial baseline."
+      },
+      "delta_lcc_apcer_vs_m0": 0.008004743551734361,
+      "delta_lcc_bpcer_vs_m0": 0.04370179948586117,
+      "apcer_bpcer_tradeoff_vs_m0": false,
+      "auc_hter_interpretation_vs_m0": "NO_AUC_OR_HTER_GAIN_VS_M0",
+      "concat_val_acer_regression_vs_m0": 1.3013186318275999e-05,
+      "full_minus_freq_zero_lcc_auc": -0.024261925757013247,
+      "full_minus_freq_shuffle_lcc_auc": -0.0196883309694329,
+      "weak_branch_evidence": true,
+      "branch_evidence_supported": false
+    }
+  },
+  "overall": {
+    "screening_status": "SCREENING_ONLY",
+    "winner_status": "NO WINNER",
+    "promising_candidates_for_later_review": [],
+    "composite_score": null,
+    "statistical_significance_claimed": false,
+    "automatic_promotion": false
+  }
+}

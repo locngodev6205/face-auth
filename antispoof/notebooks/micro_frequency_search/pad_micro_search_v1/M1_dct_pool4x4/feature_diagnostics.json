@@ -1,0 +1,33 @@
+{
+  "val": {
+    "spatial_feature_l2_mean": 9.621923446655273,
+    "spatial_feature_l2_std": 1.8759897947311401,
+    "frequency_feature_l2_mean": 6.215500831604004,
+    "frequency_feature_l2_std": 0.7973711490631104,
+    "fusion_spatial_weight_slice_frobenius_norm": 6.259291648864746,
+    "fusion_frequency_weight_slice_frobenius_norm": 2.964507579803467,
+    "spatial_linear_contribution_l2_mean": 8.319334983825684,
+    "frequency_linear_contribution_l2_mean": 2.758493423461914,
+    "diagnostic_shuffle_seed": 20260929,
+    "permutation_sha256": "c59cd85daa0dfb04028c7e60b07d2fc9f2245f613be09bc0eed3f25f56e9e7da",
+    "fixed_point_count": 0,
+    "permutation_n": 2000
+  },
+  "lcc": {
+    "spatial_feature_l2_mean": 8.005712509155273,
+    "spatial_feature_l2_std": 1.2509061098098755,
+    "frequency_feature_l2_mean": 5.654302597045898,
+    "frequency_feature_l2_std": 0.8379862308502197,
+    "fusion_spatial_weight_slice_frobenius_norm": 6.259291648864746,
+    "fusion_frequency_weight_slice_frobenius_norm": 2.964507579803467,
+    "spatial_linear_contribution_l2_mean": 4.894656658172607,
+    "frequency_linear_contribution_l2_mean": 2.4663732051849365,
+    "diagnostic_shuffle_seed": 20260929,
+    "permutation_sha256": "38dedcc6271a5589b0b4e3ca87ef5b8eaf062a24e448a22dbc3e2d01bb6d7612",
+    "fixed_point_count": 0,
+    "permutation_n": 3762
+  },
+  "frozen_weights": true,
+  "diagnostic_training": false,
+  "frequency_shuffle": "deterministic label-independent Sattolo derangement; zero fixed points; seed and permutation SHA256 recorded"
+}

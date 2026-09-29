@@ -9,7 +9,7 @@ Thiết kế của project thuộc nhóm **single-frame RGB Face PAD có dual-do
 
 ```text
 RGB face
- ├─ Spatial branch: MobileNetV3-Large
+ ├─ Spatial branch: MobileNetV3-Small
  └─ Frequency branch: DCT + lightweight CNN
           ↓
       Feature Fusion
@@ -23,8 +23,9 @@ RGB face
 - frequency cue là **complementary evidence** cho spatial cue;
 - mục tiêu không chỉ là giảm lỗi in-domain mà còn kiểm tra **cross-domain generalization**;
 - kiến trúc phải đủ nhẹ để đo latency/FPS và hướng tới edge deployment;
-- **V1 dùng concatenation** để kiểm chứng câu hỏi nghiên cứu cơ bản;
-- **V2 dùng adaptive/gated fusion** chỉ sau khi V1 chứng minh frequency branch thực sự có giá trị.
+- **E3/V1 concatenation đã hoàn thành như một baseline khoa học sạch**, nhưng kết quả hiện tại chưa cho thấy lợi ích cross-domain đủ ổn định để chuyển thẳng sang gated fusion;
+- giai đoạn hiện tại chuyển sang **micro architecture search có giả thuyết**, ưu tiên sửa cách biểu diễn frequency trước khi tăng độ phức tạp của fusion;
+- **V2 adaptive/gated fusion chỉ được mở lại** nếu micro-search chứng minh frequency cue hữu ích nhưng độ tin cậy thay đổi theo sample/domain.
 
 ### Vị trí so với các hướng Face PAD hiện đại
 
@@ -38,6 +39,35 @@ RGB face
 | Multi-modal | RGB + Depth/IR | Robust hơn trong nhiều điều kiện | Cần sensor bổ sung |
 
 **Định vị của nhóm:** lightweight RGB-only, dual-domain spatial–frequency, ưu tiên ablation rõ ràng và edge efficiency hơn việc dùng backbone rất lớn.
+
+### Trạng thái thực nghiệm hiện tại
+
+Roadmap ban đầu `E1 → E2 → E3 → E4` đã cung cấp ba mốc quan trọng:
+
+```text
+E1  Spatial-only MobileNetV3-Small      → baseline mạnh
+E2  Frequency-only DCT                  → frequency có discriminative signal trên source domain
+E3  Spatial + global DCT + CONCAT       → chưa có robust gain đủ rõ ở cross-domain
+```
+
+Finding chính của E3 không phải là “frequency vô ích”, mà là **cách biểu diễn và fusion hiện tại còn quá naïve**:
+
+```text
+Global DCT 224×224
+→ signed-log
+→ per-sample z-score
+→ CNN
+→ Global Average Pool 1×1
+→ 64-D
+→ concat trực tiếp với spatial 256-D
+```
+
+Hai rủi ro cần kiểm chứng trước E4:
+
+1. **Frequency-position loss:** trên DCT plane, tọa độ `(u,v)` mang nghĩa tần số; convolution weight sharing + GAP 1×1 có thể làm mất thông tin “pattern nằm ở dải nào”.
+2. **Fusion/scale mismatch:** spatial 256-D và frequency 64-D có thể có distribution và mức đóng góp rất khác nhau; concat đơn giản có thể khiến frequency bị bỏ qua hoặc chỉ dịch operating point thay vì cải thiện separation.
+
+Vì vậy giai đoạn tiếp theo ưu tiên **micro experiments 2K–10K** để tìm representation triển vọng trước khi chạy lại full training.
 
 ### Ba công trình gần nhất đặc biệt liên quan
 
@@ -55,7 +85,7 @@ Thiết kế một mô hình Face Presentation Attack Detection (PAD) nhẹ, x�
 
 Mục tiêu thực nghiệm chính:
 
-1. Xây dựng **Spatial-only baseline** bằng MobileNetV3-Large.
+1. Xây dựng **Spatial-only baseline** bằng MobileNetV3-Small.
 2. Xây dựng **Frequency-aware model** bằng cách bổ sung một nhánh DCT + CNN nhẹ.
 3. Huấn luyện hai mô hình **độc lập** để comparison công bằng.
 4. Kiểm tra liệu frequency branch có cải thiện **cross-domain generalization** hay không.
@@ -75,7 +105,7 @@ Mục tiêu thực nghiệm chính:
              │                                 │
              ▼                                 ▼
        SPATIAL BRANCH                    FREQUENCY BRANCH
-       MobileNetV3-Large                       │
+       MobileNetV3-Small                       │
        ImageNet pretrained                     ▼
              │                                2D DCT
              ▼                                  │
@@ -109,7 +139,7 @@ Mục tiêu thực nghiệm chính:
 
 | Thành phần | Vai trò | Trainable? |
 |---|---|---:|
-| MobileNetV3-Large | Trích xuất spatial features | Có, fine-tune |
+| MobileNetV3-Small | Trích xuất spatial features | Có, fine-tune |
 | 2D DCT | Chuyển ảnh sang miền tần số | Không |
 | Lightweight Frequency CNN | Học frequency features | Có |
 | Feature Fusion | Kết hợp hai nguồn đặc trưng | Có |
@@ -236,13 +266,99 @@ Có thể dùng 32 → 64 channels, tùy thiết bị.
 
 Mục tiêu là giữ frequency branch rất nhỏ để phần lớn computation vẫn nằm ở MobileNetV3.
 
+### 4.6. Micro-search cho Frequency Branch
+
+Trong giai đoạn hiện tại, giữ **spatial branch và concat protocol cố định**, chỉ thay đổi cách biểu diễn frequency để cô lập nguyên nhân.
+
+| ID | Frequency representation | Thay đổi chính | Hypothesis |
+|---|---|---|---|
+| **M0** | Global DCT + GAP 1×1 | Control, giữ thiết kế E2/E3 hiện tại | Mốc so sánh |
+| **M1** | Global DCT + AdaptivePool 4×4 | Giữ coarse position trên frequency plane | Vị trí tần số là thông tin cần thiết |
+| **M2** | Coord-DCT + Pool 4×4 | Thêm `u,v` hoặc radial frequency coordinate | CNN cần biết coefficient thuộc band nào |
+| **M3** | Band-aware DCT | Tách low / mid / high band trước encoding/pooling | Các dải tần có độ tin cậy khác nhau |
+| **M4** | Block-DCT 8×8 | Frequency identity thành channel, spatial locality thành grid | Giữ đồng thời locality và frequency semantics |
+
+#### M0 — Global DCT + GAP 1×1
+
+```text
+224×224 luminance
+→ global DCT
+→ signed-log + normalization
+→ Tiny CNN
+→ GAP 1×1
+→ 64-D
+```
+
+Vai trò: control bắt buộc, không xem là candidate mới.
+
+#### M1 — Position-preserving pooling
+
+```text
+Tiny CNN feature map
+→ AdaptiveAvgPool2d(4×4)
+→ Flatten
+→ Linear → 64-D
+```
+
+Mục tiêu: giữ coarse frequency-location mà không làm branch nặng đáng kể.
+
+#### M2 — Coord-DCT
+
+Tạo thêm coordinate channels cố định:
+
+```text
+[DCT map, u-map, v-map]
+```
+
+hoặc:
+
+```text
+[DCT map, radial-frequency map]
+```
+
+để convolution biết cùng một local pattern ở low-frequency và high-frequency không có cùng ý nghĩa.
+
+#### M3 — Band-aware DCT
+
+Chia DCT map theo mask cố định, ví dụ:
+
+```text
+low band
+mid band
+high band
+```
+
+mỗi band đi qua pooling/encoder nhẹ, sau đó concat/projection về 64-D.
+
+Không được chọn band boundary bằng kết quả LCC; boundary phải được khóa trước run hoặc dùng một grid nhỏ đã định nghĩa từ đầu.
+
+#### M4 — Block-DCT 8×8
+
+```text
+224×224 luminance
+→ 28×28 blocks, mỗi block 8×8
+→ 2D DCT từng block
+→ chọn K coefficients cố định
+→ tensor K×28×28
+→ Tiny CNN
+→ 64-D
+```
+
+Ý nghĩa:
+
+- `channel` biểu diễn **frequency identity**;
+- `(x,y)` biểu diễn **spatial locality**;
+- convolution lúc này hoạt động trên không gian ảnh, phù hợp inductive bias của CNN hơn việc convolution trực tiếp trên global DCT plane.
+
+Đây là candidate có thay đổi representation lớn nhất, nên cần giữ số channel `K` nhỏ và cố định để bảo toàn edge efficiency.
+
 ---
 
 ## 5. Spatial Branch
 
 ### Backbone đề xuất
 
-**MobileNetV3-Large, ImageNet pretrained**.
+**MobileNetV3-Small, ImageNet pretrained**.
 
 Lý do:
 
@@ -257,7 +373,7 @@ Lý do:
 ```text
 224×224×3
     ↓
-MobileNetV3-Large
+MobileNetV3-Small
     ↓
 Feature map
     ↓
@@ -311,6 +427,35 @@ Câu hỏi nghiên cứu V1:
 Nếu E3 (Spatial + Frequency + Concat) không cải thiện ổn định so với E1 (Spatial-only), chưa có lý do khoa học để chuyển ngay sang fusion phức tạp.
 
 ---
+
+### 6.1.1. Fusion rule trong micro-search
+
+Trong vòng M0–M4, **không thay fusion cùng lúc với frequency representation**.
+
+Giữ:
+
+```text
+Spatial 256-D
+Frequency 64-D
+→ Concatenate
+→ 320→128
+→ classifier
+```
+
+để câu hỏi của vòng đầu chỉ là:
+
+> Representation frequency nào tạo ra tín hiệu bổ sung rõ nhất?
+
+Sau khi chọn được 1–2 frequency representation tốt nhất mới mở vòng fusion riêng:
+
+```text
+normalized concat
+residual-logit fusion
+FiLM / modulation
+adaptive gate
+```
+
+Không dùng gated fusion để “cứu” một frequency representation chưa chứng minh được signal cross-domain.
 
 ### 6.2. V2 — Gated Fusion / Adaptive Fusion
 
@@ -510,7 +655,7 @@ Hai model phải được **train độc lập** để comparison công bằng.
 ```text
 Face Image
     ↓
-MobileNetV3-Large
+MobileNetV3-Small
     ↓
 256-D Spatial Feature
     ↓
@@ -526,7 +671,7 @@ REAL / SPOOF
                           │
               ┌───────────┴───────────┐
               ↓                       ↓
-       MobileNetV3-Large             DCT
+       MobileNetV3-Small             DCT
               ↓                       ↓
         Spatial 256-D          Tiny Frequency CNN
                                       ↓
@@ -556,12 +701,161 @@ Khác biệt chính cần kiểm chứng là **sự xuất hiện của frequenc
 
 ---
 
+
+## 9.1. Protocol riêng cho Micro Architecture Search
+
+### Mục tiêu
+
+Micro-search dùng để **screen architecture**, không phải kết quả cuối để báo paper.
+
+### Frozen data budget mặc định
+
+```text
+MICRO_TRAIN = 5,000 ảnh từ frozen E1 train_keys
+MICRO_VAL   = 2,000 ảnh từ frozen E1 val_keys
+EXTERNAL_DEV = toàn bộ LCC-FASD evaluation set
+SEED = 42
+```
+
+Sampling phải:
+
+- deterministic;
+- stratified theo 3 class;
+- chỉ lấy từ frozen E1 Train/Validation membership;
+- không dùng CelebA held-out Test để chọn architecture;
+- không dùng CASIA-FASD trong search; giữ CASIA làm external confirmation sau khi đã chọn design.
+
+### Speed-first training budget
+
+#### Shared spatial control — chạy **một lần**
+
+```text
+MobileNetV3-Small
+5K train / 2K val
+max 6 epochs
+early-stop patience 2
+batch 128
+```
+
+Save thành `micro_e1_v1` và reuse cho M0–M4.
+
+#### Frequency-only candidate
+
+```text
+5K train / 2K val
+max 6 epochs
+early-stop patience 2
+```
+
+Mục tiêu: xem representation tự thân có discriminative signal hay không.
+
+#### Spatial + Frequency CONCAT screening
+
+Để giảm compute và seed noise:
+
+```text
+load SAME micro_e1_v1 spatial checkpoint
+load candidate frequency checkpoint
+freeze spatial backbone
+train frequency + fusion head
+max 4 epochs
+early-stop patience 2
+```
+
+Đây là **search protocol**, cho phép warm-start để ranking nhanh. Nó không thay thế final fair-comparison protocol.
+
+### Hai cấp budget
+
+```text
+Tier A — quick rejection:
+2K train / 1K val / 4 epochs
+chỉ dùng nếu cần loại nhanh implementation yếu hoặc lỗi thiết kế rõ.
+
+Tier B — standard micro screen:
+5K train / 2K val / 6 epochs frequency
++ 4 epochs fusion
+
+Tier C — confirmation cho top 1–2:
+10K train / 3K val
+2 seeds
+```
+
+Không chạy full 100K/full dataset cho candidate chưa vượt Tier B/C.
+
+### In-domain + cross-domain bắt buộc
+
+Mỗi candidate phải được đánh giá trên:
+
+```text
+CelebA micro-Val:
+APCER / BPCER / ACER / AUC
+
+LCC-FASD external-dev:
+HTER(=binary ACER) / AUC
++ APCER / BPCER
+```
+
+Threshold:
+
+```text
+calibrate trên CelebA micro-Val
+→ LOCK
+→ apply nguyên threshold lên LCC
+```
+
+Không tune threshold trên LCC.
+
+### Branch diagnostics bắt buộc
+
+Sau khi train concat, đánh giá:
+
+```text
+FULL          = spatial + frequency
+FREQ_ZERO     = spatial + zero frequency feature
+FREQ_SHUFFLE  = spatial + frequency feature từ sample khác
+SPATIAL_ZERO  = zero spatial + frequency
+```
+
+trên cả CelebA micro-Val và LCC.
+
+Interpretation:
+
+- `FULL > FREQ_ZERO`: frequency có contribution;
+- `FULL > FREQ_SHUFFLE`: contribution mang tính sample-specific, không chỉ regularization/noise;
+- `SPATIAL_ZERO` cho biết frequency signal tự thân mạnh tới đâu.
+
+### Screening gate
+
+Không chọn winner chỉ bằng một metric.
+
+Một candidate đáng lên Tier C khi có pattern gần như:
+
+```text
+Cross-domain:
+AUC tăng khoảng ≥ 1.5–2.0 percentage points
+hoặc HTER giảm khoảng ≥ 1.5–2.0 pp
+
+AND
+
+In-domain:
+ACER không regression quá ~1.0 pp
+
+AND
+
+Branch diagnostics:
+FULL tốt hơn FREQ_ZERO và FREQ_SHUFFLE theo cùng hướng
+```
+
+Các mốc trên là **heuristic screening threshold**, không phải statistical significance claim.
+
+Nếu cả M1–M4 đều không vượt M0 rõ ràng, dừng full training và quay lại redesign representation.
+
 ## 10. Training schedule đề xuất
 
 Cấu hình ban đầu có thể là:
 
 ```text
-Backbone: MobileNetV3-Large ImageNet pretrained
+Backbone: MobileNetV3-Small ImageNet pretrained
 Optimizer: AdamW
 Initial LR: 1e-4
 Batch size: 32–64
@@ -1023,7 +1317,7 @@ Nếu mục tiêu là generalization, cross-dataset evaluation rất quan trọn
 ### Phiên bản chính
 
 ```text
-MobileNetV3-Large
+MobileNetV3-Small
         +
        DCT
         +
@@ -1054,7 +1348,7 @@ Những thứ này có thể là future work.
 
 ### Baseline
 
-> MobileNetV3-Large được sử dụng như một lightweight spatial-only PAD baseline.
+> MobileNetV3-Small được sử dụng như một lightweight spatial-only PAD baseline.
 
 ### Vấn đề
 
@@ -1084,7 +1378,7 @@ Những thứ này có thể là future work.
              ┌─────────────┴─────────────┐
              │                           │
              ▼                           ▼
-       MobileNetV3-Large                 DCT
+       MobileNetV3-Small                 DCT
              │                           │
              ▼                           ▼
       Spatial Feature             Frequency Map
@@ -1223,17 +1517,49 @@ Các paper nên ưu tiên đọc/cite:
 ## 25. Research roadmap chốt lại
 
 ```text
-E1  Spatial-only MobileNetV3
+E1  Spatial-only MobileNetV3-Small
         ↓
-E2  Frequency-only diagnostic
+E2  Frequency-only global DCT diagnostic
         ↓
-E3  Spatial + DCT Frequency + CONCAT      ← V1 / main contribution
+E3  Spatial + global DCT + CONCAT
         ↓
-Cross-domain + efficiency evaluation
+Finding:
+frequency có source-domain signal,
+nhưng robust cross-domain gain chưa đủ rõ
         ↓
-E4  Spatial + DCT Frequency + GATED       ← V2 / extension
+MICRO SEARCH — representation first
+        ├─ M0 Global DCT + GAP control
+        ├─ M1 DCT + Pool4×4
+        ├─ M2 Coord-DCT
+        ├─ M3 Band-aware DCT
+        └─ M4 Block-DCT 8×8
         ↓
-Ablation: Does adaptive fusion beat concat?
+Top 1–2 → 10K / 3K / 2 seeds
+        ↓
+Nếu representation thắng rõ:
+fusion micro-search
+        ├─ normalized concat
+        ├─ residual-logit fusion
+        ├─ FiLM / modulation
+        └─ adaptive gate
+        ↓
+ONE final full retrain
+independent initialization
+same frozen protocol
+        ↓
+CelebA held-out Test
+        +
+CASIA-FASD external confirmation
+        ↓
+Edge benchmark / deployment
 ```
 
-**Không nhảy thẳng tới gated fusion.** V1 concat tạo bằng chứng rằng frequency branch có ích; V2 mới trả lời câu hỏi liệu contribution của hai branch có cần thay đổi theo input hay không.
+### Quy tắc dừng
+
+- Không full-train candidate chỉ vì CelebA micro-Val đẹp.
+- Không dùng LCC để tune threshold.
+- Không dùng CelebA held-out Test hoặc CASIA để chọn architecture.
+- Không mở E4/gated fusion nếu representation chưa chứng minh complementary signal.
+- Nếu micro-search không tạo ra gain cross-domain đủ lớn, chấp nhận finding âm và redesign frequency representation thay vì tăng complexity.
+
+> **Nguyên tắc hiện tại: compute phải được dùng để trả lời hypothesis, không dùng để squeeze metric bằng full training liên tục.**

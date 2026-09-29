@@ -16,6 +16,7 @@ face_auth/antispoof/notebooks/
 ├── e1_spatial_v5_2/            <-- Huấn luyện & Protocol E1 v5.2 Detector-Aligned (MobileNetV3-Large)
 ├── e1_spatial_v5_3/            <-- Thực nghiệm & Đánh giá Held-out E1 v5.3 (MobileNetV3-Small Edge — Active Model)
 ├── e2_frequency_dct/           <-- Thực nghiệm & Đánh giá Held-out E2 Tần số DCT
+├── micro_frequency_search/     <-- Kaggle micro-search PAD Stages 0–2 (M0–M4)
 └── diagnostics/                <-- Bộ công cụ Chẩn đoán Runtime (Webcam & CLI)
 ```
 
@@ -79,6 +80,15 @@ Nhánh mô hình thuần miền Tần số (Frequency Domain) dựa trên biến
 * [E1_E2_heldout_test_kaggle_guide.md](e2_frequency_dct/E1_E2_heldout_test_kaggle_guide.md): Hướng dẫn chạy kiểm thử Held-out và tổng hợp bảng so sánh đối đầu giữa hai nhánh E1 vs E2.
 
 ---
+
+### `micro_frequency_search/` — Kaggle PAD Micro-Search (Stages 0–2)
+Bộ notebook khám phá nhanh năm biểu diễn tần số M0–M4 trên cùng manifest 5K/2K và checkpoint spatial dùng chung:
+* [00_stage0_build_micro_resources.ipynb](micro_frequency_search/00_stage0_build_micro_resources.ipynb): đóng băng micro Train/Val và tái sử dụng LCC SCRFD cache tương thích.
+* [01_stage1_train_shared_micro_e1.ipynb](micro_frequency_search/01_stage1_train_shared_micro_e1.ipynb): huấn luyện baseline MobileNetV3-Small micro duy nhất.
+* [02_m0_global_dct_gap.ipynb](micro_frequency_search/02_m0_global_dct_gap.ipynb), [03_m1_dct_pool4x4.ipynb](micro_frequency_search/03_m1_dct_pool4x4.ipynb), [04_m2_coord_dct_pool4x4.ipynb](micro_frequency_search/04_m2_coord_dct_pool4x4.ipynb), [05_m3_band_aware_dct.ipynb](micro_frequency_search/05_m3_band_aware_dct.ipynb), [06_m4_block_dct_8x8.ipynb](micro_frequency_search/06_m4_block_dct_8x8.ipynb): năm treatment frequency-only và spatial-frequency CONCAT.
+* [07_compare_m0_m4_results.ipynb](micro_frequency_search/07_compare_m0_m4_results.ipynb): tổng hợp screening heuristic; không gộp điểm và có thể kết luận NO WINNER.
+* [MICRO_SEARCH_STAGE0_2_PROTOCOL.md](micro_frequency_search/MICRO_SEARCH_STAGE0_2_PROTOCOL.md), [MICRO_SEARCH_STAGE0_2_KAGGLE_GUIDE.md](micro_frequency_search/MICRO_SEARCH_STAGE0_2_KAGGLE_GUIDE.md), [MICRO_SEARCH_STAGE0_2_KAGGLE_INPUT_SETUP_GUIDE.md](micro_frequency_search/MICRO_SEARCH_STAGE0_2_KAGGLE_INPUT_SETUP_GUIDE.md): protocol, run order, và checklist input/publishing.
+* [MICRO_SEARCH_STAGE0_2_FINAL_AUDIT.md](micro_frequency_search/MICRO_SEARCH_STAGE0_2_FINAL_AUDIT.md): pre-run audit, fixes, offline synthetic checks, Kaggle preflight, and readiness verdict.
 
 ### `diagnostics/` — Bộ Công cụ Chẩn đoán Runtime Thực tế (Camera & System Diagnostics)
 Chuyên trách kiểm tra tính toàn vẹn hệ thống và độ lệch miền trên thiết bị camera thực tế (không chứa notebook huấn luyện mô hình):

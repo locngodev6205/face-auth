@@ -45,7 +45,7 @@ Dưới đây là 5 công trình nghiên cứu tiêu biểu chứng minh hiệu 
 
 #### Kết quả & Đóng góp đối với đồ án:
 * **Chứng minh kiến trúc Dual-Stream:** Xác nhận tính đúng đắn của thiết kế mạng 2 nhánh tách biệt (Spatial/LF và Frequency/HF) thay vì chỉ dùng một mạng nơ-ron đơn luồng.
-* **Tăng cường Generalization:** Việc tách bạch tần số giúp mạng giảm thiểu phụ thuộc vào phong cách hình ảnh (style) của một camera nhất định, nâng cao khả năng tổng quát hóa trên tập dữ liệu lạ.
+* **Động lực cho Generalization:** Kết quả của công trình hỗ trợ giả thuyết rằng tách bạch các thành phần tần số có thể giảm phụ thuộc vào một số cue mang tính domain; đây là motivation để project kiểm chứng cross-domain, không phải bảo đảm rằng mọi frequency branch đều sẽ generalize tốt.
 * **Ánh xạ vào đồ án:** Trực tiếp củng cố thiết kế nhánh `MobileNetV3` (Spatial - giữ cấu trúc khuôn mặt) kết hợp song song cùng `DCT + Tiny CNN` (Frequency - trích xuất biến thiên tần số).
 
 ---
@@ -86,7 +86,7 @@ Dưới đây là 5 công trình nghiên cứu tiêu biểu chứng minh hiệu 
 
 #### Kết quả & Đóng góp đối với đồ án:
 * **Con số thực nghiệm định lượng ấn tượng:** Đạt **ACER 2.92%** trên **Protocol IV của tập dữ liệu OULU-NPU** — đây là giao thức đánh giá khắc nghiệt nhất (kiểm thử chéo trên các loại cảm biến điện thoại và điều kiện môi trường hoàn toàn khác nhau).
-* **Minh chứng vững chắc cho Cross-Dataset Generalization:** Cho thấy khi mạng được trang bị khả năng nhận biết phổ tần số, mô hình có thể thích ứng qua nhiều thiết bị thu nhận khác nhau mà không cần fine-tune.
+* **Minh chứng cho robustness dưới thay đổi điều kiện/sensor:** Protocol IV của OULU-NPU tạo áp lực lớn về điều kiện thu nhận; kết quả hỗ trợ việc nghiên cứu frequency-aware representation. Không nên diễn giải con số này như một cross-dataset result nếu protocol vẫn nằm trong OULU-NPU.
 * **Ánh xạ vào đồ án:** Đây là bằng chứng thực nghiệm quan trọng nhất để bảo vệ **Giả thuyết H2** (Frequency representation giúp giảm độ suy giảm hiệu năng khi kiểm thử cross-dataset).
 
 ---
@@ -145,6 +145,27 @@ Dưới đây là 5 công trình nghiên cứu tiêu biểu chứng minh hiệu 
 
 ## 4. Đối chiếu với Thiết kế Kiến trúc Đồ án (SmartFace Dual-Branch PAD)
 
+### Trạng thái ánh xạ hiện tại của project
+
+Project đã hoàn thành một vòng baseline:
+
+```text
+E1  MobileNetV3-Small spatial-only
+E2  global DCT frequency-only
+E3  spatial + global DCT + CONCAT
+```
+
+E2 cho thấy frequency có discriminative signal trên source domain, nhưng E3 hiện chưa cho thấy cải thiện cross-domain đủ ổn định để coi `global DCT → CNN → GAP → concat` là thiết kế cuối.
+
+Do đó literature dưới đây được dùng để **định hướng micro-search**, không để hợp thức hóa một kiến trúc đã biết trước là đúng.
+
+Các câu hỏi mới:
+
+1. Có cần **giữ vị trí trên frequency plane** thay vì GAP toàn bộ?
+2. Có nên **tách các frequency band** trước khi encoding?
+3. Có nên dùng **block-DCT** để bảo toàn cả spatial locality và frequency identity?
+4. Chỉ sau khi representation tốt hơn mới hỏi fusion nào phù hợp.
+
 Kiến trúc PAD đề xuất trong tài liệu [pad_spatial_frequency_architecture_v2.md](pad_spatial_frequency_architecture_v2.md) được xây dựng dựa trên sự kế thừa và tinh gọn từ các nghiên cứu trên:
 
 ```text
@@ -154,7 +175,7 @@ Kiến trúc PAD đề xuất trong tài liệu [pad_spatial_frequency_architect
         │                                 │
         ▼                                 ▼
   SPATIAL BRANCH                  FREQUENCY BRANCH
-  MobileNetV3-Large                     │
+  MobileNetV3-Small                     │
   (ImageNet Pretrained)                 ▼
         │                             2D DCT  (Deterministic, 0 params)
         ▼                               │
@@ -379,7 +400,7 @@ Paper sử dụng:
 
 | Ali et al. 2026 | Project |
 |---|---|
-| Spatial MiniFASNet | Spatial MobileNetV3-Large |
+| Spatial MiniFASNet | Spatial MobileNetV3-Small |
 | FFT/Fourier cue | DCT frequency map |
 | Lightweight frequency processing | Tiny Frequency CNN |
 | Edge goal | Edge goal |
@@ -479,6 +500,49 @@ Relevant cho luận điểm:
 
 ---
 
+
+# 6.1. Mapping Literature → Micro Architecture Search
+
+Vòng micro-search hiện tại không nhằm tái tạo nguyên xi bất kỳ paper nào. Mỗi candidate chỉ lấy một **design principle** từ literature và phải được kiểm chứng dưới cùng protocol.
+
+| ID | Candidate | Cơ sở / design principle | Điều cần kiểm chứng |
+|---|---|---|---|
+| **M0** | Global DCT + GAP | Baseline project hiện tại | Control |
+| **M1** | DCT + Pool4×4 | Giữ coarse spectral location | GAP 1×1 có làm mất thông tin band/location không? |
+| **M2** | Coord-DCT | Frequency position có semantic cố định | CNN có cần biết tọa độ tần số không? |
+| **M3** | Band-aware DCT | Chen et al.; Niu & Lin: giá trị các band không đồng đều | Tách band có tăng robustness không? |
+| **M4** | Block-DCT 8×8 | DCT/multi-resolution tradition; giữ locality | Frequency identity + spatial locality có tốt hơn global spectrum không? |
+
+### Những gì literature **không** cho phép giả định
+
+- Không được mặc định high-frequency luôn đồng nghĩa spoof.
+- Không được mặc định DCT tốt hơn spatial feature.
+- Không được mặc định adaptive gate sẽ sửa được một frequency representation yếu.
+- Không được lấy kết quả khác dataset/protocol làm direct benchmark.
+
+Điểm này đặc biệt quan trọng vì Frequency Shortcut work cảnh báo rằng mạng có thể học shortcut ngay trong frequency domain; frequency branch phải được ablate cẩn thận. 
+
+### Liên hệ với fusion
+
+Các reference về adaptive/modulated fusion chỉ được dùng sau khi representation vượt qua micro-search:
+
+```text
+representation evidence
+        ↓
+normalized concat / residual / FiLM
+        ↓
+adaptive gate
+```
+
+Không đảo thứ tự thành:
+
+```text
+weak representation
+→ gate phức tạp
+→ hy vọng gate tự sửa
+```
+
+
 # 7. Paper nào nên đưa trực tiếp lên slide?
 
 ## Nếu chỉ chọn 1 paper
@@ -518,11 +582,15 @@ Nhưng trên slide phải ghi:
 - AUC
 - EER (nếu protocol/paper tương ứng dùng)
 
+Trong **micro architecture search**, in-domain dùng CelebA micro-Validation, không dùng held-out Test để chọn candidate.
+
 ## Cross-domain / Domain Generalization
 
 Các paper DG thường dùng:
 - HTER
 - AUC
+
+Trong **micro architecture search**, LCC-FASD được dùng như `external-dev/stress set` vì kết quả của nó đã được quan sát trong quá trình phát triển. Threshold phải khóa từ CelebA micro-Validation. CASIA-FASD nên được giữ lại cho external confirmation sau khi đã chọn architecture.
 
 Đặc biệt nếu chạy benchmark **OCIM**:
 
@@ -575,26 +643,38 @@ Paper khác protocol, chỉ dùng để tham khảo.
 # 10. Roadmap literature-supported cho project
 
 ```text
-E1 — Spatial MobileNetV3
+E1 Spatial baseline
         ↓
-E3 — Spatial + DCT + Tiny CNN + CONCAT
+E2 Global-DCT diagnostic
         ↓
-Does frequency help?
-        ↓ yes
-Cross-domain + efficiency evaluation
+E3 Naive global-DCT + CONCAT
         ↓
-E4 — GATED / ADAPTIVE FUSION
+micro representation search
+(M0–M4)
         ↓
-Does adaptive fusion improve over concat?
+top representation(s)
+        ↓
+micro fusion search
+(normalized concat / residual / FiLM / gate)
+        ↓
+final full retrain
+        ↓
+in-domain held-out + untouched external confirmation
 ```
 
-### Giả thuyết mới H4
+### Vai trò của literature trong roadmap
 
-> **H4:** Khi độ tin cậy của spatial và frequency cues thay đổi theo input/domain, learned gated fusion có thể phân bổ trọng số thích nghi và cải thiện robustness so với static concatenation.
+- Chen et al. / FreqSpatialTemporalNet: frequency cue đáng được kiểm chứng như complementary evidence.
+- Frequency Shortcut / FSDA: frequency domain cũng có shortcut; cần kiểm chứng robustness, không chỉ source accuracy.
+- Niu & Lin / Oculus / DEFuseNet: adaptive interaction/fusion là hướng hợp lý **sau khi** representation hữu ích đã được xác nhận.
+- DWT-LBP-DCT tradition: multi-resolution / local-frequency representation là một hướng hợp lý cho M4.
 
-H4 phải được kiểm chứng; không được viết như kết luận.
+### Giả thuyết H4 — giữ lại nhưng trì hoãn
 
----
+> Khi độ tin cậy của spatial và frequency cues thay đổi theo input/domain, learned adaptive fusion có thể phân bổ đóng góp linh hoạt hơn static concatenation.
+
+H4 chỉ được mở lại nếu micro-search cho thấy frequency representation thực sự tạo complementary signal.
+
 
 # 11. IEEE references bổ sung
 

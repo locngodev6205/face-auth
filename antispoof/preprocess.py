@@ -351,3 +351,64 @@ def crop(img: np.ndarray, bbox: Tuple[int, int, int, int], bbox_expansion_factor
         result = cv2.resize(result, (crop_size, crop_size), interpolation=cv2.INTER_AREA)
 
     return result
+
+
+def crop_minifasnet_train_v1(
+    img: np.ndarray,
+    bbox: Tuple[int, int, int, int],
+    bbox_expansion_factor: float = 2.7,
+    model_img_size: int = 80,
+) -> np.ndarray:
+    """Reproduce the MiniFASNet final notebooks' ``mini_crop_bgr`` exactly."""
+    src_h, src_w = img.shape[:2]
+    x1, y1, x2, y2 = map(float, bbox)
+    box_w, box_h = x2 - x1, y2 - y1
+    if box_w <= 0 or box_h <= 0 or src_w < 2 or src_h < 2:
+        raise ValueError("Invalid MiniFASNet image/bbox geometry")
+
+    used_scale = min(
+        (src_h - 1) / box_h,
+        (src_w - 1) / box_w,
+        float(bbox_expansion_factor),
+    )
+    new_w, new_h = box_w * used_scale, box_h * used_scale
+    center_x, center_y = box_w / 2 + x1, box_h / 2 + y1
+    left, top = center_x - new_w / 2, center_y - new_h / 2
+    right, bottom = center_x + new_w / 2, center_y + new_h / 2
+    if left < 0:
+        right -= left
+        left = 0
+    if top < 0:
+        bottom -= top
+        top = 0
+    if right > src_w - 1:
+        left -= right - src_w + 1
+        right = src_w - 1
+    if bottom > src_h - 1:
+        top -= bottom - src_h + 1
+        bottom = src_h - 1
+
+    lx, ty, rx, by = map(int, (left, top, right, bottom))
+    if lx < 0 or ty < 0 or rx >= src_w or by >= src_h or rx < lx or by < ty:
+        raise RuntimeError(f"MiniFASNet crop escaped image: {(lx, ty, rx, by)}")
+    patch = img[ty : by + 1, lx : rx + 1]
+    if patch.size == 0:
+        raise RuntimeError("Empty MiniFASNet crop")
+    return cv2.resize(patch, (model_img_size, model_img_size))
+
+
+def crop_for_runtime(
+    img: np.ndarray,
+    bbox: Tuple[int, int, int, int],
+    bbox_expansion_factor: float,
+    model_img_size: int,
+    crop_mode: str,
+) -> np.ndarray:
+    """Select the model-specific crop while preserving the legacy default."""
+    if crop_mode == "square_reflect_v1":
+        return crop(img, bbox, bbox_expansion_factor)
+    if crop_mode == "minifasnet_train_v1":
+        return crop_minifasnet_train_v1(
+            img, bbox, bbox_expansion_factor, model_img_size
+        )
+    raise ValueError(f"Unsupported PAD crop mode: {crop_mode!r}")

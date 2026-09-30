@@ -217,9 +217,15 @@ def update_track_pad(
     crop_smoothing=False,
 ) -> int:
     """Update due tracks atomically; inference errors invalidate cached verdicts."""
-    from antispoof.preprocess import crop as pad_crop
+    from antispoof.preprocess import crop_for_runtime as pad_crop
 
     crops, due = [], []
+    crop_mode = getattr(predictor, "crop_mode", config.PAD_CROP_MODE)
+    if not isinstance(crop_mode, str):
+        crop_mode = config.PAD_CROP_MODE
+    model_img_size = getattr(predictor, "model_img_size", config.PAD_MODEL_IMG_SIZE)
+    if not isinstance(model_img_size, int):
+        model_img_size = config.PAD_MODEL_IMG_SIZE
 
     def fail(track):
         track.invalidate_verification()
@@ -235,7 +241,15 @@ def update_track_pad(
                 crop_bbox = track.pad_crop_bbox(
                     crop_bbox, frame.shape, predictor.bbox_expansion_factor,
                 )
-            crops.append(pad_crop(frame, crop_bbox, predictor.bbox_expansion_factor))
+            crops.append(
+                pad_crop(
+                    frame,
+                    crop_bbox,
+                    predictor.bbox_expansion_factor,
+                    model_img_size,
+                    crop_mode,
+                )
+            )
             due.append((detection, track, crop_bbox))
         except Exception as exc:
             fail(track)
@@ -463,6 +477,7 @@ def main():
     print(f"  RECOGNIZE_EVERY  = {config.RECOGNIZE_INTERVAL_SECONDS}s")
     print(f"  PAD_EVERY        = {config.PAD_INTERVAL_SECONDS}s")
     print(f"  PAD_CROP_SMOOTHING = {config.PAD_CROP_SMOOTHING}")
+    print(f"  PAD_CROP_MODE = {config.PAD_CROP_MODE}")
     print(f"  DETECT_EVERY     = {config.DETECTION_INTERVAL_SECONDS}s (0 = every frame)")
     print(f"  MIN_FACE_SIZE    = {config.DETECTOR_MIN_FACE_SIZE}px")
     print(f"  APP_MODE         = {args.mode.upper()}")

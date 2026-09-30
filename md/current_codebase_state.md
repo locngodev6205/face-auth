@@ -88,7 +88,7 @@ raw frame.copy → draw states / FPS → display / hotkeys
 
 ## Cấu hình local tại snapshot
 
-`.env` local vẫn trỏ `PAD_RUNTIME_CONFIG_PATH` tới JSON E1 cũ ở `antispoof/models/`, nhưng file này và ONNX cùng thư mục hiện không tồn tại. Nếu không có env override, `config.py` lỗi khi đọc JSON trước khi app khởi động. E1 contract và artifact tương ứng còn ở đường dẫn deployment dưới đây; các giá trị trong bảng là cấu hình dự định, chưa phải một phiên runtime được xác nhận sau pull.
+`.env` local vẫn trỏ `PAD_RUNTIME_CONFIG_PATH` tới JSON E1 cũ ở `antispoof/models/`, nhưng file này và ONNX cùng thư mục hiện không tồn tại. Khi path này được chọn, `config.py` lỗi khi đọc JSON trước khi app khởi động. E1 contract và artifact tương ứng còn ở đường dẫn deployment dưới đây; các giá trị trong bảng là cấu hình dự định, chưa phải một phiên runtime được xác nhận sau pull.
 
 | Nhóm | Cấu hình dự định tại snapshot |
 |---|---|
@@ -106,13 +106,13 @@ raw frame.copy → draw states / FPS → display / hotkeys
 ### Configuration và model contracts
 
 - `load_dotenv()` nạp .env; environment terminal có ưu tiên hơn .env. Không dump DB credentials.
-- Với contract PAD: nonblank `PAD_*` env > trường JSON > code defaults. Blank env không override JSON. Config lỗi dừng thay vì đoán contract.
-- Runtime config path tương đối theo project root; `model_file` trong JSON tương đối theo directory của JSON khi không override filename.
+- Với contract PAD: trường JSON > `PAD_*` env khi JSON thiếu trường > code defaults. Config lỗi dừng nếu path JSON được chỉ định nhưng không đọc được.
+- Runtime config path tương đối theo project root; `model_file` trong JSON tương đối theo directory của JSON và ưu tiên hơn `PAD_MODEL_FILENAME`.
 - `.onnx.data` là một phần artifact, phải đi cùng model. Không chỉ copy `.onnx`.
 - `d = real_logit − logsumexp(spoof_logits)`; class 0 REAL, các lớp còn lại spoof. REAL khi d ≥ threshold; binary voting sau đó là quyết định theo thời gian khác raw predictor.
 - CLI `--pad-model` được guard để không ghép model khác với contract đã chọn; đổi model bằng runtime JSON. Alternate v5.1 config có trong `antispoof/models/smartface_pad_artifacts/E1_v5_1_mnv3/deployment/` (crop 1.50, threshold riêng); chưa được chọn.
 - `.35` là recognition threshold được người dùng chủ động chọn, không phải PAD threshold. Không âm thầm đổi hai ngưỡng.
-- Crop PAD từ raw bbox: square max side × expansion, reflect padding; RGB conversion, AREA downscale / LANCZOS4 upscale, reflect letterbox, float32 CHW /255 rồi mean/std.
+- Crop PAD theo `crop_mode`: E1 dùng square max side × expansion và reflect padding; MiniFASNet dùng hình học `minifasnet_train_v1` như notebook. Sau crop, preprocessing theo profile chọn màu, kích thước, gamma và mean/std.
 - Loader PAD ưu tiên CUDA rồi CPU khi available; detector/ArcFace wrappers hiện ép CPU. Có CoreML available không đồng nghĩa đang dùng CoreML.
 - Embedder vẫn khởi tạo detection submodel do ràng buộc FaceAnalysis, nhưng frame embedding chỉ gọi recognition `get_feat`; không suy rằng RAM chỉ chứa ArcFace.
 

@@ -111,6 +111,8 @@ def _runtime_vector(data: dict, key: str):
     if key not in data:
         return None
     value = data[key]
+    if value is None:
+        return None
     if not isinstance(value, list) or len(value) != 3:
         raise ValueError(f"PAD runtime config field '{key}' phải có đúng 3 giá trị")
     try:
@@ -133,6 +135,13 @@ def _get_env_float_vector(key: str, default):
 
 
 PAD_RUNTIME_CONFIG_PATH, _PAD_RUNTIME_CONFIG, _PAD_RUNTIME_CONFIG_DIR = _load_pad_runtime_config()
+
+
+def _pad_contract_value(runtime_key, env_key, runtime_reader, env_reader, default):
+    """Use a runtime contract field before its PAD_* environment fallback."""
+    if runtime_key in _PAD_RUNTIME_CONFIG:
+        return runtime_reader(_PAD_RUNTIME_CONFIG, runtime_key, default)
+    return env_reader(env_key, default)
 
 
 # Database Config
@@ -212,25 +221,32 @@ APP_DETECTOR = (_get_env_str("APP_DETECTOR", "scrfd") or "scrfd").lower()
 PAD_ENABLED = _get_env_bool("PAD_ENABLED", True)
 
 # PAD_RUNTIME_CONFIG_PATH (optional) loads the model's runtime contract JSON.
-# Explicit PAD_* environment variables override fields from the JSON.
-PAD_MODEL_FILENAME = _get_env_str(
-    "PAD_MODEL_FILENAME",
-    _runtime_str(
-        _PAD_RUNTIME_CONFIG,
-        "model_file",
-        "mnv3s_e1_preliminary_v5_3_edge_best.onnx",
-    ),
+# A loaded field takes precedence; PAD_* is used only for fields absent from JSON.
+PAD_MODEL_FILENAME = _pad_contract_value(
+    "model_file", "PAD_MODEL_FILENAME", _runtime_str, _get_env_str,
+    "mnv3s_e1_preliminary_v5_3_edge_best.onnx",
 )
-PAD_MODEL_IMG_SIZE = _get_env_int(
-    "PAD_MODEL_IMG_SIZE", _runtime_int(_PAD_RUNTIME_CONFIG, "model_img_size", 128)
+PAD_MODEL_IMG_SIZE = _pad_contract_value(
+    "model_img_size", "PAD_MODEL_IMG_SIZE", _runtime_int, _get_env_int, 128,
 )
 if PAD_MODEL_IMG_SIZE <= 0:
     raise ValueError("PAD_MODEL_IMG_SIZE phải lớn hơn 0")
 
 # PAD_THRESHOLD luôn là xác suất P(REAL), không phải logit difference.
+_has_runtime_probability = "predictor_threshold_probability" in _PAD_RUNTIME_CONFIG
+_has_runtime_logit = "calibrated_logit_threshold" in _PAD_RUNTIME_CONFIG
 _runtime_pad_threshold = _runtime_float(
     _PAD_RUNTIME_CONFIG, "predictor_threshold_probability", 0.38579509526467753
 )
+if _has_runtime_logit and not _has_runtime_probability:
+    _runtime_logit_only = _runtime_float(
+        _PAD_RUNTIME_CONFIG, "calibrated_logit_threshold", 0.0
+    )
+    if _runtime_logit_only >= 0.0:
+        _runtime_pad_threshold = 1.0 / (1.0 + math.exp(-_runtime_logit_only))
+    else:
+        _exp_logit = math.exp(_runtime_logit_only)
+        _runtime_pad_threshold = _exp_logit / (1.0 + _exp_logit)
 if not 0.0 < _runtime_pad_threshold < 1.0:
     raise ValueError(
         "PAD runtime config field 'predictor_threshold_probability' "
@@ -243,7 +259,10 @@ _runtime_pad_threshold_logit = _runtime_float(
 )
 _pad_threshold_env = _get_env_str("PAD_THRESHOLD", None)
 _pad_threshold_logit_env = _get_env_str("PAD_THRESHOLD_LOGIT", None)
-if _pad_threshold_env is not None and _pad_threshold_logit_env is None:
+if _has_runtime_probability or _has_runtime_logit:
+    PAD_THRESHOLD = _runtime_pad_threshold
+    PAD_THRESHOLD_LOGIT = _runtime_pad_threshold_logit
+elif _pad_threshold_env is not None and _pad_threshold_logit_env is None:
     PAD_THRESHOLD = _get_env_float("PAD_THRESHOLD", _runtime_pad_threshold)
     PAD_THRESHOLD_LOGIT = (
         math.log(PAD_THRESHOLD / (1.0 - PAD_THRESHOLD))
@@ -280,7 +299,9 @@ if abs(PAD_THRESHOLD_LOGIT - _expected_pad_threshold_logit) > 1e-6:
 _runtime_color_order = _PAD_RUNTIME_CONFIG.get("color_order")
 if _runtime_color_order is not None and not isinstance(_runtime_color_order, str):
     raise ValueError("PAD runtime config field 'color_order' phải là chuỗi")
-_raw_color_order = _get_env_str("PAD_COLOR_ORDER", _runtime_color_order)
+_raw_color_order = _pad_contract_value(
+    "color_order", "PAD_COLOR_ORDER", _runtime_str, _get_env_str, None
+)
 if _raw_color_order is not None and _raw_color_order != "":
     PAD_COLOR_ORDER = _raw_color_order.strip().upper()
     if PAD_COLOR_ORDER not in ("RGB", "BGR"):
@@ -295,9 +316,8 @@ else:
 # Bật để robust hơn với điều kiện ánh sáng khác nhau (tối / sáng quá).
 # Gamma được tính động theo perceived luma (kênh V của HSV), target về ~110/255.
 # Set "true"/"1" để bật, "false"/"0" để tắt.
-PAD_GAMMA_ENABLED = _get_env_bool(
-    "PAD_GAMMA_ENABLED",
-    _runtime_bool(_PAD_RUNTIME_CONFIG, "apply_gamma", False),
+PAD_GAMMA_ENABLED = _pad_contract_value(
+    "apply_gamma", "PAD_GAMMA_ENABLED", _runtime_bool, _get_env_bool, False,
 )
 
 # Target luma (kênh V, [0-255]) mà adaptive gamma hướng đến.
@@ -305,26 +325,37 @@ PAD_GAMMA_ENABLED = _get_env_bool(
 PAD_GAMMA_TARGET  = _get_env_float("PAD_GAMMA_TARGET", 110.0)
 
 # Hệ số mở rộng bbox khi crop khuôn mặt đưa vào PAD.
-PAD_BBOX_EXPANSION_FACTOR = _get_env_float(
-    "PAD_BBOX_EXPANSION_FACTOR",
-    _runtime_float(_PAD_RUNTIME_CONFIG, "bbox_expansion_factor", 1.55),
+PAD_BBOX_EXPANSION_FACTOR = _pad_contract_value(
+    "bbox_expansion_factor", "PAD_BBOX_EXPANSION_FACTOR",
+    _runtime_float, _get_env_float, 1.55,
 )
-PAD_MEAN = _get_env_float_vector(
-    "PAD_MEAN", _runtime_vector(_PAD_RUNTIME_CONFIG, "mean")
-)
-PAD_STD = _get_env_float_vector(
-    "PAD_STD", _runtime_vector(_PAD_RUNTIME_CONFIG, "std")
-)
+PAD_CROP_MODE = _pad_contract_value(
+    "crop_mode", "PAD_CROP_MODE", _runtime_str, _get_env_str,
+    "square_reflect_v1",
+).strip().lower()
+if PAD_CROP_MODE not in ("square_reflect_v1", "minifasnet_train_v1"):
+    raise ValueError(
+        "PAD_CROP_MODE phải là 'square_reflect_v1' hoặc 'minifasnet_train_v1'"
+    )
+if _PAD_RUNTIME_CONFIG.get("crop_mode") == "minifasnet_train_v1":
+    # Older MiniFASNet sidecars omitted these keys; their [0,1] input is unnormalized.
+    PAD_MEAN = _runtime_vector(_PAD_RUNTIME_CONFIG, "mean")
+    PAD_STD = _runtime_vector(_PAD_RUNTIME_CONFIG, "std")
+else:
+    PAD_MEAN = _pad_contract_value(
+        "mean", "PAD_MEAN", lambda data, key, default: _runtime_vector(data, key),
+        _get_env_float_vector, None,
+    )
+    PAD_STD = _pad_contract_value(
+        "std", "PAD_STD", lambda data, key, default: _runtime_vector(data, key),
+        _get_env_float_vector, None,
+    )
 if (PAD_MEAN is None) != (PAD_STD is None):
     raise ValueError("PAD_MEAN và PAD_STD phải được cấu hình cùng nhau")
 
 # Đường dẫn thư mục chứa tất cả model anti-spoofing
 _ANTISPOOF_MODELS_DIR = Path(__file__).resolve().parent / "antispoof" / "models"
-if (
-    _get_env_str("PAD_MODEL_FILENAME", None) is None
-    and "model_file" in _PAD_RUNTIME_CONFIG
-    and _PAD_RUNTIME_CONFIG_DIR is not None
-):
+if "model_file" in _PAD_RUNTIME_CONFIG and _PAD_RUNTIME_CONFIG_DIR is not None:
     _PAD_MODEL_BASE_DIR = _PAD_RUNTIME_CONFIG_DIR
 else:
     _PAD_MODEL_BASE_DIR = _ANTISPOOF_MODELS_DIR
@@ -332,6 +363,11 @@ _pad_model_path = Path(PAD_MODEL_FILENAME).expanduser()
 if not _pad_model_path.is_absolute():
     _pad_model_path = _PAD_MODEL_BASE_DIR / _pad_model_path
 PAD_MODEL_PATH = str(_pad_model_path.resolve())
+PAD_RUNTIME_MODEL_SHA256 = (
+    _runtime_str(_PAD_RUNTIME_CONFIG, "model_sha256", "")
+    if "model_sha256" in _PAD_RUNTIME_CONFIG
+    else None
+)
 
 # Alias tương thích ngược (từ biến LIVENESS_* cũ)
 LIVENESS_MODEL_PATH = PAD_MODEL_PATH
@@ -374,7 +410,10 @@ PAD_SPOOF_MIN_RATIO = _get_env_float("PAD_SPOOF_MIN_RATIO", 0.6)
 PAD_STALE_TIMEOUT_SECONDS = _get_env_float("PAD_STALE_TIMEOUT_SECONDS", 3.0)
 PAD_DIAGNOSTIC_LOG = _get_env_bool("PAD_DIAGNOSTIC_LOG", False)
 # Experiment: stabilize small PAD crop jitter without altering tracking/cadence.
-PAD_CROP_SMOOTHING = _get_env_bool("PAD_CROP_SMOOTHING", False)
+PAD_CROP_SMOOTHING = _pad_contract_value(
+    "crop_smoothing", "PAD_CROP_SMOOTHING", _runtime_bool, _get_env_bool,
+    False,
+)
 
 # PAD_INTERVAL_SECONDS: khoảng cách giữa 2 lần chạy PAD inference cho cùng 1 track.
 #

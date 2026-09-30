@@ -7,6 +7,7 @@ Chức năng chính:
     - Tính toán giá trị logit (real_logit vs spoof_logit) để phân loại khuôn mặt THẬT (real) hay GIẢ (spoof).
 """
 
+import hashlib
 import sys
 import numpy as np
 import onnxruntime as ort
@@ -15,7 +16,7 @@ from typing import List, Dict, Tuple, Optional
 
 import config as _cfg
 from .loader import load_model
-from .preprocess import preprocess_batch, preprocess_dct_batch, crop
+from .preprocess import preprocess_batch, preprocess_dct_batch, crop_for_runtime
 
 # Đường dẫn mặc định tới checkpoint PAD của runtime hiện tại.
 DEFAULT_MODEL_PATH = Path(_cfg.PAD_MODEL_PATH)
@@ -54,6 +55,7 @@ class AntiSpoofPredictor:
         apply_gamma: Optional[bool] = None,
         color_order: Optional[str] = None,
         threshold_logit: Optional[float] = None,
+        crop_mode: Optional[str] = None,
     ):
         """
         Khởi tạo Predictor:
@@ -73,6 +75,7 @@ class AntiSpoofPredictor:
                                          Nếu None, dùng runtime config hoặc tự nhận diện.
             threshold_logit (Optional[float]): Nếu có, dùng trực tiếp ngưỡng d thay cho
                                                ``threshold``. Dùng để tránh nhầm đơn vị.
+            crop_mode (Optional[str]): Hình học crop; None dùng runtime config đã chọn.
         """
         self.model_path = (
             Path(model_path).expanduser().resolve()
@@ -85,6 +88,20 @@ class AntiSpoofPredictor:
             raise FileNotFoundError(
                 f"Không tìm thấy file trọng số Anti-Spoofing tại: '{self.model_path}'"
             )
+        if (
+            uses_default_runtime
+            and _cfg.PAD_CROP_MODE == "minifasnet_train_v1"
+            and _cfg.PAD_RUNTIME_MODEL_SHA256 is not None
+        ):
+            digest = hashlib.sha256()
+            with self.model_path.open("rb") as model_file:
+                for chunk in iter(lambda: model_file.read(1024 * 1024), b""):
+                    digest.update(chunk)
+            if digest.hexdigest() != _cfg.PAD_RUNTIME_MODEL_SHA256.lower():
+                raise ValueError(
+                    "MiniFASNet ONNX SHA256 differs from runtime_config.json: "
+                    f"{self.model_path}"
+                )
 
         self.model_img_size = (
             _cfg.PAD_MODEL_IMG_SIZE if model_img_size is None else model_img_size
@@ -94,6 +111,7 @@ class AntiSpoofPredictor:
             if bbox_expansion_factor is None
             else bbox_expansion_factor
         )
+        self.crop_mode = _cfg.PAD_CROP_MODE if crop_mode is None else crop_mode
 
         # Nạp mô hình ONNX qua hàm load_model
         self.session, self.input_name = load_model(str(self.model_path))
@@ -168,6 +186,9 @@ class AntiSpoofPredictor:
         elif uses_default_runtime and _cfg.PAD_MEAN is not None and _cfg.PAD_STD is not None:
             self.mean = _cfg.PAD_MEAN
             self.std = _cfg.PAD_STD
+        elif uses_default_runtime and self.crop_mode == "minifasnet_train_v1":
+            self.mean = None
+            self.std = None
         elif "mnv" in model_name_lower or self.model_img_size == 224:
             self.mean = [0.5931, 0.4690, 0.4229]
             self.std = [0.2471, 0.2214, 0.2157]
@@ -317,6 +338,12 @@ class AntiSpoofPredictor:
         Trả về:
             Dict: Từ điển kết quả phân loại khuôn mặt.
         """
-        face_crop = crop(frame, bbox, self.bbox_expansion_factor)
+        face_crop = crop_for_runtime(
+            frame,
+            bbox,
+            self.bbox_expansion_factor,
+            self.model_img_size,
+            self.crop_mode,
+        )
         results = self.predict_crops([face_crop])
         return results[0] if results else {}

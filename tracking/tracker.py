@@ -63,6 +63,7 @@ class Track:
         self._pad_stale_timeout: Optional[float] = pad_stale_timeout
         self.last_pad_time: Optional[float] = None  # None = chưa chạy PAD lần nào
         self.last_pad_score: Optional[float] = None
+        self.pad_invalid_reason: Optional[str] = None
         self._pad_crop_geometry = None
         self._pad_crop_time = None
 
@@ -94,6 +95,7 @@ class Track:
         self._pad_window.clear()
         self.last_pad_time = None
         self.last_pad_score = None
+        self.pad_invalid_reason = None
         self._pad_crop_geometry = None
         self._pad_crop_time = None
 

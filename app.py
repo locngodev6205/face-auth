@@ -43,16 +43,21 @@ COLOR_UNKNOWN   = (0, 40, 220)      # Đỏ     — UNKNOWN
 # Màu cho trạng thái PAD
 COLOR_REAL      = (0, 210, 80)      # Xanh   — mặt thật
 COLOR_SPOOF     = (0, 0, 220)       # Đỏ     — giả mạo
+COLOR_INVALID   = (0, 165, 255)     # Cam    — đầu vào mặt không hợp lệ
 
 
 # ── Hàm vẽ ──────────────────────────────────────────────────────────────────
 
-def draw_track(frame, bbox, name, score, is_pending, is_reverifying, is_spoof=False, is_pad_pending=False):
+def draw_track(
+    frame, bbox, name, score, is_pending, is_reverifying,
+    is_spoof=False, is_pad_pending=False, pad_invalid_reason=None,
+):
     """
     Vẽ bounding box và label lên frame theo trạng thái track.
 
     Trạng thái:
         - SPOOF (đỏ)         : PAD phát hiện giả mạo — ưu tiên cao nhất.
+        - Invalid face (cam) : đầu vào chưa đủ điều kiện để chạy PAD.
         - PAD Pending (xám)  : đang tích lũy vote PAD, chưa cho phép nhận diện.
         - Pending (xám)      : track vừa tạo, chưa nhận diện.
         - Locked (xanh)      : đã nhận diện, đang trong thời gian locked.
@@ -64,6 +69,17 @@ def draw_track(frame, bbox, name, score, is_pending, is_reverifying, is_spoof=Fa
     if is_spoof:
         color = COLOR_SPOOF
         label = "⚠ SPOOF"
+    elif pad_invalid_reason:
+        invalid_detail = {
+            "low_detector_confidence": "LOW CONF",
+            "face_too_close_to_frame_edge": "EDGE",
+            "incomplete_landmarks": "LANDMARKS",
+            "invalid_landmarks": "LANDMARKS",
+            "landmark_outside_face": "LANDMARKS",
+            "landmark_at_face_edge": "LANDMARKS",
+        }.get(pad_invalid_reason, "INPUT")
+        color = COLOR_INVALID
+        label = f"INVALID FACE: {invalid_detail}"
     elif is_pad_pending:
         color = COLOR_PENDING
         label = "Kiem tra PAD..."
@@ -202,6 +218,9 @@ def orchestrate_track_step(
         "should_recognize": should_recognize,
         "is_spoof": is_spoof,
         "is_pad_pending": is_pad_pending,
+        "pad_invalid_reason": (
+            track.pad_invalid_reason if pad_enabled_rt else None
+        ),
         "recognized": recognized,
         "recognition_called": recognition_called,
         "attendance_attempted": attendance_attempted,
@@ -209,6 +228,54 @@ def orchestrate_track_step(
         "attendance_reason": attendance_reason,
         "last_ts": last_ts,
     }
+
+
+def _pad_face_skip_reason(detection, frame_shape):
+    """Reject low-confidence or incomplete faces near the camera-frame edge."""
+    try:
+        frame_h, frame_w = frame_shape[:2]
+        bbox = detection["bbox"]
+        if len(bbox) != 4:
+            return "invalid_bbox"
+        x1, y1, x2, y2 = (float(value) for value in bbox)
+        score = float(detection.get("score"))
+    except (KeyError, TypeError, ValueError):
+        return "missing_geometry_or_score"
+
+    if not all(math.isfinite(value) for value in (x1, y1, x2, y2, score)):
+        return "non_finite_geometry_or_score"
+    if x2 <= x1 or y2 <= y1:
+        return "invalid_bbox"
+    if score < config.PAD_MIN_DETECTOR_CONFIDENCE:
+        return "low_detector_confidence"
+
+    landmarks = detection.get("landmarks")
+    try:
+        if landmarks is None or len(landmarks) != 5:
+            return "incomplete_landmarks"
+        points = [(float(point[0]), float(point[1])) for point in landmarks]
+    except (TypeError, ValueError, IndexError):
+        return "invalid_landmarks"
+    if len(points) != 5:
+        return "incomplete_landmarks"
+    box_w, box_h = x2 - x1, y2 - y1
+    landmark_margin = max(1.0, min(box_w, box_h) * 0.02)
+    if any(
+        not math.isfinite(x) or not math.isfinite(y)
+        or x <= x1 + landmark_margin or x >= x2 - landmark_margin
+        or y <= y1 + landmark_margin or y >= y2 - landmark_margin
+        for x, y in points
+    ):
+        return "landmark_at_face_edge"
+
+    edge_margin = max(4.0, min(box_w, box_h) * 0.04)
+    if (
+        x1 <= edge_margin or y1 <= edge_margin
+        or x2 >= frame_w - edge_margin
+        or y2 >= frame_h - edge_margin
+    ):
+        return "face_too_close_to_frame_edge"
+    return None
 
 
 def update_track_pad(
@@ -233,6 +300,18 @@ def update_track_pad(
         track.last_pad_time = time.monotonic()
 
     for detection, track in tracked:
+        skip_reason = _pad_face_skip_reason(detection, frame.shape)
+        if skip_reason is not None:
+            track.invalidate_verification()
+            track.pad_invalid_reason = skip_reason
+            if diagnostic_log:
+                print(
+                    f"[PAD skip] frame_id={frame_id} track_id={track.track_id} "
+                    f"reason={skip_reason} score={detection.get('score')} "
+                    f"bbox={detection.get('bbox')}"
+                )
+            continue
+        track.pad_invalid_reason = None
         if not track.needs_pad(interval_seconds):
             continue
         try:
@@ -631,6 +710,7 @@ def main():
                     is_reverifying=is_reverifying,
                     is_spoof=orch_res["is_spoof"],
                     is_pad_pending=orch_res["is_pad_pending"],
+                    pad_invalid_reason=orch_res["pad_invalid_reason"],
                 )
 
 

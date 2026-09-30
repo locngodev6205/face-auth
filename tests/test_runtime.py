@@ -13,6 +13,20 @@ from alignment.aligner import get_input_face
 from tracking.tracker import Track
 
 
+def make_detection(bbox, score=0.95, landmarks=None, **extra):
+    x1, y1, x2, y2 = bbox
+    width, height = x2 - x1, y2 - y1
+    if landmarks is None:
+        landmarks = [
+            [x1 + 0.30 * width, y1 + 0.35 * height],
+            [x1 + 0.70 * width, y1 + 0.35 * height],
+            [x1 + 0.50 * width, y1 + 0.55 * height],
+            [x1 + 0.35 * width, y1 + 0.75 * height],
+            [x1 + 0.65 * width, y1 + 0.75 * height],
+        ]
+    return {"bbox": bbox, "score": score, "landmarks": landmarks, **extra}
+
+
 class TestRuntimeFailures(unittest.TestCase):
     def test_crop_smoothing_changes_only_pad_crop_and_can_be_disabled(self):
         for enabled in [False, True]:
@@ -25,10 +39,11 @@ class TestRuntimeFailures(unittest.TestCase):
                 predictor = MagicMock(bbox_expansion_factor=1.55)
                 predictor.predict_crops.return_value = [{"is_real": True, "pad_score": 2.0}]
                 with patch("tracking.tracker.time.monotonic", return_value=100.2), patch(
-                    "antispoof.preprocess.crop", return_value=np.zeros((155, 155, 3), np.uint8)
+                    "antispoof.preprocess.crop_for_runtime",
+                    return_value=np.zeros((155, 155, 3), np.uint8),
                 ) as crop:
                     count = app.update_track_pad(
-                        [({"bbox": raw_bbox}, track)], np.zeros((400, 400, 3), np.uint8),
+                        [(make_detection(raw_bbox), track)], np.zeros((400, 400, 3), np.uint8),
                         predictor, .1, crop_smoothing=enabled,
                     )
                 self.assertEqual(count, 1)
@@ -100,7 +115,7 @@ class TestRuntimeFailures(unittest.TestCase):
                     "tracking.tracker.time.monotonic", return_value=100
                 ):
                     count = app.update_track_pad(
-                        [({"bbox": t.bbox}, t) for t in tracks],
+                        [(make_detection(t.bbox), t) for t in tracks],
                         np.zeros((180, 180, 3), np.uint8), predictor, 0.1,
                     )
                 self.assertEqual(count, 0)
@@ -115,9 +130,17 @@ class TestRuntimeFailures(unittest.TestCase):
         good, bad = self.verified_track(1), self.verified_track(2)
         predictor = MagicMock(bbox_expansion_factor=1.55)
         predictor.predict_crops.return_value = [{"is_real": True, "pad_score": 2.0}]
-        with contextlib.redirect_stdout(io.StringIO()):
+        def crop_side_effect(frame, bbox, *_args):
+            if bbox[0] == 40:
+                raise ValueError("injected crop failure")
+            return np.zeros((155, 155, 3), np.uint8)
+
+        with contextlib.redirect_stdout(io.StringIO()), patch(
+            "antispoof.preprocess.crop_for_runtime", side_effect=crop_side_effect
+        ):
             count = app.update_track_pad(
-                [({"bbox": good.bbox}, good), ({"bbox": (10, 10, 0, 0)}, bad)],
+                [(make_detection(good.bbox), good),
+                 (make_detection((40, 40, 140, 140)), bad)],
                 np.zeros((180, 180, 3), np.uint8), predictor, 0.1,
             )
         self.assertEqual(count, 1)
@@ -135,7 +158,7 @@ class TestRuntimeFailures(unittest.TestCase):
         output = io.StringIO()
         with contextlib.redirect_stdout(output):
             count = app.update_track_pad(
-                [({"bbox": t.bbox, "bbox_source": source}, t)
+                [(make_detection(t.bbox, bbox_source=source), t)
                  for t, source in zip(tracks, ["DETECTOR", "TRACKER"])],
                 np.zeros((180, 180, 3), np.uint8), predictor, 0.1, diagnostic_log=True,
             )
@@ -143,6 +166,61 @@ class TestRuntimeFailures(unittest.TestCase):
         lines = output.getvalue().splitlines()
         self.assertIn("track_id=1 detector_called=False bbox_source=DETECTOR", lines[0])
         self.assertIn("track_id=2 detector_called=False bbox_source=TRACKER", lines[1])
+
+    def test_invalid_face_label_overrides_pad_pending_label(self):
+        frame = np.zeros((180, 180, 3), np.uint8)
+        with patch("app.cv2.putText") as put_text:
+            app.draw_track(
+                frame, (20, 20, 120, 120), "UNKNOWN", 0.0,
+                is_pending=True, is_reverifying=False, is_pad_pending=True,
+                pad_invalid_reason="face_too_close_to_frame_edge",
+            )
+        labels = [call.args[1] for call in put_text.call_args_list]
+        self.assertIn("INVALID FACE: EDGE", labels)
+        self.assertNotIn("Kiem tra PAD...", labels)
+
+    def test_pad_skips_low_confidence_or_edge_faces_and_invalidates_cached_verdict(self):
+        ineligible = [
+            make_detection((100, 100, 200, 200), score=0.5),
+            make_detection((2, 100, 102, 200)),
+            {"bbox": (100, 100, 200, 200), "score": 0.95, "landmarks": None},
+        ]
+        for detection in ineligible:
+            with self.subTest(detection=detection):
+                track = self.verified_track()
+                predictor = MagicMock(bbox_expansion_factor=1.55)
+                with contextlib.redirect_stdout(io.StringIO()), patch(
+                    "tracking.tracker.time.monotonic", return_value=0.05
+                ):
+                    count = app.update_track_pad(
+                        [(detection, track)], np.zeros((400, 400, 3), np.uint8),
+                        predictor, 0.1,
+                    )
+                self.assertEqual(count, 0)
+                predictor.predict_crops.assert_not_called()
+                self.assertFalse(track.pad_ready)
+                self.assertIsNone(track.employee_id)
+                self.assertEqual(track.stable_recognitions, 0)
+                self.assertIsNotNone(track.pad_invalid_reason)
+
+    def test_centered_face_is_pad_eligible_when_expanded_context_exceeds_frame(self):
+        bbox = (230, 150, 410, 330)
+        track = Track(1, bbox)
+        track.pad_invalid_reason = "face_too_close_to_frame_edge"
+        predictor = MagicMock(bbox_expansion_factor=2.7)
+        predictor.predict_crops.return_value = [{"is_real": True, "pad_score": 2.0}]
+        with patch(
+            "antispoof.preprocess.crop_for_runtime",
+            return_value=np.zeros((80, 80, 3), np.uint8),
+        ):
+            count = app.update_track_pad(
+                [(make_detection(bbox), track)], np.zeros((480, 640, 3), np.uint8),
+                predictor, 0.1,
+            )
+        self.assertEqual(count, 1)
+        predictor.predict_crops.assert_called_once()
+        self.assertEqual(len(track._pad_window), 1)
+        self.assertIsNone(track.pad_invalid_reason)
 
 
 class TestRuntimeFrameLoop(unittest.TestCase):

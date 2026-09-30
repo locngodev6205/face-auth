@@ -219,6 +219,9 @@ APP_DETECTOR = (_get_env_str("APP_DETECTOR", "scrfd") or "scrfd").lower()
 # PAD_ENABLED: bật/tắt module kiểm tra liveness. Cũng có thể bật/tắt qua CLI --pad / --no-pad.
 # Set "true"/"1" để bật mặc định, "false"/"0" để tắt mặc định.
 PAD_ENABLED = _get_env_bool("PAD_ENABLED", True)
+# Detector score tối thiểu riêng cho PAD. DETECTOR_CONF_THRESH vẫn quyết định
+# detector có trả detection hay không; PAD áp thêm ngưỡng score riêng.
+PAD_MIN_DETECTOR_CONFIDENCE = _get_env_float("PAD_MIN_DETECTOR_CONFIDENCE", 0.6)
 
 # PAD_RUNTIME_CONFIG_PATH (optional) loads the model's runtime contract JSON.
 # A loaded field takes precedence; PAD_* is used only for fields absent from JSON.
@@ -461,6 +464,11 @@ ATTENDANCE_STABLE_COUNT = _get_env_int("ATTENDANCE_STABLE_COUNT", 3)
 # Validation
 def validate_config():
     """Kiểm tra tính hợp lệ của các tham số cấu hình hệ thống."""
+    if not (0.0 <= PAD_MIN_DETECTOR_CONFIDENCE <= 1.0):
+        raise ValueError(
+            "Cấu hình PAD_MIN_DETECTOR_CONFIDENCE="
+            f"{PAD_MIN_DETECTOR_CONFIDENCE} không hợp lệ. Yêu cầu 0.0 <= value <= 1.0."
+        )
     if PAD_BBOX_EXPANSION_FACTOR <= 0:
         raise ValueError(
             f"Cấu hình PAD_BBOX_EXPANSION_FACTOR={PAD_BBOX_EXPANSION_FACTOR} không hợp lệ. "

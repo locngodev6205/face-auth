@@ -1,0 +1,37 @@
+{
+  "schema": "face_auth_pad_runtime_config_v1",
+  "model_file": "best.onnx",
+  "model_sha256": "181d40b0e60c8fb77e737a7a30ac376f007f7dee6b5f4a43aa3799885e7fa123",
+  "training_checkpoint_sha256": "3bdf07d57e77e494d9807c50adc2090418e96e83390bea437e1f16b094806017",
+  "model_img_size": 80,
+  "input_name": "input",
+  "output_name": "logits",
+  "input_shape": [
+    "batch",
+    3,
+    80,
+    80
+  ],
+  "output_shape": [
+    "batch",
+    3
+  ],
+  "class_names": [
+    "real",
+    "physical_spoof",
+    "digital_spoof"
+  ],
+  "color_order": "BGR",
+  "input_range": "[0,1]",
+  "mean": null,
+  "std": null,
+  "apply_gamma": false,
+  "bbox_expansion_factor": 2.7,
+  "crop_mode": "minifasnet_train_v1",
+  "crop_smoothing": false,
+  "predictor_threshold_probability": 0.47643150000360895,
+  "calibrated_logit_threshold": -0.09434391558170319,
+  "threshold_score_definition": "logit_real - logsumexp(logit_physical, logit_digital)",
+  "threshold_source": "CelebA Val only",
+  "onnx_opset": 17
+}

@@ -1,0 +1,45 @@
+{
+  "vanilla": {
+    "epoch": 12,
+    "sha": "7d562b8a74fae0e0d336cd625b8c61f96f04a5b68fa4e1203a7053d333383e1a",
+    "locked": -0.38340383768081665,
+    "val": {
+      "n_scored": 15000,
+      "candidate_n": 15000,
+      "detector_coverage": 1.0,
+      "apcer": 0.019244122606884236,
+      "bpcer": 0.019312868469201057,
+      "acer": 0.019278495538042645,
+      "hter": 0.019278495538042645,
+      "auc": 0.9971658918321666,
+      "accuracy": 0.9807333333333333,
+      "locked_logit_threshold": -0.38340383768081665,
+      "accuracy_3class": 0.9518666666666666
+    },
+    "best_acer": 0.019278495538042645,
+    "best_auc": 0.9971658918321666
+  },
+  "csmr": {
+    "epoch": 11,
+    "sha": "096041f0548d6195ee159c863eb93d85f715398dfd173d84bf508cff96dda568",
+    "locked": 0.15679368376731873,
+    "val": {
+      "n_scored": 15000,
+      "candidate_n": 15000,
+      "detector_coverage": 1.0,
+      "apcer": 0.018351354032338063,
+      "bpcer": 0.016466761536897745,
+      "acer": 0.017409057784617904,
+      "hter": 0.017409057784617904,
+      "auc": 0.9976699710188498,
+      "accuracy": 0.9822666666666666,
+      "locked_logit_threshold": 0.15679368376731873,
+      "accuracy_3class": 0.9493333333333334
+    },
+    "best_acer": 0.017409057784617904,
+    "best_auc": 0.9976699710188498
+  },
+  "initial_sha256": "f134adaf0d46b5fb50325aefe05220d2ec6c6b50dcfe34b70d0a58b82c711828",
+  "test_role": "fixed in-domain evaluation under final 100K protocol",
+  "policy": "Both best checkpoints and thresholds locked from Val before Test or LCC access"
+}

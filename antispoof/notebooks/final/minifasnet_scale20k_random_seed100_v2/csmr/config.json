@@ -1,0 +1,67 @@
+{
+  "schema": "final_mini_pair_v1",
+  "branch": "csmr",
+  "initialization": "random",
+  "train_seed": 100,
+  "data_seed": 42,
+  "resource_hashes": {
+    "bundle_tree_sha256": "f668bec7ba152124e0c2ec733286abde4dfc4dbe7e4918cd64448cddabb74022",
+    "train_manifest_sha256": "93f679b1dc974febecf1eb68f5e2215899e346a9afd6475d90b785b534fbbf8d",
+    "val_manifest_sha256": "5905191a69e89c7c5fc4f87a7dae56548a7f31e8c298ad10b5bd91936b32d62a",
+    "test_manifest_sha256": "c22b25293b640b49159750399d1913330b55836dc36d83ec75a1ed4e3f048586",
+    "lcc_manifest_sha256": "b0d6927e0e509cbdacf452f9a8101aa963eb146f6070ff9496914cbec711ba50",
+    "celeba_bbox_sha256": "e15411af09c64581a7567c98e62b97df95bcfde2b3b5affa4af0761f8908ca28",
+    "lcc_bbox_sha256": "d6508bde1c7f947ba7c995340c166bde9dee96b77794152a8bb51cbc56fcfbcf",
+    "minifasnet_source_sha256": "e498c4ec5e1ddfaba62b941a126c19d65aa564999f3309661fe43ee8bf38acd7"
+  },
+  "initial_state_sha256": "f134adaf0d46b5fb50325aefe05220d2ec6c6b50dcfe34b70d0a58b82c711828",
+  "train_manifest": "scale_train20k",
+  "val_manifest": "scale_val5k",
+  "test_manifest": "final_test5k",
+  "test_role": "fixed in-domain descriptive evaluation during scale sanity",
+  "checkpoint_selection": "lowest Val ACER; tie highest Val AUC",
+  "metric_tie_eps": 1e-12,
+  "hyperparameter_selection": {
+    "source": "minifasnetv2_5k_hparam_tuning_v2/selection/frozen_hparams_v2.json (values embedded in notebook)",
+    "frozen_hparams_sha256": "bfc8652b237d7a8156bf455667bcbc00794baa9b0f0283c4a449406da6caeb0a",
+    "selection_stage": "5k_regime_specific_tuning",
+    "optimizer_rule": "CelebA Tune-Val ACER then AUC",
+    "csmr_rule": "Tune-Val ACER regression guard <= 1.0 pp; LCC AUC then HTER",
+    "lcc_role": "external-development only; not untouched final cross-domain test"
+  },
+  "input": [
+    3,
+    80,
+    80
+  ],
+  "crop_scale": 2.7,
+  "channels": "BGR",
+  "range": "[0,1]",
+  "max_epochs": 8,
+  "patience": 2,
+  "earliest_stop": 4,
+  "batch_size": 128,
+  "amp": true,
+  "optimizer": "AdamW",
+  "backbone_lr": 0.001,
+  "classifier_lr": 0.001,
+  "weight_decay": 0.0001,
+  "label_smoothing": 0.1,
+  "grad_clip": 5.0,
+  "augmentation": "E1 bbox jitter .2; flip .5; brightness/contrast .3",
+  "csmr": {
+    "warmup": 1,
+    "lambda": 0.2,
+    "centers": [
+      0.15,
+      0.45,
+      0.75
+    ],
+    "sigma": 0.1,
+    "gain": [
+      0.55,
+      0.85
+    ],
+    "preserve_dc": true
+  }
+}

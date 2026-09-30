@@ -1,0 +1,10 @@
+{
+  "bundle_tree_sha256": "f668bec7ba152124e0c2ec733286abde4dfc4dbe7e4918cd64448cddabb74022",
+  "train_manifest_sha256": "93f679b1dc974febecf1eb68f5e2215899e346a9afd6475d90b785b534fbbf8d",
+  "val_manifest_sha256": "5905191a69e89c7c5fc4f87a7dae56548a7f31e8c298ad10b5bd91936b32d62a",
+  "test_manifest_sha256": "c22b25293b640b49159750399d1913330b55836dc36d83ec75a1ed4e3f048586",
+  "lcc_manifest_sha256": "b0d6927e0e509cbdacf452f9a8101aa963eb146f6070ff9496914cbec711ba50",
+  "celeba_bbox_sha256": "e15411af09c64581a7567c98e62b97df95bcfde2b3b5affa4af0761f8908ca28",
+  "lcc_bbox_sha256": "d6508bde1c7f947ba7c995340c166bde9dee96b77794152a8bb51cbc56fcfbcf",
+  "minifasnet_source_sha256": "e498c4ec5e1ddfaba62b941a126c19d65aa564999f3309661fe43ee8bf38acd7"
+}

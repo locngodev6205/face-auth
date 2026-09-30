@@ -1,0 +1,29 @@
+{
+  "max_abs_error": 4.57763671875e-05,
+  "mean_abs_error": 1.33514404296875e-05,
+  "rtol": 0.0001,
+  "atol": 1e-05,
+  "provider": "CPUExecutionProvider",
+  "input_shape": [
+    8,
+    3,
+    80,
+    80
+  ],
+  "output_shape": [
+    8,
+    3
+  ],
+  "opset": 17,
+  "val_indices": [
+    0,
+    714,
+    1428,
+    2142,
+    2856,
+    3570,
+    4284,
+    4999
+  ],
+  "onnx_sha256": "05f2d930318201f46f9c15be96a9bdeda0ad35cfd5c04b52655c9fde963b5654"
+}

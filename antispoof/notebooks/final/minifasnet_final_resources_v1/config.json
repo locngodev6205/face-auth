@@ -1,0 +1,77 @@
+{
+  "schema": "minifasnet_final_resource_config_v1",
+  "data_seed": 42,
+  "test_seed": 4243,
+  "sizes": {
+    "train": 100000,
+    "val": 15000,
+    "test": 5000,
+    "scale_train": 20000,
+    "scale_val": 5000
+  },
+  "subject_policy": "E1 v5.3 official-Test overlap removal and 64-candidate GroupShuffleSplit; exact stratified subsamples",
+  "input": {
+    "scale": 2.7,
+    "size": [
+      80,
+      80
+    ],
+    "channels": "BGR",
+    "range": "[0,1]"
+  },
+  "celeba_bbox_policy": {
+    "source": "E1_v5_3",
+    "model_sha256": "5e4447f50245bbd7966bd6c0fa52938c61474a04ec7def48753668a9d8b4ea3a",
+    "insightface_version": "2.0",
+    "sizes": [
+      [
+        640,
+        640
+      ],
+      [
+        480,
+        480
+      ],
+      [
+        320,
+        320
+      ]
+    ],
+    "det_thresh": 0.5,
+    "raw_iou_min": 0.5,
+    "center_shift_max": 0.2,
+    "fallback": "official CelebA annotation",
+    "records": "face localization only; E1 crop factors removed",
+    "provider": [
+      "CPUExecutionProvider"
+    ]
+  },
+  "lcc_policy": {
+    "schema": "external_scrfd_v1",
+    "detector_sha256": "5e4447f50245bbd7966bd6c0fa52938c61474a04ec7def48753668a9d8b4ea3a",
+    "sizes": [
+      [
+        640,
+        640
+      ],
+      [
+        480,
+        480
+      ],
+      [
+        320,
+        320
+      ]
+    ],
+    "confidence": 0.5,
+    "selection": "largest valid face; confidence then xyxy tie-break",
+    "sampling": {
+      "frames_per_video": 16,
+      "seed": 42,
+      "method": "uniform np.linspace integer indices"
+    },
+    "min_valid_frames": 1,
+    "opencv": "4.13.0",
+    "insightface": "2.0"
+  }
+}

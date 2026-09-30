@@ -1,0 +1,15 @@
+{
+  "candidate_count": 3766,
+  "valid_count": 3762,
+  "class_counts": {
+    "1": 3373,
+    "0": 389
+  },
+  "ordered_path_sha256": "7a4946f4bc8c2a31cbf535f804f946fe873b262810af12d3a0ff9a98bf1187af",
+  "bbox_cache_sha256": "d6508bde1c7f947ba7c995340c166bde9dee96b77794152a8bb51cbc56fcfbcf",
+  "detector_sha256": "5e4447f50245bbd7966bd6c0fa52938c61474a04ec7def48753668a9d8b4ea3a",
+  "mode": "verified Stage0 reuse",
+  "source_manifest_sha256": "af864ab57bf26af800ceac46c00d9724c8c60f5d0c63037394a1d8708a35abe5",
+  "source_cache_sha256": "277993f3c8ac436c7fc4f852892a64299b6ccb23063b1774e055a4317c29f78c",
+  "source_detector_sha256": "5e4447f50245bbd7966bd6c0fa52938c61474a04ec7def48753668a9d8b4ea3a"
+}

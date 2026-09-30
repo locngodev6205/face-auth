@@ -1,0 +1,25 @@
+{
+  "branch": "vanilla",
+  "config_hash": "d71f1cb0e1e1e2663b6ca12be7adca5106d0bf01a0f3e4f2a087c5559bd3a88b",
+  "selected_epoch": 12,
+  "checkpoint_sha256": "7d562b8a74fae0e0d336cd625b8c61f96f04a5b68fa4e1203a7053d333383e1a",
+  "initial_state_sha256": "f134adaf0d46b5fb50325aefe05220d2ec6c6b50dcfe34b70d0a58b82c711828",
+  "locked_val_threshold": -0.38340383768081665,
+  "threshold_source": "CelebA Val only",
+  "best_val_acer": 0.019278495538042645,
+  "best_val_auc": 0.9971658918321666,
+  "test_role": "fixed in-domain evaluation under final 100K protocol",
+  "val": {
+    "n_scored": 15000,
+    "candidate_n": 15000,
+    "detector_coverage": 1.0,
+    "apcer": 0.019244122606884236,
+    "bpcer": 0.019312868469201057,
+    "acer": 0.019278495538042645,
+    "hter": 0.019278495538042645,
+    "auc": 0.9971658918321666,
+    "accuracy": 0.9807333333333333,
+    "locked_logit_threshold": -0.38340383768081665,
+    "accuracy_3class": 0.9518666666666666
+  }
+}

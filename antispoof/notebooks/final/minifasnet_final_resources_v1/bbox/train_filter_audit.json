@@ -1,0 +1,51 @@
+{
+  "candidate_train_evaluated": 110000,
+  "status_counts": {
+    "VALID": 108811,
+    "FALLBACK_DET_FAIL": 1014,
+    "FALLBACK_SUSPICIOUS": 174,
+    "INVALID": 1
+  },
+  "valid_count": 108811,
+  "fallback_det_fail_count": 1014,
+  "fallback_suspicious_count": 174,
+  "small_face_lt_48_count": 1120,
+  "suspicious_geometry_count": 174,
+  "filter_reason_counts": {
+    "TOO_SMALL": 1049,
+    "SUSPICIOUS_GEOMETRY": 174,
+    "INVALID_LOCALIZATION": 1
+  },
+  "eligible_count": 108776,
+  "final_sampled_train_count": 100000,
+  "per_class_candidate_counts": {
+    "0": 36152,
+    "1": 50443,
+    "2": 23405
+  },
+  "per_class_filtered_counts": {
+    "0": 531,
+    "1": 92,
+    "2": 601
+  },
+  "per_class_final_counts": {
+    "0": 32747,
+    "1": 46289,
+    "2": 20964
+  },
+  "overall_filter_rate": 0.011127272727272727,
+  "per_class_filter_rate": {
+    "0": 0.014687984067271521,
+    "1": 0.0018238407707709692,
+    "2": 0.02567827387310404
+  },
+  "class_filter_gap": 0.02385443310233307,
+  "suspicious_geometry_rate": 0.0015818181818181818,
+  "guardrails": {
+    "overall_max": 0.05,
+    "per_class_max": 0.08,
+    "class_gap_max": 0.03,
+    "suspicious_max": 0.01
+  },
+  "rule": "TRAIN only: drop suspicious geometry, invalid localization, or bbox minimum side <48 native pixels"
+}

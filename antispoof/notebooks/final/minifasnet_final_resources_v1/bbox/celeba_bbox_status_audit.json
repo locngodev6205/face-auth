@@ -1,8 +1,0 @@
-{
-  "status_counts": {
-    "VALID": 118855,
-    "FALLBACK_DET_FAIL": 1107,
-    "FALLBACK_SUSPICIOUS": 38
-  },
-  "invalid_examples": []
-}

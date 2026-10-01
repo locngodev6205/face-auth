@@ -4,6 +4,7 @@ import os
 from pathlib import Path
 from dotenv import load_dotenv
 
+load_dotenv(Path(__file__).resolve().parent / ".env")
 load_dotenv()
 
 
@@ -166,7 +167,7 @@ DB_POOL_MAX_SIZE = _get_env_int("DB_POOL_MAX_SIZE", 4)
 # Model Config — Recognition (ArcFace)
 # ArcFace lấy từ insightface model pack buffalo_s.
 MODEL_PACK_NAME = _get_env_str("MODEL_PACK_NAME", "buffalo_s")
-EMBEDDING_MODEL_VERSION = _get_env_str("EMBEDDING_MODEL_VERSION", MODEL_PACK_NAME)
+EMBEDDING_MODEL_VERSION = _get_env_str("EMBEDDING_MODEL_VERSION", "arcface_v1")
 
 # ctx_id: -1 = CPU, >=0 = GPU device index (chỉ có ý nghĩa khi dùng CUDAExecutionProvider)
 MODEL_CTX_ID = _get_env_int("MODEL_CTX_ID", -1)

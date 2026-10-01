@@ -16,8 +16,14 @@ import argparse
 import math
 import sys
 import time
+
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8")
+if hasattr(sys.stderr, "reconfigure"):
+    sys.stderr.reconfigure(encoding="utf-8")
+
 import cv2
-import config 
+import config
 from pathlib import Path
 from collections import deque
 from recognition.embedder import FaceEmbedder
@@ -169,8 +175,8 @@ def orchestrate_track_step(
             )
             if embedding is not None:
                 rows = db.search(embedding, top_k=5, model_version=model_version)
-                employee_id, name, score = decide_identity(rows, threshold=match_threshold)
-                track.update_result(employee_id, name, score)
+                employee_code, name, score = decide_identity(rows, threshold=match_threshold)
+                track.update_result(employee_code, name, score)
                 recognized = True
         except Exception as e:
             print(f"[Pipeline error] {e}")
@@ -182,37 +188,33 @@ def orchestrate_track_step(
     attendance_reason = None
     last_ts = None
 
-    if (
-        app_mode != "NONE"
-        and not is_spoof
-        and not is_pad_pending
-        and not track.is_pending
-        and track.employee_id
-        and track.can_log_attendance(attendance_gap_minutes)
-        and track.stable_recognitions >= attendance_stable_count
-    ):
-        attendance_attempted = True
-        success, reason, last_ts = db.log_attendance(
-            employee_id=track.employee_id,
-            action=app_mode,
-            gap_minutes=attendance_gap_minutes,
-            face_similarity=float(track.score) if track.score is not None else None,
-            liveness_score=track.last_pad_score,
-        )
-        attendance_success = success
-        attendance_reason = reason
-        # Ba trạng thái phân biệt:
-        #   success=True              → ghi log thành công, set local cooldown
-        #   success=False, last_ts≠None → DB báo đã có attendance trong cooldown,
-        #                               sync local cooldown theo timestamp DB để
-        #                               tránh retry spam mỗi chu kỳ frame
-        #   success=False, last_ts=None → lỗi DB thực sự, không tạo cooldown giả
-        if success:
-            track.last_attendance_time = (
-                last_ts.timestamp() if last_ts else time.time()
-            )
-        elif last_ts is not None:
-            track.last_attendance_time = last_ts.timestamp()
+    # Disabled in Embed-only scope: Python không còn ghi attendance_logs trực tiếp.
+    # Backend Prisma là writer duy nhất cho bảng attendance_logs.
+    # if (
+    #     app_mode != "NONE"
+    #     and not is_spoof
+    #     and not is_pad_pending
+    #     and not track.is_pending
+    #     and track.employee_id
+    #     and track.can_log_attendance(attendance_gap_minutes)
+    #     and track.stable_recognitions >= attendance_stable_count
+    # ):
+    #     attendance_attempted = True
+    #     success, reason, last_ts = db.log_attendance(
+    #         employee_id=track.employee_id,
+    #         action=app_mode,
+    #         gap_minutes=attendance_gap_minutes,
+    #         face_similarity=float(track.score) if track.score is not None else None,
+    #         liveness_score=track.last_pad_score,
+    #     )
+    #     attendance_success = success
+    #     attendance_reason = reason
+    #     if success:
+    #         track.last_attendance_time = (
+    #             last_ts.timestamp() if last_ts else time.time()
+    #         )
+    #     elif last_ts is not None:
+    #         track.last_attendance_time = last_ts.timestamp()
 
     return {
         "should_recognize": should_recognize,
@@ -689,20 +691,21 @@ def main():
                     and track.needs_recognition(config.RECOGNIZE_INTERVAL_SECONDS, pad_enabled=pad_enabled_rt)
                 )
 
-                if orch_res["attendance_attempted"]:
-                    attendance_msg_time = time.time()
-                    last_ts = orch_res["last_ts"]
-                    if orch_res["attendance_success"]:
-                        attendance_msg = f"{name}: {app_mode} SUCCESS"
-                        attendance_msg_color = (0, 255, 0)
-                        ts_str = f" lúc {last_ts.astimezone().strftime('%H:%M:%S')}" if last_ts else ""
-                        print(f"[ATTENDANCE] {attendance_msg}{ts_str}")
-                    else:
-                        reason = orch_res["attendance_reason"]
-                        attendance_msg = f"{name}: {reason}"
-                        attendance_msg_color = (0, 165, 255)
-                        ts_str = f" (Gần nhất: {last_ts.astimezone().strftime('%H:%M:%S')})" if last_ts else ""
-                        print(f"[ATTENDANCE BLOCKED] {name}: {reason}{ts_str}")
+                # Disabled in Embed-only scope: Bỏ banner & log ghi attendance trực tiếp
+                # if orch_res["attendance_attempted"]:
+                #     attendance_msg_time = time.time()
+                #     last_ts = orch_res["last_ts"]
+                #     if orch_res["attendance_success"]:
+                #         attendance_msg = f"{name}: {app_mode} SUCCESS"
+                #         attendance_msg_color = (0, 255, 0)
+                #         ts_str = f" lúc {last_ts.astimezone().strftime('%H:%M:%S')}" if last_ts else ""
+                #         print(f"[ATTENDANCE] {attendance_msg}{ts_str}")
+                #     else:
+                #         reason = orch_res["attendance_reason"]
+                #         attendance_msg = f"{name}: {reason}"
+                #         attendance_msg_color = (0, 165, 255)
+                #         ts_str = f" (Gần nhất: {last_ts.astimezone().strftime('%H:%M:%S')})" if last_ts else ""
+                #         print(f"[ATTENDANCE BLOCKED] {name}: {reason}{ts_str}")
 
                 draw_track(
                     display_frame, bbox, name, score,

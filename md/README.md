@@ -26,9 +26,11 @@ md/
 
 ## Research
 
-- [Spatial/frequency architecture v2](research/pad_spatial_frequency_architecture_v2.md): thiết kế/thảo luận nghiên cứu; không thay protocol source thực thi.
-- [Frequency-domain references v2](research/pad_frequency_domain_references_v2.md): literature notes; các claims chưa được re-verify trong lần tổ chức tài liệu này.
-- [Notebook index](../antispoof/notebooks/README.md), [E3 protocol](../antispoof/notebooks/e3_spatial_frequency_concat/E3_spatial_frequency_concat_protocol.md), [cross-dataset protocol](../antispoof/notebooks/cross_dataset/cross_dataset_evaluation_protocol.md): giữ cạnh research code/artifacts.
+- [Spatial/frequency architecture v4](research/pad_spatial_frequency_architecture_v4_CSMR.md): Thiết kế & thảo luận kiến trúc kết hợp đa miền không gian - tần số.
+- [Frequency-domain references v4](research/pad_frequency_domain_references_v4_CSMR.md): Tổng hợp tài liệu học thuật về miền tần số trong chống giả mạo khuôn mặt.
+- [PAD Paper Roadmap & Design Plan v4](research/PAD_PAPER_ROADMAP_AND_DESIGN_PLAN_v4_CSMR.md): Kế hoạch nghiên cứu và bài báo khoa học.
+- [PAD Experiment Roadmap v2](research/pad_experiment_roadmap_v2_CSMR.md): Lộ trình thực nghiệm đánh giá mô hình.
+- [Notebook index](../antispoof/notebooks/README.md): Danh mục notebooks huấn luyện & held-out test.
 
 ## Archive
 

@@ -1,6 +1,6 @@
 # SmartFace PAD Artifacts Archive (Cơ sở Lưu trữ Dài hạn)
 
-Thư mục này được tổ chức theo đúng quy chuẩn **Section 3 trong [E1_artifacts_for_E2_kaggle_guide.md](../../notebooks/05_e2_frequency_dct/E1_artifacts_for_E2_kaggle_guide.md)** và **Section 16 trong [E1_E2_heldout_test_kaggle_guide.md](../../notebooks/05_e2_frequency_dct/E1_E2_heldout_test_kaggle_guide.md)** nhằm phục vụ:
+Thư mục này được tổ chức theo đúng quy chuẩn **Section 3 trong [E1_artifacts_for_E2_kaggle_guide.md](../../notebooks/e2_frequency_dct/E1_artifacts_for_E2_kaggle_guide.md)** và **Section 16 trong [E1_E2_heldout_test_kaggle_guide.md](../../notebooks/e2_frequency_dct/E1_E2_heldout_test_kaggle_guide.md)** nhằm phục vụ:
 1. Nghiên cứu khoa học có tính tái lập (Reproducibility).
 2. Bảo toàn tính công bằng của Ablation Study (Fair Comparison Contract giữa E1, E2, E3).
 3. Đóng gói triển khai sản phẩm thực tế (Edge Deployment).

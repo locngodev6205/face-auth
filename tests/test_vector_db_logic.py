@@ -61,7 +61,8 @@ class TestVectorDbLogic(unittest.TestCase):
         mock_pool = MagicMock()
         mock_conn = MagicMock()
         mock_pool.connection.return_value.__enter__.return_value = mock_conn
-        mock_conn.execute.return_value.fetchone.return_value = (1,)  # existing record
+        # 1. Lookup UUID: ('uuid-1234',), 2. Check existing: (1,)
+        mock_conn.execute.return_value.fetchone.side_effect = [("uuid-1234",), (1,)]
         mock_pool_cls.return_value = mock_pool
 
         db = VectorDB("fake_conninfo")
@@ -69,28 +70,46 @@ class TestVectorDbLogic(unittest.TestCase):
         dummy_sample = np.zeros(512, dtype=np.float32)
         dummy_centroid = np.zeros(512, dtype=np.float32)
 
-        emp_id, is_new, is_ignored = db.upsert(
-            employee_id="NV001",
-            full_name="Nguyen Van A",
+        emp_code, is_new, is_ignored = db.upsert(
+            employee_code="NV-001",
             individual_embeddings=[dummy_sample],
             mean_embedding=dummy_centroid,
             overwrite=True,
-            model_version="buffalo_s",
+            model_version="arcface_v1",
         )
 
-        self.assertEqual(emp_id, "NV001")
+        self.assertEqual(emp_code, "NV-001")
         self.assertFalse(is_new)
         self.assertFalse(is_ignored)
 
-        # Verify DELETE was called with employee_id and model_version
+        # Verify DELETE was called with employee UUID and model_version
         delete_called = False
         for call in mock_conn.execute.call_args_list:
             sql = call[0][0]
             if "DELETE FROM face_embeddings" in sql and "employee_id = %s" in sql:
                 delete_called = True
-                self.assertEqual(call[0][1], ("NV001", "buffalo_s"))
+                self.assertEqual(call[0][1], ("uuid-1234", "arcface_v1"))
 
         self.assertTrue(delete_called, "Must delete old embeddings for the same employee and model_version")
+
+    @patch("database.vector_db.ConnectionPool")
+    def test_upsert_employee_not_found(self, mock_pool_cls):
+        """4. Upsert ném ValueError nếu employee_code không tồn tại trong DB."""
+        mock_pool = MagicMock()
+        mock_conn = MagicMock()
+        mock_pool.connection.return_value.__enter__.return_value = mock_conn
+        mock_conn.execute.return_value.fetchone.return_value = None
+        mock_pool_cls.return_value = mock_pool
+
+        db = VectorDB("fake_conninfo")
+        dummy_centroid = np.zeros(512, dtype=np.float32)
+
+        with self.assertRaises(ValueError):
+            db.upsert(
+                employee_code="NV-999",
+                mean_embedding=dummy_centroid,
+                model_version="arcface_v1",
+            )
 
 
 if __name__ == "__main__":

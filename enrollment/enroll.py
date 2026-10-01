@@ -54,27 +54,28 @@ def build_identity_embedding(embeddings, outlier_threshold=0.35):
 
 def enroll_person(
     db,
-    employee_id: str,
-    full_name: str,
+    employee_code: Optional[str] = None,
+    full_name: Optional[str] = None,
     embeddings=None,
     overwrite: bool = True,
     outlier_threshold: float = 0.35,
     save_individuals: bool = True,
-    model_version: str = "buffalo_s",
+    model_version: str = "arcface_v1",
+    employee_id: Optional[str] = None,
 ):
-    if not employee_id or not full_name:
-        raise ValueError("Missing employee_id or full_name for enrollment")
+    target_code = employee_code or employee_id
+    if not target_code:
+        raise ValueError("Missing employee_code for enrollment")
     if not embeddings:
         raise ValueError("No embeddings provided for enrollment")
 
     identity_embedding, warnings, valid_embeddings = build_identity_embedding(embeddings, outlier_threshold)
-    person_id, is_new, is_ignored = db.upsert(
-        employee_id=employee_id,
-        full_name=full_name,
+    person_code, is_new, is_ignored = db.upsert(
+        employee_code=target_code,
         individual_embeddings=valid_embeddings,
         mean_embedding=identity_embedding,
         overwrite=overwrite,
         save_individuals=save_individuals,
         model_version=model_version,
     )
-    return person_id, is_new, is_ignored, warnings
+    return person_code, is_new, is_ignored, warnings

@@ -55,6 +55,7 @@ class Track:
         self.frames_since_recognition = 0
         self.missing_frames = 0
         self.recognized_once = False  # True sau lần update_result() đầu tiên
+        self.recognition_error = False
 
         # PAD temporal smoothing: lưu N verdict gần nhất (True=real, False=spoof)
         self._pad_window: deque = deque(maxlen=pad_smooth_window)
@@ -141,6 +142,7 @@ class Track:
         self.name = "UNKNOWN"
         self.score = 0.0
         self.recognized_once = False
+        self.recognition_error = False
         self.stable_recognitions = 0
         self._unknown_streak = 0
         self.last_attendance_time = None
@@ -244,6 +246,7 @@ class Track:
 
         self.name = name
         self.score = score
+        self.recognition_error = False
         self.last_recognition_time = time.monotonic()
         self.recognized_once = True
 

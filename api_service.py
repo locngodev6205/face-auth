@@ -73,8 +73,17 @@ class EnrollRequest(BaseModel):
 @app.get("/health")
 def health_check():
     """Health check endpoint để Backend kiểm tra trạng thái hoạt động."""
+    if detector is None or embedder is None or db is None:
+        raise HTTPException(status_code=503, detail="Face Auth chưa sẵn sàng")
+    try:
+        db.check_connection()
+    except Exception as exc:
+        raise HTTPException(
+            status_code=503,
+            detail=f"Face Auth database is not ready: {type(exc).__name__}",
+        ) from exc
     return {
-        "status": "ok",
+        "status": "ready",
         "model_version": config.EMBEDDING_MODEL_VERSION,
     }
 

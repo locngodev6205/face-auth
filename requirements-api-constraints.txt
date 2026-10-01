@@ -1,0 +1,4 @@
+# CPU enrollment API image; does not change PAD runtime/training environments.
+insightface==1.0.1
+numpy==2.4.4
+opencv-python==4.13.0.92

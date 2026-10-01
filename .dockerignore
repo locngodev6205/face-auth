@@ -1,0 +1,11 @@
+.env*
+.venv
+__pycache__
+**/__pycache__
+antispoof
+evaluation
+gallery
+md
+tests
+.local
+*.zip

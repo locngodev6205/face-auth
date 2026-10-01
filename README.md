@@ -89,7 +89,7 @@ face_auth/
 ## 📋 Yêu Cầu Tiên Quyết (Prerequisites)
 
 1. **Python**: Phiên bản `≥ 3.10` (Khuyên dùng `3.10` hoặc `3.11`).
-2. **Cơ sở Dữ liệu**: PostgreSQL 16 tích hợp `pgvector` đang hoạt động (qua Docker `backend/docker-compose.yml`).
+2. **Cơ sở Dữ liệu**: PostgreSQL 16 + `pgvector` PBL6 đang chạy từ Compose ở thư mục gốc repo.
 3. **Webcam / Camera AIoT**: Thiết bị camera vật lý hoặc luồng RTSP stream.
 
 ---
@@ -119,12 +119,50 @@ Tạo file `.env` từ file mẫu `.env.example`:
 cp .env.example .env
 ```
 Các thông số cấu hình chính trong `face_auth/.env`:
-- `DB_CONN_INFO`: Chuỗi kết nối PostgreSQL (vd: `postgresql://postgres:postgres@localhost:5432/PBL6`).
+- `POSTGRES_DB=PBL6`: Dùng chung PostgreSQL PBL6; host runtime kết nối qua `localhost:5432`.
+- `EMBEDDING_MODEL_VERSION=buffalo_s`: Phải khớp `FACE_AUTH_MODEL_VERSION` trong backend.
 - `APP_DETECTOR`: Bộ dò khuôn mặt (`scrfd` hoặc `yunnet`).
 - `PAD_MODEL_NAME`: Tên mô hình PAD (`mnv3s_e1_preliminary_v5_3_edge_best.onnx` hoặc `e3_concat_preliminary_v1_best.onnx`).
 - `MATCH_THRESHOLD`: Ngưỡng so khớp Cosine Distance (`0.35`).
 
+Nếu runtime chạy trên Pi/máy khác, đặt `POSTGRES_HOST` bằng IP LAN của máy chủ DB
+và cấu hình `PBL6_POSTGRES_BIND_IP` để publish PostgreSQL trên mạng tin cậy.
+
 ---
+
+### Đăng ký gallery để test database PBL6
+
+Hướng dẫn chạy toàn stack và cleanup: [run_full_stack.md](../docs/run_full_stack.md).
+
+```bash
+python3 scripts/run_enroll.py --gallery gallery
+```
+
+Để liệt kê webcam đang kết nối và chỉ số OpenCV của chúng:
+
+```bash
+python3 scripts/list_cameras.py
+python3 scripts/list_cameras.py --max-index 15
+python3 app.py --camera 1
+```
+
+Để thử ép bật adaptive gamma dù runtime config đang đặt `apply_gamma: false`,
+đặt `FORCE_GAMMA=true` trong `.env` rồi khởi động lại `app.py`. Terminal sẽ hiện
+`PAD_GAMMA = ON (FORCED)`. Đây là chế độ thử nghiệm; ngưỡng PAD hiện tại không tự
+hiệu chỉnh lại theo gamma.
+
+Mỗi thư mục con là tên đầy đủ hoặc mã của nhân viên đã tồn tại. Script ưu tiên tìm
+theo `employee_code`, sau đó theo tên đầy đủ duy nhất. Nếu chưa có nhân viên và có
+ảnh hợp lệ, script giữ nguyên tên thư mục làm `full_name`, tạo mã `TEST-...`, UUID,
+email `example.invalid`, điện thoại, chức vụ và lương mẫu; chọn phòng ban có sẵn
+nếu có. Không tạo tài khoản đăng nhập hoặc dữ liệu chấm công. Các vector vẫn được
+trích xuất từ ảnh thật và lưu SAMPLE/CENTROID đúng phiên bản model.
+
+Chạy lại cùng thư mục sẽ dùng hồ sơ đã có. Nếu có nhiều người trùng tên, đổi tên
+thư mục sang mã nhân viên để tránh enroll nhầm. Dùng `--existing-only` để tắt tạo
+nhân viên mẫu; `--ignore-duplicate` giữ khuôn mặt đã đăng ký. Script yêu cầu DB PBL6
+đã áp dụng migration vector mới. Nếu ghi embedding thất bại sau khi tạo hồ sơ,
+hồ sơ mẫu vẫn còn và có thể dùng lại khi chạy lần tiếp theo.
 
 ### Bước 3: Khởi chạy các dịch vụ
 

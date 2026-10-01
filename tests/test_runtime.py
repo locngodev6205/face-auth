@@ -179,6 +179,18 @@ class TestRuntimeFailures(unittest.TestCase):
         self.assertIn("INVALID FACE: EDGE", labels)
         self.assertNotIn("Kiem tra PAD...", labels)
 
+    def test_vietnamese_name_is_transliterated_for_opencv_bbox_label(self):
+        frame = np.zeros((180, 180, 3), np.uint8)
+        with patch("app.cv2.putText") as put_text:
+            app.draw_track(
+                frame, (20, 20, 120, 120), "Đặng Thị Mỹ", 0.98,
+                is_pending=False, is_reverifying=False,
+            )
+        labels = [call.args[1] for call in put_text.call_args_list]
+        self.assertIn("[OK] Dang Thi My  0.98", labels)
+        self.assertTrue(all(label.isascii() for label in labels))
+
+    @patch("app.config.PAD_MIN_DETECTOR_CONFIDENCE", 0.6)
     def test_pad_skips_low_confidence_or_edge_faces_and_invalidates_cached_verdict(self):
         ineligible = [
             make_detection((100, 100, 200, 200), score=0.5),
@@ -202,6 +214,15 @@ class TestRuntimeFailures(unittest.TestCase):
                 self.assertIsNone(track.employee_id)
                 self.assertEqual(track.stable_recognitions, 0)
                 self.assertIsNotNone(track.pad_invalid_reason)
+
+    def test_pad_allows_face_just_inside_relaxed_frame_edge(self):
+        frame_shape = (400, 400, 3)
+        self.assertIsNone(app._pad_face_skip_reason(
+            make_detection((3, 100, 103, 200)), frame_shape,
+        ))
+        self.assertEqual(app._pad_face_skip_reason(
+            make_detection((2, 100, 102, 200)), frame_shape,
+        ), "face_too_close_to_frame_edge")
 
     def test_centered_face_is_pad_eligible_when_expanded_context_exceeds_frame(self):
         bbox = (230, 150, 410, 330)

@@ -9,3 +9,4 @@ pillow
 psycopg-pool
 fastapi
 pydantic
+uvicorn

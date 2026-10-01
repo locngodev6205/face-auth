@@ -16,6 +16,7 @@ import argparse
 import math
 import sys
 import time
+import unicodedata
 
 if hasattr(sys.stdout, "reconfigure"):
     sys.stdout.reconfigure(encoding="utf-8")
@@ -52,11 +53,22 @@ COLOR_SPOOF     = (0, 0, 220)       # Đỏ     — giả mạo
 COLOR_INVALID   = (0, 165, 255)     # Cam    — đầu vào mặt không hợp lệ
 
 
+def _opencv_display_text(text):
+    """Convert Unicode text to ASCII for OpenCV's built-in Hershey font."""
+    text = str(text).replace("Đ", "D").replace("đ", "d")
+    normalized = unicodedata.normalize("NFKD", text)
+    return "".join(
+        char for char in normalized
+        if not unicodedata.combining(char) and ord(char) < 128
+    )
+
+
 # ── Hàm vẽ ──────────────────────────────────────────────────────────────────
 
 def draw_track(
     frame, bbox, name, score, is_pending, is_reverifying,
     is_spoof=False, is_pad_pending=False, pad_invalid_reason=None,
+    recognition_error=False,
 ):
     """
     Vẽ bounding box và label lên frame theo trạng thái track.
@@ -86,6 +98,9 @@ def draw_track(
         }.get(pad_invalid_reason, "INPUT")
         color = COLOR_INVALID
         label = f"INVALID FACE: {invalid_detail}"
+    elif recognition_error:
+        color = COLOR_INVALID
+        label = "RECOGNITION ERROR"
     elif is_pad_pending:
         color = COLOR_PENDING
         label = "Kiem tra PAD..."
@@ -102,6 +117,7 @@ def draw_track(
         color = COLOR_LOCKED
         label = f"[OK] {name}  {score:.2f}"
 
+    label = _opencv_display_text(label)
     cv2.rectangle(frame, (x1, y1), (x2, y2), color, 2)
 
     font       = cv2.FONT_HERSHEY_SIMPLEX
@@ -179,9 +195,15 @@ def orchestrate_track_step(
                 track.update_result(employee_code, name, score)
                 recognized = True
         except Exception as e:
-            print(f"[Pipeline error] {e}")
+            track.recognition_error = True
+            print(
+                f"[Recognition error] track_id={track.track_id} "
+                f"stage=alignment_embedding_or_db type={type(e).__name__}: {e}"
+            )
         if not recognized:
             track.invalidate_recognition(retry_delay=True)
+            if recognition_called:
+                track.recognition_error = True
 
     attendance_attempted = False
     attendance_success = None
@@ -270,7 +292,7 @@ def _pad_face_skip_reason(detection, frame_shape):
     ):
         return "landmark_at_face_edge"
 
-    edge_margin = max(4.0, min(box_w, box_h) * 0.04)
+    edge_margin = max(2.0, min(box_w, box_h) * 0.02)
     if (
         x1 <= edge_margin or y1 <= edge_margin
         or x2 >= frame_w - edge_margin
@@ -504,7 +526,10 @@ def main():
             print(f"  PAD              = ON  ({pad_predictor.model_path})")
             print(f"  PAD_BBOX_EXPAND  = {pad_predictor.bbox_expansion_factor:.2f}x")
             print(f"  PAD threshold    = p={pad_predictor.threshold_probability:.12f}, d={pad_predictor.logit_threshold:.12f} ({pad_predictor.threshold_input_type})")
-            print(f"  PAD_GAMMA        = {'ON' if config.PAD_GAMMA_ENABLED else 'OFF'}  (target luma={config.PAD_GAMMA_TARGET:.0f})")
+            gamma_status = "ON (FORCED)" if config.FORCE_GAMMA else (
+                "ON" if config.PAD_GAMMA_ENABLED else "OFF"
+            )
+            print(f"  PAD_GAMMA        = {gamma_status}  (target luma={config.PAD_GAMMA_TARGET:.0f})")
             print(f"  PAD providers    = {list(pad_predictor.providers)}")
             print(f"  PAD input/output = {pad_predictor.input_metadata.name} {pad_predictor.input_metadata.shape} -> {pad_predictor.output_metadata.name} {pad_predictor.output_metadata.shape}")
         except Exception as e:
@@ -714,6 +739,7 @@ def main():
                     is_spoof=orch_res["is_spoof"],
                     is_pad_pending=orch_res["is_pad_pending"],
                     pad_invalid_reason=orch_res["pad_invalid_reason"],
+                    recognition_error=track.recognition_error,
                 )
 
 

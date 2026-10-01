@@ -34,9 +34,10 @@ class TestVectorDbLogic(unittest.TestCase):
         mock_conn.execute.return_value.fetchall.return_value = [("NV001", "Nguyen Van A", 0.9)]
         mock_pool_cls.return_value = mock_pool
 
-        db = VectorDB("fake_conninfo")
+        with patch.object(VectorDB, "validate_schema"):
+            db = VectorDB("fake_conninfo")
 
-        dummy_emb = np.zeros(512, dtype=np.float32)
+        dummy_emb = np.ones(512, dtype=np.float32)
         results = db.search(dummy_emb, top_k=3, model_version="buffalo_s")
 
         self.assertEqual(len(results), 1)
@@ -65,10 +66,11 @@ class TestVectorDbLogic(unittest.TestCase):
         mock_conn.execute.return_value.fetchone.side_effect = [("uuid-1234",), (1,)]
         mock_pool_cls.return_value = mock_pool
 
-        db = VectorDB("fake_conninfo")
+        with patch.object(VectorDB, "validate_schema"):
+            db = VectorDB("fake_conninfo")
 
-        dummy_sample = np.zeros(512, dtype=np.float32)
-        dummy_centroid = np.zeros(512, dtype=np.float32)
+        dummy_sample = np.ones(512, dtype=np.float32)
+        dummy_centroid = np.ones(512, dtype=np.float32)
 
         emp_code, is_new, is_ignored = db.upsert(
             employee_code="NV-001",
@@ -101,8 +103,9 @@ class TestVectorDbLogic(unittest.TestCase):
         mock_conn.execute.return_value.fetchone.return_value = None
         mock_pool_cls.return_value = mock_pool
 
-        db = VectorDB("fake_conninfo")
-        dummy_centroid = np.zeros(512, dtype=np.float32)
+        with patch.object(VectorDB, "validate_schema"):
+            db = VectorDB("fake_conninfo")
+        dummy_centroid = np.ones(512, dtype=np.float32)
 
         with self.assertRaises(ValueError):
             db.upsert(

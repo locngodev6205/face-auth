@@ -60,7 +60,7 @@ def enroll_person(
     overwrite: bool = True,
     outlier_threshold: float = 0.35,
     save_individuals: bool = True,
-    model_version: str = "arcface_v1",
+    model_version: Optional[str] = None,
     employee_id: Optional[str] = None,
 ):
     target_code = employee_code or employee_id
@@ -68,6 +68,10 @@ def enroll_person(
         raise ValueError("Missing employee_code for enrollment")
     if not embeddings:
         raise ValueError("No embeddings provided for enrollment")
+
+    if model_version is None:
+        import config
+        model_version = config.EMBEDDING_MODEL_VERSION
 
     identity_embedding, warnings, valid_embeddings = build_identity_embedding(embeddings, outlier_threshold)
     person_code, is_new, is_ignored = db.upsert(
@@ -78,4 +82,4 @@ def enroll_person(
         save_individuals=save_individuals,
         model_version=model_version,
     )
-    return person_code, is_new, is_ignored, warnings
+    return person_code, is_new, is_ignored, warnings

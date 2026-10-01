@@ -148,7 +148,7 @@ def _pad_contract_value(runtime_key, env_key, runtime_reader, env_reader, defaul
 # Database Config
 DATABASE_URL = _get_env_str("DATABASE_URL", None)
 
-POSTGRES_DB = _get_env_str("POSTGRES_DB", "face_db")
+POSTGRES_DB = _get_env_str("POSTGRES_DB", "PBL6")
 POSTGRES_USER = _get_env_str("POSTGRES_USER", "postgres")
 POSTGRES_PASSWORD = _get_env_str("POSTGRES_PASSWORD", "postgres")
 POSTGRES_HOST = _get_env_str("POSTGRES_HOST", "localhost")
@@ -167,7 +167,7 @@ DB_POOL_MAX_SIZE = _get_env_int("DB_POOL_MAX_SIZE", 4)
 # Model Config — Recognition (ArcFace)
 # ArcFace lấy từ insightface model pack buffalo_s.
 MODEL_PACK_NAME = _get_env_str("MODEL_PACK_NAME", "buffalo_s")
-EMBEDDING_MODEL_VERSION = _get_env_str("EMBEDDING_MODEL_VERSION", "arcface_v1")
+EMBEDDING_MODEL_VERSION = _get_env_str("EMBEDDING_MODEL_VERSION", MODEL_PACK_NAME)
 
 # ctx_id: -1 = CPU, >=0 = GPU device index (chỉ có ý nghĩa khi dùng CUDAExecutionProvider)
 MODEL_CTX_ID = _get_env_int("MODEL_CTX_ID", -1)
@@ -323,6 +323,10 @@ else:
 PAD_GAMMA_ENABLED = _pad_contract_value(
     "apply_gamma", "PAD_GAMMA_ENABLED", _runtime_bool, _get_env_bool, False,
 )
+# Explicit experiment override: bypasses a runtime JSON apply_gamma=false value.
+FORCE_GAMMA = _get_env_bool("FORCE_GAMMA", False)
+if FORCE_GAMMA:
+    PAD_GAMMA_ENABLED = True
 
 # Target luma (kênh V, [0-255]) mà adaptive gamma hướng đến.
 # 110 ≈ 43% — đủ sáng để model học texture, không bị over-expose.

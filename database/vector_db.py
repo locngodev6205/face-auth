@@ -42,7 +42,7 @@ class VectorDB:
                     1 - (f.embedding <=> %s::vector) AS similarity
                 FROM face_embeddings f
                 JOIN employees e ON e.id = f.employee_id
-                WHERE f.embedding_type = 'CENTROID'
+                WHERE f.embedding_type IN ('CENTROID', 'SAMPLE')
                   AND f.model_version = %s
                   AND f.is_active = true
                   AND e.status = 'ACTIVE'

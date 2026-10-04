@@ -2,6 +2,22 @@
 
 Tài liệu này mô tả cách đóng gói và dùng runtime config cho model Presentation Attack Detection (PAD), để model, tiền xử lý và ngưỡng quyết định luôn đi cùng một hợp đồng runtime.
 
+## Runtime đang chọn: R7-100K crop1.5
+
+`.env` và `.env.example` chọn:
+
+```dotenv
+PAD_RUNTIME_CONFIG_PATH=antispoof/models/R7_SC_100K_crop15_runtime_config.json
+```
+
+- [ONNX](../../antispoof/models/R7_SC_100K_crop15.onnx) và [runtime config](../../antispoof/models/R7_SC_100K_crop15_runtime_config.json) nằm trực tiếp trong `antispoof/models/`. JSON tham chiếu model bằng tên file, nên có thể di chuyển cùng nhau.
+- Checkpoint `R7_SC_100K_crop15`, best epoch11, Train100K/Val15K. Input BGR80×80 float32 `[0,1]`, không mean/std, không gamma; dùng `minifasnet_train_v1` với crop1.5×, không smoothing bbox crop.
+- Output `[N,2]`: index0 real, index1 spoof. Score = `real_logit - spoof_logit`; REAL khi score ≥ **−0.373016357421875**. Xác suất tương đương **0.4078123648407799**, lấy từ ngưỡng Val15K đã khóa.
+- Trunk và binary head chạy inference sạch; auxiliary heads, FFT và harmful-band selection chỉ dùng khi training. Detector gate và temporal voting của tracker vẫn hoạt động như trước.
+- `output_classes=2` trong JSON buộc predictor kiểm tra output ONNX và số logits. Các sidecar cũ không khai báo trường này vẫn dùng cơ chế hai/ba lớp sẵn có.
+- Xuất lại bằng `python3 antispoof/export_r7_binary_runtime.py`; script kiểm tra checkpoint/config/freeze, xuất ONNX opset17 với dynamic batch và kiểm tra PyTorch/ORT parity trước khi ghi model/config.
+- [Kết quả parity](../../antispoof/models/R7_SC_100K_crop15_onnx_validation.json) là kiểm tra số học trên CPU, không phải đánh giá accuracy từ camera. Kiểm tra runtime/crop bằng `python3 -m unittest tests.test_r7_runtime tests.test_runtime -q`.
+
 ## Cách chọn cấu hình
 
 `PAD_RUNTIME_CONFIG_PATH` là biến môi trường tùy chọn. Đường dẫn tương đối được tính từ thư mục gốc dự án. Ví dụ:
@@ -46,6 +62,7 @@ Ví dụ dưới đây dùng model v5.3 edge hiện có:
 | `protocol_version` | string | Nhãn phiên bản contract để người phát triển truy vết. Loader hiện tại không dùng trường này để thay đổi hành vi. |
 | `model_file` | string | Tên hoặc đường dẫn model ONNX. Đường dẫn tương đối được tính từ thư mục chứa JSON. |
 | `model_img_size` | integer | Cạnh ảnh vuông đầu vào, phải lớn hơn 0. Nếu ONNX có kích thước đầu vào cố định, predictor đọc kích thước đó từ graph; giá trị JSON cần khớp với graph. |
+| `output_classes` | integer hoặc không khai báo | `2` cho binary real/spoof, `3` cho legacy real/physical/digital; nếu khai báo, phải khớp output ONNX và logits thực tế. |
 | `bbox_expansion_factor` | number | Hệ số mở rộng bbox trước khi crop mặt. |
 | `color_order` | `RGB` hoặc `BGR` | Thứ tự màu model mong đợi. Ảnh đầu vào từ OpenCV là BGR; preprocessing đổi sang RGB khi cần. |
 | `mean`, `std` | 3 số mỗi mảng hoặc `null` | Tham số chuẩn hóa theo thứ tự kênh của tensor model, trên ảnh đã scale về `[0, 1]`. `null` tắt chuẩn hóa. Cần khai báo cả hai hoặc bỏ cả hai. |

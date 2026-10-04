@@ -1,5 +1,12 @@
 # PAD (`antispoof/`) — trạng thái hiện tại
 
+## Cập nhật runtime 2026-10-05
+
+Runtime local hiện chọn **R7_SC_100K_crop15**, best epoch11, qua [config](../antispoof/models/R7_SC_100K_crop15_runtime_config.json) và [ONNX](../antispoof/models/R7_SC_100K_crop15.onnx), đều nằm trực tiếp tại `antispoof/models/`.
+Input BGR80×80 `[0,1]`, crop1.5× theo `minifasnet_train_v1`, không gamma/normalization/smoothing bbox crop. Hai logits real/spoof; REAL khi `z_real-z_spoof >= -0.373016357421875`, ngưỡng Val15K đã khóa. Đã kiểm tra crop/tiền xử lý khớp notebook17, PyTorch/ONNX parity và runtime offline; chưa kiểm chứng camera. Xem [hướng dẫn runtime](runtime/pad_runtime_config.md).
+
+Nội dung bên dưới là snapshot lịch sử ngày2026-09-28; các mô tả model được `.env` chọn tại thời điểm đó không mô tả runtime mới.
+
 Snapshot: **2026-09-28**, checkout `main` tại `add6645`, có thêm các tài liệu research chưa được commit. Tài liệu này đối chiếu mã, cấu hình và artifact đang có trên máy; [context toàn repo](current_codebase_state.md) mô tả detection, tracking và recognition xung quanh PAD. Env của tiến trình, thiết bị và dữ liệu bên ngoài có thể thay đổi trạng thái khi chạy.
 
 ## Trạng thái các nhánh

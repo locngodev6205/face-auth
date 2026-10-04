@@ -376,6 +376,9 @@ PAD_RUNTIME_MODEL_SHA256 = (
     if "model_sha256" in _PAD_RUNTIME_CONFIG
     else None
 )
+PAD_OUTPUT_CLASSES = _runtime_int(_PAD_RUNTIME_CONFIG, "output_classes", None)
+if PAD_OUTPUT_CLASSES not in (None, 2, 3):
+    raise ValueError("PAD runtime output_classes phải là 2 hoặc 3")
 
 # Alias tương thích ngược (từ biến LIVENESS_* cũ)
 LIVENESS_MODEL_PATH = PAD_MODEL_PATH

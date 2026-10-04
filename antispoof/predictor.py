@@ -2,7 +2,7 @@
 Module Lớp dự đoán Anti-Spoofing (Face Anti-Spoofing Predictor Class).
 
 Chức năng chính:
-    - Quản lý các checkpoint PAD ONNX; runtime contract hiện tại là MobileNetV3 E1.
+    - Quản lý các checkpoint PAD ONNX; R7-100K dùng hai logits real/spoof.
     - Nhận danh sách các hình ảnh crop khuôn mặt (hoặc trực tiếp khung hình + bbox).
     - Tính toán giá trị logit (real_logit vs spoof_logit) để phân loại khuôn mặt THẬT (real) hay GIẢ (spoof).
 """
@@ -121,6 +121,17 @@ class AntiSpoofPredictor:
         self.providers = tuple(self.session.get_providers())
         self.input_metadata = self.session.get_inputs()[0]
         self.output_metadata = self.session.get_outputs()[0]
+        self.output_classes = _cfg.PAD_OUTPUT_CLASSES if uses_default_runtime else None
+        output_shape = self.output_metadata.shape
+        if self.output_classes is not None and (
+            not isinstance(output_shape, (list, tuple))
+            or len(output_shape) != 2
+            or output_shape[1] != self.output_classes
+        ):
+            raise ValueError(
+                f"PAD output shape {output_shape} differs from runtime "
+                f"output_classes={self.output_classes}"
+            )
 
         # Tự động phát hiện kích thước ảnh đầu vào và loại mô hình (Spatial vs Frequency)
         self.is_frequency_model = False
@@ -224,6 +235,14 @@ class AntiSpoofPredictor:
                 - confidence (float): Độ tự tin abs(pad_score - logit_threshold).
         """
         raw_arr = np.asarray(raw_logits, dtype=np.float64)
+        expected_classes = getattr(self, "output_classes", None)
+        if (
+            raw_arr.ndim != 1
+            or raw_arr.size not in (2, 3)
+            or (expected_classes is not None and raw_arr.size != expected_classes)
+            or not np.isfinite(raw_arr).all()
+        ):
+            raise ValueError("PAD requires finite logits matching the model's class count")
 
         # Tính xác suất Softmax cho tất cả các lớp
         exp_logits = np.exp(raw_arr - np.max(raw_arr))
@@ -231,7 +250,9 @@ class AntiSpoofPredictor:
 
         real_logit = float(raw_arr[0])
         spoof_logits = raw_arr[1:]
-        spoof_logsumexp = _stable_logsumexp(spoof_logits)
+        spoof_logsumexp = (
+            float(raw_arr[1]) if raw_arr.size == 2 else _stable_logsumexp(spoof_logits)
+        )
 
         # pad_score tổng quát: real_logit - logsumexp(spoof_logits)
         pad_score = float(real_logit - spoof_logsumexp)

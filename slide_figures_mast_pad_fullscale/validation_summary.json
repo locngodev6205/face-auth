@@ -1,0 +1,31 @@
+{
+  "status": "passed",
+  "checks": [
+    "generator syntax",
+    "seven PNG/PDF sets",
+    "PNG 300 DPI",
+    "all source paths exist",
+    "exact metrics read from per-run artifacts",
+    "CASIA AUC recomputed from video predictions",
+    "visual contact sheet inspected"
+  ],
+  "casia_recomputed": {
+    "Clean": {
+      "recomputed_casia_auc": 0.9203980099502487,
+      "scorable_videos": 358
+    },
+    "WBST": {
+      "recomputed_casia_auc": 0.9222636815920399,
+      "scorable_videos": 358
+    },
+    "MAST-PAD": {
+      "recomputed_casia_auc": 0.9351990049751244,
+      "scorable_videos": 358
+    }
+  },
+  "not_run": [
+    "training",
+    "checkpoint changes",
+    "new model inference"
+  ]
+}

@@ -1,4 +1,4 @@
-"""Export the selected R7-100K checkpoint and its frozen Val15K runtime config.
+"""Export an R7-100K or R7-full-scale checkpoint with its frozen runtime config.
 
 Run from the project root: python3 antispoof/export_r7_binary_runtime.py
 The deployed graph is the clean binary PAD path; spectral selection and auxiliary
@@ -24,6 +24,7 @@ MODEL_DIR = PROJECT_ROOT / "antispoof/models"
 SOURCE_PATH = MODEL_DIR / "MiniFASNet.py"
 DEFAULT_RUN_DIR = PROJECT_ROOT / "antispoof/notebooks/final/binary_crossdomain_v2/output/17_scale100k_C_P3SF_R7SC_crop15/runs/R7_SC_100K_crop15"
 RUN_ID = "R7_SC_100K_crop15"
+SUPPORTED_RUN_IDS = {RUN_ID, "R7_SC_FULL_crop15"}
 OPSET = 17
 
 
@@ -76,9 +77,10 @@ class R7BinaryPAD(nn.Module):
 
 def load_checkpoint(checkpoint_path, config_path):
     cfg = read_json(config_path)
+    run_id = cfg["run_id"]
     checkpoint = torch.load(checkpoint_path, map_location="cpu", weights_only=True)
-    if checkpoint["run_id"] != RUN_ID or cfg["run_id"] != RUN_ID or checkpoint["config"] != cfg:
-        raise ValueError("Checkpoint and run config do not identify the selected R7-100K run")
+    if run_id not in SUPPORTED_RUN_IDS or checkpoint["run_id"] != run_id or checkpoint["config"] != cfg:
+        raise ValueError("Checkpoint and run config do not identify a supported R7 run")
     spec = cfg["spec"]
     if spec["method"] != "HARMFUL" or any(cfg[key] != 1.5 for key in (
             "train_crop_factor", "val_crop_factor", "test_crop_factor", "lcc_crop_factor")):
@@ -89,7 +91,7 @@ def load_checkpoint(checkpoint_path, config_path):
     threshold = float(freeze["locked_threshold"])
     if not math.isfinite(threshold):
         raise ValueError("Frozen source threshold is not finite")
-    if any(item["run_id"] != RUN_ID or item["best_epoch"] != checkpoint["epoch"]
+    if any(item["run_id"] != run_id or item["best_epoch"] != checkpoint["epoch"]
            for item in (freeze, completion)):
         raise ValueError("Checkpoint epoch differs from evaluation freeze/completion")
     if completion["locked_threshold"] != threshold or freeze["manifest_sha256"] != cfg["manifest_sha256"]:
@@ -109,10 +111,12 @@ def load_checkpoint(checkpoint_path, config_path):
 def export(checkpoint_path, config_path, output_dir):
     torch.set_num_threads(1)
     model, cfg, freeze = load_checkpoint(checkpoint_path, config_path)
+    run_id = cfg["run_id"]
+    full_scale = run_id == "R7_SC_FULL_crop15"
     output_dir.mkdir(parents=True, exist_ok=True)
-    model_path = output_dir / (RUN_ID + ".onnx")
-    runtime_path = output_dir / (RUN_ID + "_runtime_config.json")
-    validation_path = output_dir / (RUN_ID + "_onnx_validation.json")
+    model_path = output_dir / (run_id + ".onnx")
+    runtime_path = output_dir / (run_id + "_runtime_config.json")
+    validation_path = output_dir / (run_id + "_onnx_validation.json")
     threshold = float(freeze["locked_threshold"])
     rng = np.random.default_rng(100)
     cases = [np.zeros((1, 3, 80, 80), np.float32),
@@ -157,9 +161,10 @@ def export(checkpoint_path, config_path, output_dir):
         os.replace(pending, model_path)
     probability = 1 / (1 + math.exp(-threshold))
     runtime = {
-        "schema": "face_auth_pad_runtime_config_v1", "run_id": RUN_ID,
+        "schema": "face_auth_pad_runtime_config_v1", "run_id": run_id,
         "model_file": model_path.name, "model_sha256": sha256(model_path),
-        "model_status": "trained R7_SC_100K_crop15; best checkpoint selected on Val15K",
+        "model_status": ("trained R7_SC_FULL_crop15; best checkpoint selected on full official CelebA Test-as-Val"
+                         if full_scale else "trained R7_SC_100K_crop15; best checkpoint selected on Val15K"),
         "model_img_size": 80, "input_name": "input", "output_name": "logits",
         "input_shape": ["batch", 3, 80, 80], "output_shape": ["batch", 2],
         "output_classes": 2, "class_names": ["real", "spoof"],
@@ -169,7 +174,8 @@ def export(checkpoint_path, config_path, output_dir):
         "apply_gamma": False, "bbox_expansion_factor": 1.5,
         "crop_mode": "minifasnet_train_v1", "crop_smoothing": False,
         "calibrated_logit_threshold": threshold, "predictor_threshold_probability": probability,
-        "threshold_source": "Frozen scale15k_val.csv calibration for reloaded best checkpoint; no runtime refitting",
+        "threshold_source": ("Frozen full_test.csv (CelebA Test-as-Val) calibration for reloaded best checkpoint; no runtime refitting"
+                             if full_scale else "Frozen scale15k_val.csv calibration for reloaded best checkpoint; no runtime refitting"),
         "selected_epoch": freeze["best_epoch"], "manifest_sha256": cfg["manifest_sha256"],
         "source_checkpoint_file": str(checkpoint_path.relative_to(PROJECT_ROOT)) if checkpoint_path.is_relative_to(PROJECT_ROOT) else str(checkpoint_path),
         "source_checkpoint_sha256": sha256(checkpoint_path),

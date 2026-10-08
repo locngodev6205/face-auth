@@ -119,14 +119,23 @@ Tạo file `.env` từ file mẫu `.env.example`:
 cp .env.example .env
 ```
 Các thông số cấu hình chính trong `face_auth/.env`:
-- `POSTGRES_DB=PBL6`: Dùng chung PostgreSQL PBL6; host runtime kết nối qua `localhost:5432`.
+- **Database Connection**:
+  - **Cách 1 (Neon Cloud — Khuyên dùng)**: 
+    ```env
+    DATABASE_URL=postgresql://<USER>:<PASS>@<ENDPOINT>-pooler.ap-southeast-1.aws.neon.tech/PBL6?sslmode=require
+    ```
+  - **Cách 2 (Local DB / Docker)**:
+    ```env
+    POSTGRES_DB=PBL6
+    POSTGRES_USER=postgres
+    POSTGRES_PASSWORD=postgres
+    POSTGRES_HOST=localhost
+    POSTGRES_PORT=5432
+    ```
 - `EMBEDDING_MODEL_VERSION=buffalo_s`: Phải khớp `FACE_AUTH_MODEL_VERSION` trong backend.
 - `APP_DETECTOR`: Bộ dò khuôn mặt (`scrfd` hoặc `yunnet`).
-- `PAD_MODEL_NAME`: Tên mô hình PAD (`mnv3s_e1_preliminary_v5_3_edge_best.onnx` hoặc `e3_concat_preliminary_v1_best.onnx`).
+- `PAD_MODEL_NAME`: Tên mô hình PAD (`mnv3s_e1_preliminary_v5_3_edge_best.onnx`).
 - `MATCH_THRESHOLD`: Ngưỡng so khớp Cosine Distance (`0.35`).
-
-Nếu runtime chạy trên Pi/máy khác, đặt `POSTGRES_HOST` bằng IP LAN của máy chủ DB
-và cấu hình `PBL6_POSTGRES_BIND_IP` để publish PostgreSQL trên mạng tin cậy.
 
 ---
 

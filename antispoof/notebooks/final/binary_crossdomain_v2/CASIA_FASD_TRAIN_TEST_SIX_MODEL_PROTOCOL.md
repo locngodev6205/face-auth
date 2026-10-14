@@ -23,9 +23,9 @@ Previously saved EDA inventory gives train 1,655 frames / 240 videos, test 2,408
 
 Six unchanged best checkpoints: `C_100K_crop15`, `P3_SF_100K_crop15`, `R7_SC_100K_crop15`, `C_FULL_crop15`, `P3_SF_FULL_crop15`, `R7_SC_FULL_crop15`.
 
-No training budget, tuning, adaptation, augmentation or threshold fitting on CASIA, including its train folder. Seed 100; deterministic ordering. One GPU checkpoint at a time, original per-run AMP setting.
+No weight training, adaptation or augmentation on CASIA. Optional train-only threshold calibration is described below. Seed 100; deterministic ordering. One GPU checkpoint at a time, original per-run AMP setting.
 
-SCRFD-500M, confidence 0.5, size order 640 → 480 → 320, largest finite positive box and confidence tie-break. No GT or whole-image fallback. Same detection records and exact notebook17/18 crop1.5 / 80×80 BGR [0,1] inputs across models. Binary score `logit(real)-logit(attack)`, source-frozen threshold per run. Spectral views and auxiliary heads are training-only.
+SCRFD-500M, confidence 0.5, size order 640 → 480 → 320, largest finite positive box and confidence tie-break. No GT or whole-image fallback. Same detection records and exact notebook17/18 crop1.5 / 80×80 BGR [0,1] inputs across models. Binary score `logit(real)-logit(attack)`, source-frozen baseline threshold per run plus optional train-calibrated thresholds. Spectral views and auxiliary heads are training-only.
 
 The four input paths are copied from the user's updated notebook19 configuration. Output uses a distinct train/test directory. `RUN_FILTER=None` evaluates all six; a nonempty subset supports parallel Kaggle execution.
 
@@ -44,4 +44,10 @@ For each model × population (18 summary rows with all models):
 
 Validate notebook JSON and compilation, strict loading / original notebook forward parity for all six checkpoints, exact crop geometry, observed EDA manifest counts, and a synthetic overlapping train/test evaluation through metrics/report/ZIP. Synthetic tests must confirm no duplicate combined weighting and no detection-based duplicate replacement. Real CASIA CUDA/SCRFD inference runs on Kaggle, not in offline checks.
 
-The CASIA train images are external evaluation data because these models were trained on CelebA. This does not establish the official CASIA subject-disjoint benchmark: original full videos are absent, reconstructed image identities overlap, and face localization is heuristic. Failed detections remain in coverage. Video aggregation transfers the unchanged frame-calibrated source threshold; no video calibration is performed. Source 100K selection uses Val15K; source full-scale selection uses CelebA Test-as-Val. Keep source-scale groups separate.
+The CASIA train images are external evaluation data because these models were trained on CelebA. This does not establish the official CASIA subject-disjoint benchmark: original full videos are absent, reconstructed image identities overlap, and face localization is heuristic. Failed detections remain in coverage. Video aggregation transfers the unchanged frame-calibrated source threshold; the baseline performs no video calibration; the optional calibrated branch fits a separate video threshold on train only. Source 100K selection uses Val15K; source full-scale selection uses CelebA Test-as-Val. Keep source-scale groups separate.
+
+## Optional train-only threshold calibration (notebook20)
+
+`CALIBRATE_CASIA_THRESHOLD=True` fits separate per-run frame and mean-video thresholds using only scored CASIA train predictions. Exact minimum pooled ACER/HTER is selected; ties prefer the source threshold. The fitted threshold is transferred unchanged to train/test/combined. No test or combined labels are used to select it, no weights are changed, and no additional inference is needed. Undefined train populations are reported without fitting.
+
+Source-frozen outputs remain intact; additional calibrated summaries, per-run calibration JSON/curves and per-split predictions/metrics are exported. Train metrics are fitted-set diagnostics; combined includes calibration data. Disclosed train/test identity overlap prevents claiming independent validation. Test/combined improvement is not guaranteed, and deployment requires held-out webcam validation. Set the flag to False for source-frozen evaluation only.

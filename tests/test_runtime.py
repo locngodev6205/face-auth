@@ -190,6 +190,38 @@ class TestRuntimeFailures(unittest.TestCase):
         self.assertIn("[OK] Dang Thi My  0.98", labels)
         self.assertTrue(all(label.isascii() for label in labels))
 
+    def test_background_reverification_keeps_identity_color_and_shows_last_result(self):
+        frame = np.zeros((180, 180, 3), np.uint8)
+        for status in ["WAIT 0.2s", "QUEUE FULL"]:
+            with self.subTest(status=status), patch("app.cv2.rectangle") as rectangle, patch(
+                "app.cv2.putText"
+            ) as text:
+                app.draw_track(frame, (20, 20, 120, 120), "Alice", .9,
+                               is_pending=False, is_reverifying=True,
+                               recognition_status=status)
+                self.assertEqual(rectangle.call_args_list[0].args[3], app.COLOR_LOCKED)
+                self.assertIn("[LAST] Alice", text.call_args.args[1])
+                self.assertIn(status, text.call_args.args[1])
+                self.assertNotIn("[OK]", text.call_args.args[1])
+
+    def test_waiting_does_not_override_unknown_or_safety_colors(self):
+        frame = np.zeros((180, 180, 3), np.uint8)
+        cases = [
+            ({"name": "UNKNOWN", "is_pending": False}, app.COLOR_UNKNOWN),
+            ({"is_spoof": True}, app.COLOR_SPOOF),
+            ({"is_pad_pending": True}, app.COLOR_PENDING),
+            ({"pad_invalid_reason": "low_detector_confidence"}, app.COLOR_INVALID),
+            ({"recognition_error": True}, app.COLOR_INVALID),
+            ({"name": "UNKNOWN", "is_pending": True}, app.COLOR_REVERIFY),
+        ]
+        for overrides, expected in cases:
+            args = dict(name="Alice", score=.9, is_pending=False,
+                        is_reverifying=True, recognition_status="WAIT 0.2s")
+            args.update(overrides)
+            with self.subTest(overrides=overrides), patch("app.cv2.rectangle") as rectangle:
+                app.draw_track(frame, (20,20,120,120), **args)
+                self.assertEqual(rectangle.call_args_list[0].args[3], expected)
+
     @patch("app.config.PAD_MIN_DETECTOR_CONFIDENCE", 0.6)
     def test_pad_skips_low_confidence_or_edge_faces_and_invalidates_cached_verdict(self):
         ineligible = [
@@ -252,7 +284,7 @@ class TestRuntimeFrameLoop(unittest.TestCase):
         detector.detect.return_value = detections
         embedder.input_size = (112, 112)
         embedder.embed_aligned.return_value = np.ones(512) / np.sqrt(512)
-        db.search.return_value = [("A", "Alice", 0.9)]
+        db.search.return_value = [("A", "Alice", 0.9, np.ones(512))]
         args = argparse.Namespace(pad_enabled=False, pad_threshold=app.config.PAD_THRESHOLD,
                                   pad_threshold_logit=None, pad_model=app.config.PAD_MODEL_PATH,
                                   camera=0, show_fps=False, mode="none")

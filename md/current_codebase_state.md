@@ -1,180 +1,140 @@
 # face_auth — context codebase hiện tại
 
-Snapshot: **2026-09-28**, checkout `main` tại `add6645`, theo source/cấu hình/artifact trong working tree; không đại diện một release đã khóa. Mục tiêu: giúp agent tìm đúng module và luồng xử lý trước khi sửa. Source, runtime JSON và config thực tế có ưu tiên hơn mô tả này; terminal env/CLI có thể thay đổi snapshot.
+Snapshot: **2026-10-14**, nhánh `main`, HEAD `ff54130`. Mô tả **working tree**, gồm thay đổi chưa commit; không phải một release đã khóa. Đối chiếu source, `.env`, `.env.example`, runtime JSON và artifact local. Env của tiến trình/CLI có thể thay đổi cấu hình khi chạy. Không ghi credentials database vào tài liệu.
 
-## Đọc nhanh trước khi làm việc
+## Đọc nhanh
 
-1. [AGENTS.md](../AGENTS.md): scope CV/PAD và nguyên tắc nghiên cứu.
-2. Tài liệu này: runtime, module ownership, config và trạng thái hiện tại.
-3. [Trạng thái PAD](current_pad_state.md) khi task liên quan `antispoof/`: runtime, E1/E2/E3, cross-dataset và micro-search.
-4. [Danh mục tài liệu](README.md): chọn đúng contract, audit hoặc protocol cần đọc.
-5. Đọc source theo task trong bảng module bên dưới; không cần quét toàn bộ notebook/model/cache.
+1. [AGENTS.md](../AGENTS.md): scope CV/PAD, protocol và giới hạn validation.
+2. Tài liệu này: module ownership, luồng realtime, DB và cấu hình hiệu lực.
+3. [Trạng thái PAD](current_pad_state.md): model đang chọn, provenance và kết quả nghiên cứu.
+4. [Recognition worker](REALTIME_RECOGNITION_WORKER.md): cache, kết quả muộn và nhãn hiển thị.
+5. [Full-scale results](FULLSCALE_MODEL_RESULTS_SOURCE_OF_TRUTH.md): nguồn per-run và giới hạn protocol.
 
-`face_auth` là prototype xác thực khuôn mặt: detection → tracking → PAD → recognition → pgvector search. Có attendance hooks trong app/DB; không mở rộng logic đó khi task chỉ yêu cầu CV/PAD. Enrollment và nghiên cứu PAD là các đường chạy riêng.
+Source + cấu hình hiệu lực + artifact có ưu tiên hơn tài liệu cũ. Roadmap/prompt/notebook protocol là tài liệu tham khảo, không tự cấp quyền chạy training, reset DB hoặc chọn lại ngưỡng.
 
-## Bản đồ thư mục
+## Bản đồ source
 
-```text
-face_auth/
-├── app.py                         # Entry point camera, điều phối runtime
-├── config.py                      # Env/JSON/defaults, đường dẫn, cadence, thresholds
-├── AGENTS.md, .env.example         # Quy tắc và cấu hình mẫu
-├── .env                           # Cấu hình máy local, không chép secrets vào tài liệu
-├── docker-compose.yml             # PostgreSQL 16 + pgvector, service postgres
-├── requirements.txt               # Dependencies runtime (nhiều package chưa pin version)
-├── detection/                     # SCRFD wrapper, YunNet wrapper, model YunNet
-├── tracking/tracker.py             # Track state, IOU association, LK flow, PAD window/crop state
-├── antispoof/
-│   ├── predictor.py, preprocess.py # Contract → tensor → ONNX → raw PAD score
-│   ├── loader.py, system.py        # ONNX session/providers, hardware descriptions
-│   ├── models/                    # E1/E2/E3 deployment, metadata/test trong smartface_pad_artifacts/
-│   └── notebooks/                 # EDA, E1/E2/E3, held-out/cross-dataset, diagnostics
-├── alignment/aligner.py            # ArcFace alignment, bbox fallback
-├── recognition/embedder.py        # ArcFace embedding, L2 normalization
-├── database/                      # vector_db.py + schema.sql
-├── enrollment/enroll.py            # Outlier filtering + centroid + DB enrollment
-├── scripts/                       # Enrollment, demos, detector probe, export, DB utilities
-├── evaluation/                    # LFW notebooks + frozen split manifest
-├── tests/                         # Offline unit/component regressions
-├── utils/image.py                 # Image helpers
-├── gallery/                       # Local enrollment images
-├── data/, output/                 # Local data and generated reports/logs; not runtime source
-├── backups/                       # Historical source snapshots; not active imports
-└── md/                            # Context chung/PAD, runtime notes, audits, research, archive
-```
-
-## Module ownership và điểm bắt đầu đọc
-
-| Task/module | Source / symbol chính | Trách nhiệm và giới hạn |
+| Module | Điểm bắt đầu | Vai trò hiện tại |
 |---|---|---|
-| Camera / loop / CLI | [app.py](../app.py): `main`, `parse_args` | Load models/DB once, capture, cadence, timers/counters, raw frame vs display copy, cleanup/hotkeys |
-| PAD runtime integration | `app.update_track_pad` | Crop due tracks, batch prediction, validate output count/bool/finite score, cập nhật votes; error invalidate verification |
-| Recognition orchestration | `app.orchestrate_track_step` | PAD gating → align/embed → search → identity; attendance hooks chỉ khi mode cho phép |
-| Config | [config.py](../config.py) | Parse env/JSON, validate threshold pair, resolve model/config paths; không load camera/DB |
-| Detector | [detection/detector.py](../detection/detector.py): `FaceDetector.detect` | SCRFD bbox xyxy + confidence + 5 landmarks; min side filter |
-| Alternative detector | [detection/yunnet_detector.py](../detection/yunnet_detector.py) | OpenCV FaceDetectorYN, INT8 artifact; chọn qua `APP_DETECTOR` |
-| Tracking / state | [tracking/tracker.py](../tracking/tracker.py): `FaceTracker.update`, `_propagate`, `Track` | IOU matching, LK propagation, lost/redetection, cached identity, PAD binary window và crop geometry riêng |
-| PAD predictor | [antispoof/predictor.py](../antispoof/predictor.py): `predict_crops`, `process_with_logits` | Spatial E1 hoặc single-input DCT E2, raw logits → d/probabilities/verdict; không quản lý tracking/voting |
-| PAD transforms | [antispoof/preprocess.py](../antispoof/preprocess.py): `crop`, `preprocess_batch`, `preprocess_dct_batch` | Expanded square crop, resize/padding, RGB/norm hoặc DCT; không dùng ArcFace alignment cho PAD hiện tại |
-| ONNX load | [antispoof/loader.py](../antispoof/loader.py): `load_model` | Graph optimization, sequential execution, provider selection, raise khi artifact/session lỗi |
-| PAD status / artifacts | [current_pad_state.md](current_pad_state.md) | E1 runtime contract, E2/E3 và cross-dataset evidence, micro-search roadmap, giới hạn provenance |
-| Alignment | [alignment/aligner.py](../alignment/aligner.py): `get_input_face` | 5-point ArcFace affine alignment, fallback bbox crop khi landmarks/transform không dùng được |
-| Recognition | [recognition/embedder.py](../recognition/embedder.py): `embed_aligned` | `get_feat` trên aligned BGR, 512-D L2-normalized; không detect lại trong frame loop |
-| Database | [database/vector_db.py](../database/vector_db.py), [schema.sql](../database/schema.sql) | psycopg pool, schema, centroid cosine search, upsert, attendance; `decide_identity` áp MATCH_THRESHOLD |
-| Enrollment | [enrollment/enroll.py](../enrollment/enroll.py), [scripts/run_enroll.py](../scripts/run_enroll.py) | Gallery images → embeddings → outlier filtering → normalized centroid; lưu SAMPLE/CENTROID theo options |
+| Camera / loop / CLI | [app.py](../app.py): `main`, `parse_args` | Capture, detector/tracker/PAD cadence, submit/poll recognition, raw frame vs display copy, hotkeys và cleanup |
+| Recognition integration | `app.submit_recognition_step`, `app.collect_recognition_results` | Align ảnh mặt nhỏ, gửi không chờ, chỉ áp kết quả cho track/phiên/PAD còn hợp lệ |
+| Recognition worker | [recognition/worker.py](../recognition/worker.py): `RecognitionWorker` | Một worker daemon: ArcFace → centroid cache hoặc cloud DB; queue giới hạn, error/cancellation/stats |
+| Legacy sync helper | `app.orchestrate_track_step` | Còn tồn tại cho đường gọi đồng bộ/test; **main realtime không gọi helper này** |
+| Config | [config.py](../config.py) | Env/JSON/defaults, validate threshold pair, resolve paths; không mở camera/DB |
+| SCRFD | [detection/detector.py](../detection/detector.py) | Bbox xyxy, confidence, 5 landmarks; pack buffalo_s, CPU |
+| YunNet | [detection/yunnet_detector.py](../detection/yunnet_detector.py) | OpenCV FaceDetectorYN; chọn qua `APP_DETECTOR` |
+| Tracking | [tracking/tracker.py](../tracking/tracker.py): `Track`, `FaceTracker` | IOU + LK flow, continuity, PAD votes/crop, verification generation và nhãn hiển thị riêng |
+| PAD integration | `app.update_track_pad` | Due-track crop/batch, detector/landmark/biên gate, kiểm tra output và invalidate khi lỗi |
+| PAD predictor | [antispoof/predictor.py](../antispoof/predictor.py) | ONNX single-input spatial/DCT, binary hoặc 3-class logits; E3 hai input chưa hỗ trợ |
+| PAD preprocessing | [antispoof/preprocess.py](../antispoof/preprocess.py) | Expanded crop theo profile, resize/màu/norm/DCT; PAD không dùng ArcFace alignment |
+| ONNX loader | [antispoof/loader.py](../antispoof/loader.py) | Graph optimization, sequential, ưu tiên CUDA rồi CPU nếu có |
+| Alignment | [alignment/aligner.py](../alignment/aligner.py) | ArcFace 5-point alignment, fallback bbox crop |
+| ArcFace | [recognition/embedder.py](../recognition/embedder.py) | Aligned BGR → 512-D L2 vector; realtime giới hạn inference thread và tắt spinning |
+| Database | [database/vector_db.py](../database/vector_db.py) | Validate PBL6 Prisma schema, pool, cosine centroid search, enrollment; không tạo schema/ghi attendance |
+| Enrollment | [enrollment/enroll.py](../enrollment/enroll.py), [scripts/run_enroll.py](../scripts/run_enroll.py) | Gallery → embeddings/outlier filter → SAMPLE/CENTROID; threshold enrollment tách khỏi PAD/recognition |
+| Internal API | [api_service.py](../api_service.py) | FastAPI :5000, model/DB singletons; **không dùng worker/cache/label filter của app.py** |
+| Tests | [tests/](../tests/) | Runtime, worker, display, tracker, DB, R7, PAD math và enrollment |
+| Research | [final/binary_crossdomain_v2/](../antispoof/notebooks/final/binary_crossdomain_v2/) | Micro/100K/full-scale, CASIA evaluation, CE-only baseline; đọc artifact trước khi báo kết quả |
 
-## Luồng realtime theo source
+Root PBL6 có [docker-compose.yml](../../docker-compose.yml) cho DB local và stack app,
+[docker-compose.cloud.yml](../../docker-compose.cloud.yml) cho cloud; `face_auth` không có Compose riêng hiện tại. [Dockerfile](../Dockerfile) build Face Auth API CPU; camera realtime chạy trên host/Pi.
+
+## Luồng realtime
 
 ```text
-config + CLI → load detector / ArcFace / DB / tracker / PAD once
-camera.read → detector due? → detect + IOU match
-                          └→ LK propagate → unsafe? → detect ngay trên cùng frame
-tracked bbox → PAD due? → optional crop stabilization → expanded crop
-             → preprocess → ONNX batch → raw score → binary rolling votes
-PAD REAL + recognition due → alignment → ArcFace → DB search → identity
-raw frame.copy → draw states / FPS → display / hotkeys
+startup: config/CLI → detector + ArcFace + DB validate + tracker + PAD → camera
+camera thread:
+  read → detector due / LK propagate / same-frame redetect
+       → PAD input gate → due crops → ONNX batch → raw verdict → binary votes
+       → collect worker results (track + generation + PAD còn hợp lệ)
+       → PAD REAL + recognition due → align + sao chép ảnh mặt → bounded queue
+       → display copy → stable identity header + worker status → hotkeys
+worker:
+  aligned crop → ArcFace → cache centroid theo track hoặc DB top-1 → result queue
 ```
 
-- Detector tick riêng; các frame xen kẽ dùng LK. PAD có thể dùng bbox `DETECTOR` hoặc `TRACKER` và chỉ chạy khi track đến hạn.
-- LK dùng bốn góc bbox và tâm; status/finite/geometry/scale checks. Landmarks được biến đổi cùng motion bằng partial affine.
-- Geometry cần refresh (scale/biên/corner không an toàn) không được đưa vào inference; app redetect cùng frame. Match hợp lệ giữ window; unmatched reset verification.
-- Flow mất thật, invalid geometry/transform hoặc detector unmatched → reset PAD và identity. **Không giữ votes qua flow failure** sau khi đã revert thử nghiệm recovery.
-- PAD crop/batch error hoặc output không hợp lệ → invalidate cached verdict/identity; failed attempts vẫn được pace. Recognition error hoặc không tạo được alignment/embedding → invalidate identity và retry theo interval.
-- PAD chưa đủ votes hoặc stale → `PAD_PENDING`; SPOOF/PENDING chặn recognition khi PAD bật. Recognition overdue chạy lại theo cadence khi PAD cho phép.
-- Inference dùng raw frame; drawing dùng `display_frame` copy, tránh annotation làm bẩn input của track tiếp theo.
-- Detector/PAD/recognition/stale timers dùng monotonic. Wall clock vẫn dùng cho log timestamp và DB attendance/cooldown.
-- `--mode none` tắt attendance writes, **vẫn cần DB** cho recognition. App không phải PAD-only diagnostic.
-- Hotkeys: `q` quit, `p` toggle PAD, `f` FPS. Bật lại PAD invalidates verification. Exit in runtime counters/timings và giải phóng tài nguyên.
+- Mỗi phiên `(track_id, verification_generation)` có tối đa một tác vụ chưa được thu kết quả; queue 2 chờ + tối đa 1 tác vụ xử lý. Queue đầy không chặn camera, thử gửi ở frame sau.
+- Worker không sửa `Track`. Kết quả muộn được chấp nhận nếu phiên vẫn hợp lệ; không có giới hạn tuổi kết quả. Mất continuity/reset/PAD invalid hoặc toggle PAD làm kết quả cũ bị bỏ. Ảnh kết quả là ảnh lúc gửi, không phải frame lúc nhận.
+- LK/geometry/transform failure, detector unmatched và PAD error invalidate verification; không giữ REAL votes qua flow failure để giảm PENDING.
+- PAD REAL mới cho phép nhận diện khi PAD bật. PENDING, SPOOF, lỗi crop/output và invalid face không được xác minh bằng kết quả cũ.
+- Camera loop không chờ cloud search; **detection/PAD, alignment, display và startup model/DB vẫn đồng bộ**. Worker riêng không đảm bảo FPS cụ thể.
+- Frame inference là raw frame; annotations trên `display_frame` copy. Timers dùng monotonic; một số log/cooldown legacy dùng wall clock.
+- `q` thoát, `p` toggle PAD và reset verification theo cả hai hướng, `f` toggle FPS. Đợi worker khi thoát tối đa 2s; worker tự đóng DB sau IO, `stopped=False` nghĩa là IO chưa kết thúc trong thời gian này.
+- Python hiện **không ghi attendance_logs**: hooks trong helper/app đã comment, backend Prisma là writer. `--mode none` vẫn cần DB cho recognition, không biến app thành PAD-only diagnostic.
 
-## Cấu hình local tại snapshot
+## Cấu hình hiệu lực local
 
-`.env` local vẫn trỏ `PAD_RUNTIME_CONFIG_PATH` tới JSON E1 cũ ở `antispoof/models/`, nhưng file này và ONNX cùng thư mục hiện không tồn tại. Khi path này được chọn, `config.py` lỗi khi đọc JSON trước khi app khởi động. E1 contract và artifact tương ứng còn ở đường dẫn deployment dưới đây; các giá trị trong bảng là cấu hình dự định, chưa phải một phiên runtime được xác nhận sau pull.
+Bảng được lấy từ import `config.py` trong một tiến trình mới ngày snapshot; không xác nhận cấu hình của một app đã mở trước đó. `.env` và `.env.example` cùng chọn R7-100K CASIA; `.env.example` là cấu hình mẫu, không được load thay `.env`.
 
-| Nhóm | Cấu hình dự định tại snapshot |
+| Nhóm | Giá trị đang có |
 |---|---|
-| Detection | `APP_DETECTOR=scrfd`, pack `buffalo_s`, CPU, input 640×640, confidence .5, min side 60 px |
-| Camera | `CAMERA_FORCE_RESOLUTION=true`, yêu cầu 640×480@30, buffer 1 best-effort; phải xem actual startup properties |
-| PAD profile | `.env` trỏ path cũ bị thiếu; JSON còn tại `antispoof/models/smartface_pad_artifacts/E1_v5_3_mnv3_small/deployment/` |
-| PAD model | MobileNetV3-Small E1 v5.3, ONNX + `.onnx.data` trong cùng thư mục deployment |
-| Input contract | 224×224 RGB, crop factor 1.55, gamma OFF, mean `[.5931,.469,.4229]`, std `[.2471,.2214,.2157]` |
-| PAD threshold | d = −0.4650222063064575; equivalent softmax p_real = .38579509526467753 |
-| Temporal | Binary window 5, min votes 5, spoof ratio .6, stale timeout 3s |
-| Cadence | Detector .1s, PAD .1s, recognition .5s; independent schedules |
-| Crop stabilization | `PAD_CROP_SMOOTHING=true` local; code default/.env.example false |
-| Identity | ArcFace `buffalo_s`, 512-D; `MATCH_THRESHOLD=.35`, model version `buffalo_s` |
+| Detection | SCRFD, buffalo_s CPU, det_size 640×640, confidence .5, min face 60 px |
+| Camera | `CAMERA_INDEX=0`, force resolution true, yêu cầu 640×480@30, buffer 1 best-effort |
+| PAD JSON | `antispoof/models/R7_SC_100K_crop15_runtime_config_casia.json` |
+| PAD model | `R7_SC_100K_crop15.onnx`, MiniFASNetV2 binary, best epoch11 |
+| Input | 80×80 BGR float [0,1], crop1.5 `minifasnet_train_v1`, không gamma/mean/std |
+| PAD threshold | logit −4.2998047, probability .013389497538243682; **CASIA train frame-calibrated**, không phải source Val15K threshold |
+| PAD crop smoothing | **false** trong `.env`, `.env.example` và JSON hiện chọn |
+| Temporal PAD | Binary window5, min votes5, spoof ratio .6, stale3s |
+| Cadence | Detector .1s, PAD .1s, recognition .5s; không phải FPS đo được |
+| Recognition | ArcFace buffalo_s, 512-D, `MATCH_THRESHOLD=.35` |
+| Worker | Queue2, một worker, `RECOGNITION_INTRA_OP_THREADS=1` |
+| Cache | TTL30s cố định, threshold .65, tối đa128 centroid theo track/phiên |
+| Label filter | Đổi tên sau2 kết quả, bỏ tên sau3 UNKNOWN; hold bất đồng tối đa1.5s |
+| DB waits | Pool3s, search SQL3000ms; connect timeout và TCP keepalive riêng, không phải deadline end-to-end |
+| Database | `.env` face_auth và backend trỏ Neon cloud; chưa kiểm tra kết nối live trong lần cập nhật tài liệu |
 
-### Configuration và model contracts
+### Thứ tự ưu tiên / đường dẫn
 
-- `load_dotenv()` nạp .env; environment terminal có ưu tiên hơn .env. Không dump DB credentials.
-- Với contract PAD: trường JSON > `PAD_*` env khi JSON thiếu trường > code defaults. Config lỗi dừng nếu path JSON được chỉ định nhưng không đọc được.
-- Runtime config path tương đối theo project root; `model_file` trong JSON tương đối theo directory của JSON và ưu tiên hơn `PAD_MODEL_FILENAME`.
-- `.onnx.data` là một phần artifact, phải đi cùng model. Không chỉ copy `.onnx`.
-- `d = real_logit − logsumexp(spoof_logits)`; class 0 REAL, các lớp còn lại spoof. REAL khi d ≥ threshold; binary voting sau đó là quyết định theo thời gian khác raw predictor.
-- CLI `--pad-model` được guard để không ghép model khác với contract đã chọn; đổi model bằng runtime JSON. Alternate v5.1 config có trong `antispoof/models/smartface_pad_artifacts/E1_v5_1_mnv3/deployment/` (crop 1.50, threshold riêng); chưa được chọn.
-- `.35` là recognition threshold được người dùng chủ động chọn, không phải PAD threshold. Không âm thầm đổi hai ngưỡng.
-- Crop PAD theo `crop_mode`: E1 dùng square max side × expansion và reflect padding; MiniFASNet dùng hình học `minifasnet_train_v1` như notebook. Sau crop, preprocessing theo profile chọn màu, kích thước, gamma và mean/std.
-- Loader PAD ưu tiên CUDA rồi CPU khi available; detector/ArcFace wrappers hiện ép CPU. Có CoreML available không đồng nghĩa đang dùng CoreML.
-- Embedder vẫn khởi tạo detection submodel do ràng buộc FaceAnalysis, nhưng frame embedding chỉ gọi recognition `get_feat`; không suy rằng RAM chỉ chứa ArcFace.
+- Env có sẵn của tiến trình > `.env` (`load_dotenv` không overwrite). CLI như `--camera 1` ghi đè giá trị camera mặc định.
+- Với trường PAD: **JSON > PAD env nếu JSON thiếu trường > code defaults**. Cặp probability/logit được xử lý cùng nhau. JSON không đọc được thì startup fail.
+- Path JSON tương đối theo root `face_auth`; `model_file` tương đối theo thư mục JSON. Đổi model bằng đúng JSON; CLI model override được guard để không ghép model với contract khác.
+- `crop_smoothing=false` trong JSON thắng `PAD_CROP_SMOOTHING=true` trong env; chỉ đổi env không bật được treatment này khi contract đã ghi rõ false.
+- `.onnx.data` phải đi cùng các ONNX dùng external data. R7 runtime JSON có model hash/output_classes và predictor kiểm tra tính phù hợp khi load.
+- PAD binary: `score=z_real-z_spoof`, REAL iff score ≥ threshold. Ba lớp: `z_real-logsumexp(z_spoof)`. Binary rolling vote là bước riêng sau raw predictor.
+- PAD threshold, identity MATCH_THRESHOLD, cache threshold và enrollment outlier threshold là bốn khái niệm riêng.
 
-## Crop smoothing được giữ lại
+## Cache và ổn định nhãn
 
-`Track.pad_crop_bbox` giữ center/side riêng cho PAD, không sửa tracking bbox hay landmarks. Chỉ chạy ở các lượt PAD đến hạn. Time constant .12s; chỉ smooth jitter ≤5%; snap khi motion/scale lớn, gap >.5s hoặc expanded crop ra ngoài frame. Reset PAD cũng xóa crop history. Phụ thuộc thời gian monotonic để giảm ảnh hưởng FPS.
+Cloud top-1 trả centroid thật trong DB; `decide_identity` vốn dùng ứng viên đầu. Search lọc CENTROID, model_version, embedding active và employee ACTIVE. Cache không lưu query embedding, không ghi disk, không dùng partial gallery cho track mới. Mỗi cache hit vẫn chạy ArcFace trên ảnh mới; cosine với centroid phải ≥max(.65, MATCH_THRESHOLD). TTL không gia hạn bằng cache hit. Matching cache thấp/hết hạn hỏi cloud; lỗi hoặc miss không fallback sang cache cũ.
 
-Người dùng báo kết quả realtime ổn hơn; đây là phản hồi sử dụng, chưa có camera benchmark có nhãn/edge measurement xác nhận accuracy. Xem [contract thử nghiệm](runtime/pad_crop_smoothing_experiment.md).
+Cache có thể trì hoãn cập nhật tên/trạng thái nhân viên hoặc re-enrollment tối đa cửa sổ TTL. `.65`/30s là cấu hình khởi đầu, chưa calibrate bằng dữ liệu camera/Pi. `RECOGNITION_CACHE_TTL_SECONDS=0` tắt shortcut.
 
-**Các thử nghiệm đã revert hoàn toàn:** detector-only PAD, same-frame flow-vote recovery, mean-score temporal aggregation. Không còn các flags `PAD_DETECTOR_ONLY`, `PAD_RECOVER_FLOW_VOTES`, `PAD_SCORE_SMOOTHING` trong code/config hiện tại. Không áp lại ngầm khi làm task khác.
+Header cố định `[ID] Tên`, score và WAIT/QUEUE FULL/CLOUD/CACHE nằm ở dòng riêng. `Track.update_display_identity` chỉ lọc **nhãn**: cần 2 kết quả liên tiếp để đổi người, 3 UNKNOWN để bỏ tên; lần đầu nhận đúng hiện ngay. Khi bất đồng giữ tên cũ tối đa1.5s với `LAST LABEL`; timeout vẫn có hiệu lực nếu cloud chưa trả lần tiếp. Raw `track.name`, score và employee_id vẫn theo `update_result` hiện có, không lấy nhãn hiển thị để xác thực. Error/PAD/reset xóa nhãn ngay.
 
-## Database / enrollment
+## Crop smoothing và các thử nghiệm cũ
 
-Schema dùng `employees`, `face_embeddings`, `attendance_logs`. Embeddings là `vector(512)` với `embedding_type` `SAMPLE` hoặc `CENTROID`; không dùng schema `users`/`is_mean` mô tả trong docs cũ.
+`Track.pad_crop_bbox` giữ center/side riêng, không sửa bbox tracking/landmarks/ArcFace. Smooth jitter ≤5%, time constant .12s; snap khi chuyển động/scale lớn, gap >.5s hoặc expanded crop chạm biên. Reset PAD xóa crop history. **Hiện không bật theo contract R7**; bật là thay đổi đầu vào cần so sánh riêng, không tự suy ra tăng accuracy.
 
-`VectorDB.search`: lọc employee ACTIVE, CENTROID và model_version; similarity = 1 − cosine distance (`<=>`), top_k=5 từ runtime. Enrollment loại outlier theo cosine với preliminary mean (default .35), tính centroid rồi normalize lại. Nếu tất cả bị loại, source có fallback giữ toàn bộ và cảnh báo. Đây là threshold enrollment riêng.
+Các thử nghiệm detector-only PAD, same-frame flow-vote recovery và mean-score aggregation đã revert. Không có flags `PAD_DETECTOR_ONLY`, `PAD_RECOVER_FLOW_VOTES`, `PAD_SCORE_SMOOTHING` trong runtime hiện tại.
 
-`VectorDB.init_schema` có migration cleanup với legacy tables; các scripts reset/delete là thao tác dữ liệu, không phải bước bắt buộc để đọc context hoặc chạy diagnostic. Không chạy reset DB như một preflight mặc định.
+## Database / enrollment / Docker
 
-## Research và artifacts
+Schema thực tế được yêu cầu là PBL6 Prisma: employees.id UUID, employee_code, full_name/status; embeddings vector(512), SAMPLE/CENTROID, model_version và is_active. `VectorDB` validate schema lúc startup, không `init_schema`. [database/schema.sql](../database/schema.sql) và script reset legacy dùng text IDs, **không phải schema contract cloud/PBL6**.
 
-- [Trạng thái PAD chi tiết](current_pad_state.md) có đường dẫn, số liệu và giới hạn bằng chứng từng nhánh. E3 đã có checkpoint/ONNX, held-out Test và LCC cross-dataset result; M0–M4 vẫn là kế hoạch.
-- [Danh mục notebooks](../antispoof/notebooks/README.md) là điểm bắt đầu; source folders thực tế có E1 v0/v5.1/v5.2/v5.3, E2 DCT, E3 concat, cross-dataset, EDA và validation.
-- `e1_spatial_v5_3/`: training + held-out E1 Small. `e2_frequency_dct/`: train/held-out E2, frozen protocol/manifest checks.
-- `e3_spatial_frequency_concat/` và `cross_dataset/` có notebook đã lưu output; artifact E3 held-out và LCC E1-vs-E3 nằm trong `antispoof/models/smartface_pad_artifacts/`. CASIA/Replay chưa hoàn tất theo cross-dataset summary.
-- E3 có hai inputs RGB/frequency và không cắm trực tiếp vào predictor hiện tại (single-input spatial/DCT). Cần runtime integration riêng nếu deploy E3.
-- Protocol/meta và manifest local nằm trong `antispoof/models/smartface_pad_artifacts/`; E1 NPZ có trên máy nhưng bị `.gitignore` loại khỏi Git. Không tái tạo split từ cache nếu thiếu manifest trên máy khác.
-- LFW evaluation ở `evaluation/`, độc lập PAD research. Không gộp recognition threshold validation với PAD calibration.
-- E1/E2 face-size audit cho thấy augmentation resolution degradation chưa có trong các training paths đã audit; không mặc định E3 robust hơn nếu chưa đo.
-- [Prompt E3/cross-dataset](../CODEX_PROMPT_E3_AND_CROSS_DATASET_V2_KAGGLE_FREE.md) mô tả workflow tương lai; không phải lệnh để agent tự chạy training.
+Enrollment tra employee_code để lấy UUID; lưu/re-enroll mẫu và centroid theo model_version. Python không ghi attendance. Không chạy legacy reset, seed hoặc overwrite dump làm preflight. Migration sửa embeddings có thể xóa embeddings cũ: xem [backend Prisma](../../backend/prisma/README.md).
 
-## Lệnh và validation tối thiểu
+[Cloud Compose guide](../../docs/run_cloud_stack.md) mô tả file Compose standalone lấy DB URL từ env, không tự migration/seed. Stack local cũ override URL về postgres; `run.sh` chọn1 chạy services trên host/cloud, camera `app.py` chạy riêng. API container không chứa PAD realtime artifacts và không dùng worker nhận diện camera.
 
-Chạy từ root `face_auth`; macOS dùng `python3`. Cần dependencies/models sẵn có; camera do người dùng chạy.
+## Research và provenance
+
+- E1/E2/E3 preliminary vẫn có deployment/test summaries; E3 dual-input chưa tích hợp realtime.
+- Binary crossdomain v2 hiện có các notebook micro, 100K, full-scale, CASIA19/20 và CE-only21. Không còn chỉ là roadmap M0–M4.
+- Full-scale C/P3/R7 đã có per-run artifacts; **C có auxiliary loss, không phải CE-only**. CE-clean21 có notebook/protocol nhưng chưa thấy output run local.
+- CelebA full Test được notebook18 dùng làm Test-as-Val để chọn checkpoint/calibrate: không gọi đây là untouched held-out Test. CASIA source-frozen và train-calibrated phải tách riêng; target train calibration không còn là strict no-target-fitting setting.
+- Một phần cross_dataset_v1 preliminary đã bị xóa trong working tree; không viện dẫn các JSON/CSV đó như file đang tồn tại. Chi tiết tại [current_pad_state](current_pad_state.md).
+- Dataset/caches có thể bị ignore hoặc nằm ngoài repo; checkpoint/config/hash/manifest nguồn phải đi cùng kết quả. LFW recognition evaluation độc lập PAD.
+
+## Validation hiện tại (2026-10-14)
 
 ```bash
-# .env hiện trỏ JSON đã thiếu; chọn contract E1 còn trong deployment
-export PAD_RUNTIME_CONFIG_PATH=antispoof/models/smartface_pad_artifacts/E1_v5_3_mnv3_small/deployment/mnv3s_e1_preliminary_v5_3_edge_runtime_config.json
-# Service DB (nếu cần runtime recognition)
-docker compose up -d postgres
-# Runtime không ghi attendance
-python3 app.py --mode none
-# Camera PAD logs
-mkdir -p output
-PAD_DIAGNOSTIC_LOG=true python3 -u app.py --mode none 2>&1 | tee output/pad_camera_diagnostic.log
-# Tắt riêng crop smoothing để so baseline
-PAD_CROP_SMOOTHING=false python3 app.py --mode none
-# Offline runtime/tracker regressions
-python3 -m unittest tests.test_tracker tests.test_runtime
-# Offline image sensitivity: không có labels, không phải accuracy benchmark
-python3 antispoof/notebooks/diagnostics/analyze_pad_input_sensitivity.py --images gallery/*/*.jpg --output output/pad_input_sensitivity.json
+# Từ face_auth; offline, không mở camera hoặc truy vấn cloud
+python3 -m unittest tests.test_identity_display tests.test_runtime tests.test_recognition_worker tests.test_tracker tests.test_vector_db_logic tests.test_enrollment_math
+# Test R7 source profile: override cho riêng tiến trình test, không sửa .env
+PAD_RUNTIME_CONFIG_PATH=antispoof/models/R7_SC_100K_crop15_runtime_config.json python3 -m unittest tests.test_r7_runtime
+# Dò camera / chạy realtime do người dùng thực hiện
+python3 scripts/list_cameras.py
+python3 app.py --camera 0 --mode none
 ```
 
-`tee` ghi đè file cùng tên; dùng tên riêng cho từng treatment/baseline. Runtime/tracker regressions gần nhất: 25 tests pass sau revert mean-score; đó là offline evidence, không chứng minh camera/DB/edge behavior. Tests khác: PAD predictor, detection, enrollment math, vector DB logic; chọn theo code thay đổi.
-
-## Rủi ro / bẫy agent cần tránh
-
-- Không gọi docs là nguồn chuẩn tuyệt đối; archive và walkthrough cũ chứa model/schema/logic lỗi thời.
-- Window theo số samples; time-based cadence không bảo đảm cùng time-to-verdict giữa FPS/thiết bị. Camera request cũng không bảo đảm actual mode/buffering giống nhau.
-- Log cũ cho nhiều raw SPOOF khi mặt nhỏ; thiếu labels/controlled input nên chưa kết luận nguyên nhân model hay runtime. Ratio/smoothing không sửa được việc thiếu texture thực tế.
-- Geometry/IOU không chứng minh danh tính; không giữ cached REAL qua mất continuity để giảm PENDING.
-- Biến margin/NMS/top-k của YunNet không mặc định tác động SCRFD wrapper.
-- Thread budgets/providers/dependency versions chưa đủ khóa để tuyên bố reproducible latency hoặc output trên mọi thiết bị.
-- Giữ model contracts, manifests/seeds/splits và validation/Test boundary; thay preprocessing hoặc aggregation là treatment cần kiểm chứng riêng, không tự báo cải thiện accuracy.
-- Khi task yêu cầu tối ưu edge: đo full pipeline capture/tracking/crop/inference/display, không chỉ ONNX latency. Không chạy camera/training đắt tiền trước offline checks.
+Kết quả/giới hạn kiểm tra được ghi cùng [trạng thái PAD](current_pad_state.md): không coi toàn bộ suite đã xanh khi test legacy thiếu model hoặc test cố định profile khác. Không chạy training/Kaggle, camera, cloud integration hay benchmark Pi trong lần cập nhật này. `recognition_submit_mean_ms` chỉ là overhead camera-side; log latency worker gồm queue/inference/DB, không phải riêng ONNX.

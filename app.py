@@ -1,8 +1,8 @@
 """
 Face Authentication App — SmartFace AIoT.
 
-Pipeline mỗi frame:
-    Camera → Detection (SCRFD/YunNet) → Tracking (IOU) → [PAD liveness check] → Alignment → Embedding → DB Search → Display
+Camera thread: Detection → Tracking → PAD → Alignment snapshot → Display.
+Recognition worker: ArcFace → cloud DB / per-track centroid cache → result queue.
 
 CLI usage:
     python app.py
@@ -28,6 +28,7 @@ import config
 from pathlib import Path
 from collections import deque
 from recognition.embedder import FaceEmbedder
+from recognition.worker import RecognitionWorker
 from alignment.aligner import get_input_face
 from database.vector_db import VectorDB, decide_identity
 from tracking.tracker import FaceTracker
@@ -69,6 +70,8 @@ def draw_track(
     frame, bbox, name, score, is_pending, is_reverifying,
     is_spoof=False, is_pad_pending=False, pad_invalid_reason=None,
     recognition_error=False,
+    recognition_status="",
+    stable_label=False,
 ):
     """
     Vẽ bounding box và label lên frame theo trạng thái track.
@@ -79,7 +82,7 @@ def draw_track(
         - PAD Pending (xám)  : đang tích lũy vote PAD, chưa cho phép nhận diện.
         - Pending (xám)      : track vừa tạo, chưa nhận diện.
         - Locked (xanh)      : đã nhận diện, đang trong thời gian locked.
-        - Re-verify (cam)    : chờ re-verify, giữ tên cũ.
+        - Re-verify (xanh)   : giữ màu danh tính trước, ghi LAST và trạng thái chờ.
         - Unknown (đỏ đậm)   : không khớp ai trong DB.
     """
     x1, y1, x2, y2 = bbox
@@ -111,11 +114,26 @@ def draw_track(
         color = COLOR_UNKNOWN
         label = f"UNKNOWN  {score:.2f}"
     elif is_reverifying:
-        color = COLOR_REVERIFY
-        label = f"{name}  {score:.2f}"
+        color = COLOR_LOCKED
+        label = f"[LAST] {name}  {score:.2f}"
     else:
         color = COLOR_LOCKED
         label = f"[OK] {name}  {score:.2f}"
+
+    detail = ""
+    if stable_label and not (is_spoof or is_pad_pending or pad_invalid_reason or recognition_error):
+        if not is_pending and name != "UNKNOWN":
+            label = f"[ID] {name}"
+            detail = f"score={score:.2f} | "
+            if is_reverifying:
+                detail += "RECHECK | "
+        detail += recognition_status
+        if is_pending and recognition_status.startswith(("WAIT", "QUEUE")):
+            color = COLOR_REVERIFY
+    elif recognition_status and not (is_spoof or is_pad_pending or pad_invalid_reason):
+        label += f" | {recognition_status}"
+        if recognition_status.startswith(("WAIT", "QUEUE")) and is_pending and not recognition_error:
+            color = COLOR_REVERIFY
 
     label = _opencv_display_text(label)
     cv2.rectangle(frame, (x1, y1), (x2, y2), color, 2)
@@ -130,6 +148,11 @@ def draw_track(
     cv2.rectangle(frame, (x1, label_y1), (x1 + text_w + 6, label_y2), color, cv2.FILLED)
     cv2.putText(frame, label, (x1 + 3, label_y2 - baseline - 2),
                 font, font_scale, (255, 255, 255), font_thick, cv2.LINE_AA)
+    if detail:
+        # Separate changing telemetry from the identity header; never shift its text.
+        detail = _opencv_display_text(detail)
+        cv2.putText(frame, detail, (x1 + 3, min(y2 + 20, frame.shape[0] - 5)),
+                    font, 0.45, color, 1, cv2.LINE_AA)
 
 
 def draw_fps(frame, fps: float):
@@ -252,6 +275,75 @@ def orchestrate_track_step(
         "attendance_reason": attendance_reason,
         "last_ts": last_ts,
     }
+
+
+def collect_recognition_results(worker, tracked, pad_enabled_rt):
+    """Only the camera thread mutates tracks; late results need valid continuity."""
+    valid = {}
+    for _, track in tracked:
+        key = (track.track_id, track.verification_generation)
+        eligible = track.missing_frames == 0 and (
+            not pad_enabled_rt or (track.is_real and not track.pad_invalid_reason)
+        )
+        if eligible:
+            track.recognition_eligible = True
+            valid[key] = track
+        elif track.recognition_eligible or (
+            key in worker.pending and not worker.pending[key].cancelled.is_set()
+        ):
+            track.verification_generation += 1
+            track.invalidate_recognition()
+            track.recognition_status = ""
+            track.recognition_eligible = False
+    worker.retain(set(valid))
+    for result in worker.poll():
+        track = valid.get(result.key)
+        if track is None:
+            continue
+        track.recognition_latency = result.latency
+        if result.error:
+            track.invalidate_recognition(retry_delay=True)
+            track.recognition_error = True
+            track.recognition_status = f"ERROR {result.error} {result.latency:.1f}s"
+        else:
+            track.update_result(*result.identity)
+            track.update_display_identity(
+                result.identity, config.RECOGNITION_LABEL_CONFIRMATIONS,
+                config.RECOGNITION_LABEL_UNKNOWN_CONFIRMATIONS,
+            )
+            track.recognition_status = f"{result.source} {result.latency:.1f}s"
+        print(f"[Recognition] track_id={track.track_id} {track.recognition_status}")
+
+
+def submit_recognition_step(worker, track, detection, frame, embedder, pad_enabled_rt):
+    is_spoof = pad_enabled_rt and track.is_spoof
+    is_pad_pending = pad_enabled_rt and not track.pad_ready
+    if is_spoof or is_pad_pending:
+        track.stable_recognitions = 0
+    key = (track.track_id, track.verification_generation)
+    submitted = False
+    if key in worker.pending and not worker.pending[key].cancelled.is_set():
+        wait = time.monotonic() - worker.pending[key].submitted
+        track.recognition_status = f"WAIT {wait:.1f}s"
+    elif (track.missing_frames == 0 and
+          track.needs_recognition(config.RECOGNIZE_INTERVAL_SECONDS, pad_enabled=pad_enabled_rt)):
+        try:
+            # Small crop snapshot; no full frames retained in the work queue.
+            face = get_input_face(frame, detection["bbox"], detection.get("landmarks"),
+                                  embedder.input_size)
+            if face is None:
+                raise ValueError("Alignment failed")
+            submitted = worker.submit(key, face)
+            track.recognition_status = "WAIT 0.0s" if submitted else "QUEUE FULL"
+            if submitted:
+                track.recognition_error = False
+        except Exception as exc:
+            track.invalidate_recognition(retry_delay=True)
+            track.recognition_error = True
+            track.recognition_status = f"ERROR {type(exc).__name__}"
+    return dict(is_spoof=is_spoof, is_pad_pending=is_pad_pending,
+                pad_invalid_reason=track.pad_invalid_reason if pad_enabled_rt else None,
+                recognition_called=submitted)
 
 
 def _pad_face_skip_reason(detection, frame_shape):
@@ -489,11 +581,14 @@ def main():
             min_face_size=config.DETECTOR_MIN_FACE_SIZE,
             margin=config.DETECTOR_MARGIN,
         )
-    embedder = FaceEmbedder(config.MODEL_PACK_NAME, ctx_id=config.MODEL_CTX_ID)
+    embedder = FaceEmbedder(config.MODEL_PACK_NAME, ctx_id=config.MODEL_CTX_ID,
+                           intra_op_threads=config.RECOGNITION_INTRA_OP_THREADS)
     db = VectorDB(
         conninfo=config.DB_CONN_INFO,
         min_size=config.DB_POOL_MIN_SIZE,
         max_size=config.DB_POOL_MAX_SIZE,
+        pool_timeout=config.RECOGNITION_DB_POOL_TIMEOUT_SECONDS,
+        query_timeout_ms=config.RECOGNITION_DB_QUERY_TIMEOUT_MS,
     )
     tracker = FaceTracker(
         recognize_interval_seconds=config.RECOGNIZE_INTERVAL_SECONDS,
@@ -627,8 +722,19 @@ def main():
         for name in ("detector", "tracker", "pad", "recognition"):
             calls = counters[f"{name}_calls"] if name != "tracker" else counters["tracker_updates"]
             mean_ms = counters[f"{name}_ms"] / max(calls, 1)
-            print(f"  {name}_mean_ms={mean_ms:.2f}")
+            label = "recognition_submit" if name == "recognition" else name
+            print(f"  {label}_mean_ms={mean_ms:.2f}")
 
+    recognition_worker = RecognitionWorker(
+        embedder, db, config.EMBEDDING_MODEL_VERSION, config.MATCH_THRESHOLD,
+        queue_size=config.RECOGNITION_QUEUE_SIZE,
+        cache_ttl=config.RECOGNITION_CACHE_TTL_SECONDS,
+        cache_threshold=config.RECOGNITION_CACHE_THRESHOLD,
+    )
+    print(f"[Recognition worker] queue={config.RECOGNITION_QUEUE_SIZE} "
+          f"ArcFace_threads={config.RECOGNITION_INTRA_OP_THREADS} "
+          f"cache_ttl={config.RECOGNITION_CACHE_TTL_SECONDS}s "
+          f"cache_threshold={recognition_worker.cache_threshold}")
     try:
         while True:
             t0 = time.perf_counter()
@@ -682,32 +788,27 @@ def main():
 
             # Keep model input free of annotations from earlier tracks.
             display_frame = frame.copy()
+            collect_recognition_results(recognition_worker, tracked, pad_enabled_rt)
 
             # ── Recognition + Attendance + Display ───────────────────────────
             for detection, track in tracked:
                 bbox = detection["bbox"]
                 recognition_t0 = time.perf_counter()
 
-                orch_res = orchestrate_track_step(
+                orch_res = submit_recognition_step(
+                    worker=recognition_worker,
                     track=track,
                     detection=detection,
                     frame=frame,
                     embedder=embedder,
-                    db=db,
                     pad_enabled_rt=pad_enabled_rt,
-                    app_mode=app_mode,
-                    recognize_interval_seconds=config.RECOGNIZE_INTERVAL_SECONDS,
-                    match_threshold=config.MATCH_THRESHOLD,
-                    model_version=config.EMBEDDING_MODEL_VERSION,
-                    attendance_gap_minutes=config.ATTENDANCE_GAP_MINUTES,
-                    attendance_stable_count=config.ATTENDANCE_STABLE_COUNT,
                 )
                 counters["recognition_ms"] += (time.perf_counter() - recognition_t0) * 1000.0
                 if orch_res["recognition_called"]:
                     counters["recognition_calls"] += 1
 
                 # Trạng thái hiển thị
-                name, score = track.name, track.score
+                name, score, label_stale = track.display_result(config.RECOGNITION_LABEL_HOLD_SECONDS)
                 is_pending = track.is_pending
                 is_reverifying = (
                     not is_pending
@@ -735,11 +836,16 @@ def main():
                 draw_track(
                     display_frame, bbox, name, score,
                     is_pending=is_pending,
-                    is_reverifying=is_reverifying,
+                    is_reverifying=is_reverifying or label_stale,
                     is_spoof=orch_res["is_spoof"],
                     is_pad_pending=orch_res["is_pad_pending"],
                     pad_invalid_reason=orch_res["pad_invalid_reason"],
                     recognition_error=track.recognition_error,
+                    recognition_status=(
+                        "LAST LABEL | " + track.recognition_status
+                        if label_stale and name != "UNKNOWN" else track.recognition_status
+                    ),
+                    stable_label=True,
                 )
 
 
@@ -791,9 +897,8 @@ def main():
 
                 if pad_predictor is not None:
                     pad_enabled_rt = not pad_enabled_rt
-                    if pad_enabled_rt:
-                        for t in tracker.tracks:
-                            t.invalidate_verification()
+                    for t in tracker.tracks:
+                        t.invalidate_verification()
                     print(f"[PAD] {'ON' if pad_enabled_rt else 'OFF'}")
                 else:
                     print("[PAD] Không thể bật — model PAD chưa sẵn sàng.")
@@ -804,7 +909,8 @@ def main():
         print_runtime_summary()
         cap.release()
         cv2.destroyAllWindows()
-        db.close()
+        stopped = recognition_worker.close()
+        print(f"[Recognition worker] {recognition_worker.stats} stopped={stopped}")
 
 
 if __name__ == "__main__":

@@ -188,6 +188,10 @@ uvicorn api_service:app --host 0.0.0.0 --port 5000 --reload
 python app.py
 ```
 
+Realtime hiện dùng một worker riêng cho ArcFace và cloud search, hàng đợi giới
+hạn và cache centroid theo track với TTL mặc định 30 giây. Xem
+[cấu hình Pi 4, trạng thái chờ và kiểm tra cache](md/REALTIME_RECOGNITION_WORKER.md).
+
 Các tùy chọn dòng lệnh (CLI flags):
 ```bash
 python app.py --no-pad                            # Tắt module chống giả mạo (chạy nhanh hơn)

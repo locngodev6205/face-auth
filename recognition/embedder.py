@@ -18,7 +18,7 @@ class FaceEmbedder:
     detection đã được load riêng trong FaceDetector.
     """
 
-    def __init__(self, model_name: str = "buffalo_s", ctx_id: int = -1):
+    def __init__(self, model_name: str = "buffalo_s", ctx_id: int = -1, intra_op_threads=None):
         # FaceAnalysis bắt buộc phải có 'detection' trong self.models (assert nội bộ),
         # nên ta truyền allowed_modules=["detection", "recognition"] và chỉ lấy submodel recognition.
         app = FaceAnalysis(
@@ -36,6 +36,21 @@ class FaceEmbedder:
             )
 
         self._model = recognition_model
+        if intra_op_threads is not None:
+            # InsightFace's get_model() in 0.7 ignores sess_options. Replace only
+            # the session, keeping the same ArcFace preprocessing/model wrapper.
+            import onnxruntime as ort
+            options = ort.SessionOptions()
+            options.intra_op_num_threads = max(1, int(intra_op_threads))
+            options.inter_op_num_threads = 1
+            options.execution_mode = ort.ExecutionMode.ORT_SEQUENTIAL
+            options.add_session_config_entry("session.intra_op.allow_spinning", "0")
+            options.add_session_config_entry("session.inter_op.allow_spinning", "0")
+            self._model.session = None
+            self._model.session = ort.InferenceSession(
+                self._model.model_file, sess_options=options,
+                providers=["CPUExecutionProvider"],
+            )
         # Thường là (112, 112) — dùng giá trị này làm output_size cho aligner.
         self.input_size = self._model.input_size
 

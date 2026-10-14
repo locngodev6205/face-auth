@@ -11,8 +11,18 @@ class VectorDB:
     KHÔNG tạo bảng, KHÔNG ghi attendance_logs.
     """
 
-    def __init__(self, conninfo: str, min_size: int = 1, max_size: int = 4):
-        self.pool = ConnectionPool(conninfo, min_size=min_size, max_size=max_size, open=True)
+    def __init__(self, conninfo: str, min_size: int = 1, max_size: int = 4,
+                 pool_timeout=None, query_timeout_ms=None):
+        self.query_timeout_ms = query_timeout_ms
+        options = {}
+        if pool_timeout is not None:
+            options = {"timeout": pool_timeout, "kwargs": {
+                "connect_timeout": max(2, math.ceil(pool_timeout)),
+                "keepalives": 1, "keepalives_idle": 5,
+                "keepalives_interval": 2, "keepalives_count": 3,
+                "tcp_user_timeout": 5000,
+            }}
+        self.pool = ConnectionPool(conninfo, min_size=min_size, max_size=max_size, open=True, **options)
         try:
             self.validate_schema()
         except Exception:
@@ -75,7 +85,8 @@ class VectorDB:
         embedding: Union[np.ndarray, list],
         top_k: int = 5,
         model_version: Optional[str] = None,
-    ) -> List[Tuple[str, str, float]]:
+        include_vectors: bool = False,
+    ) -> List[Tuple]:
         """
         Tìm kiếm 1:N nhận diện khuôn mặt.
         Chỉ tìm kiếm trên các vector thỏa mãn:
@@ -84,13 +95,18 @@ class VectorDB:
             - is_active = true
             - employee.status = 'ACTIVE'
 
-        Trả về: List[(employee_code, full_name, similarity)]
+        Trả về: List[(employee_code, full_name, similarity)].
+        include_vectors=True adds the stored centroid as text in column 4.
         """
         if model_version is None:
             import config
             model_version = config.EMBEDDING_MODEL_VERSION
         vec = self._to_vector_literal(embedding)
         with self.pool.connection() as conn:
+            if self.query_timeout_ms is not None:
+                # Transaction-local setting works with pooled cloud connections.
+                conn.execute("SELECT set_config('statement_timeout', %s, true)",
+                             (str(self.query_timeout_ms),))
             query = """
                 SELECT
                     e.employee_code,
@@ -106,6 +122,10 @@ class VectorDB:
                 ORDER BY f.embedding <=> %s::vector
                 LIMIT %s;
             """
+            if include_vectors:
+                query = query.replace(
+                    "AS similarity", "AS similarity, f.embedding::text AS centroid"
+                )
             rows = conn.execute(query, (vec, model_version, vec, top_k)).fetchall()
         return rows
 

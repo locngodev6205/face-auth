@@ -57,6 +57,15 @@ class Track:
         self.recognized_once = False  # True sau lần update_result() đầu tiên
         self.recognition_error = False
 
+        self.verification_generation = 0
+        self.recognition_status = ""
+        self.recognition_latency = 0.0
+        self.recognition_eligible = False
+        self.display_identity = None
+        self._display_candidate = None
+        self._display_candidate_count = 0
+        self._display_mismatch_since = None
+
         # PAD temporal smoothing: lưu N verdict gần nhất (True=real, False=spoof)
         self._pad_window: deque = deque(maxlen=pad_smooth_window)
         self._pad_spoof_min_ratio = pad_spoof_min_ratio
@@ -147,9 +156,57 @@ class Track:
         self._unknown_streak = 0
         self.last_attendance_time = None
         self.last_recognition_time = time.monotonic() if retry_delay else None
+        self.display_identity = None
+        self._display_candidate = None
+        self._display_candidate_count = 0
+        self._display_mismatch_since = None
+
+    def update_display_identity(self, identity, confirmations=2, unknown_confirmations=3):
+        """UI-only hysteresis. Never modifies the raw identity/authentication state."""
+        code, name, score = identity
+        if self.display_identity is None:
+            if code is not None:
+                self.display_identity = identity
+            self._display_candidate = None
+            self._display_candidate_count = 0
+            self._display_mismatch_since = None
+            return
+        if code == self.display_identity[0]:
+            self.display_identity = identity
+            self._display_candidate = None
+            self._display_candidate_count = 0
+            self._display_mismatch_since = None
+            return
+        if self._display_mismatch_since is None:
+            self._display_mismatch_since = time.monotonic()
+        candidate = code if code is not None else "__UNKNOWN__"
+        if candidate == self._display_candidate:
+            self._display_candidate_count += 1
+        else:
+            self._display_candidate = candidate
+            self._display_candidate_count = 1
+        required = unknown_confirmations if code is None else confirmations
+        if self._display_candidate_count >= required:
+            self.display_identity = identity if code is not None else None
+            self._display_mismatch_since = None
+            self._display_candidate = None
+            self._display_candidate_count = 0
+
+    def display_result(self, hold_seconds=1.5):
+        """Expire disagreement on wall time even when the next cloud result is late."""
+        stale = self._display_mismatch_since is not None
+        if stale and time.monotonic() - self._display_mismatch_since >= hold_seconds:
+            self.display_identity = None
+        if self.display_identity is None:
+            # Do not show an unconfirmed alternative identity as a confirmed label.
+            return "UNKNOWN", 0.0, stale
+        return self.display_identity[1], self.display_identity[2], stale
 
     def invalidate_verification(self) -> None:
         """Lost continuity or failed PAD requires fresh PAD and recognition."""
+        self.verification_generation += 1
+        self.recognition_status = ""
+        self.recognition_eligible = False
         self.reset_pad()
         self.invalidate_recognition()
 

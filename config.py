@@ -395,7 +395,7 @@ FPS_AVG_WINDOW = _get_env_int("FPS_AVG_WINDOW", 30)
 # thay vì đếm số frame. Đặt theo thời gian (0.5s) giúp hệ thống hoạt động
 # hoàn toàn nhất quán bất kể chạy trên thiết bị có FPS cao (Mac 30-60 FPS)
 # hay thiết bị Edge có FPS thấp (Raspberry Pi 5-15 FPS).
-RECOGNIZE_INTERVAL_SECONDS = _get_env_float("RECOGNIZE_INTERVAL_SECONDS", 0.5)
+RECOGNIZE_INTERVAL_SECONDS = _get_env_float("RECOGNIZE_INTERVAL_SECONDS", 1.0)
 RECOGNIZE_INTERVAL = RECOGNIZE_INTERVAL_SECONDS  # Alias tương thích ngược
 
 # Realtime recognition worker: one consumer; bounded queue for Pi 4.

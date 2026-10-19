@@ -225,7 +225,7 @@ PAD_ENABLED = _get_env_bool("PAD_ENABLED", True)
 PAD_MIN_DETECTOR_CONFIDENCE = _get_env_float("PAD_MIN_DETECTOR_CONFIDENCE", 0.6)
 
 # PAD_RUNTIME_CONFIG_PATH (optional) loads the model's runtime contract JSON.
-# A loaded field takes precedence; PAD_* is used only for fields absent from JSON.
+# Model/preprocessing fields prefer JSON; explicit threshold overrides prefer .env.
 PAD_MODEL_FILENAME = _pad_contract_value(
     "model_file", "PAD_MODEL_FILENAME", _runtime_str, _get_env_str,
     "mnv3s_e1_preliminary_v5_3_edge_best.onnx",
@@ -263,30 +263,47 @@ _runtime_pad_threshold_logit = _runtime_float(
 )
 _pad_threshold_env = _get_env_str("PAD_THRESHOLD", None)
 _pad_threshold_logit_env = _get_env_str("PAD_THRESHOLD_LOGIT", None)
-if _has_runtime_probability or _has_runtime_logit:
-    PAD_THRESHOLD = _runtime_pad_threshold
-    PAD_THRESHOLD_LOGIT = _runtime_pad_threshold_logit
-elif _pad_threshold_env is not None and _pad_threshold_logit_env is None:
-    PAD_THRESHOLD = _get_env_float("PAD_THRESHOLD", _runtime_pad_threshold)
+
+
+def _threshold_override(name, raw):
+    try:
+        value = float(raw)
+    except (TypeError, ValueError) as exc:
+        raise ValueError(f"{name} phải là một số hữu hạn") from exc
+    if not math.isfinite(value):
+        raise ValueError(f"{name} phải là một số hữu hạn")
+    return value
+
+
+# Explicit, nonblank environment thresholds override the JSON decision boundary.
+# Other JSON fields (model/hash/preprocessing) remain authoritative.
+if _pad_threshold_env is not None and _pad_threshold_logit_env is None:
+    PAD_THRESHOLD = _threshold_override("PAD_THRESHOLD", _pad_threshold_env)
     PAD_THRESHOLD_LOGIT = (
         math.log(PAD_THRESHOLD / (1.0 - PAD_THRESHOLD))
         if 0.0 < PAD_THRESHOLD < 1.0
         else 0.0
     )
+    PAD_THRESHOLD_SOURCE = "env:PAD_THRESHOLD"
 elif _pad_threshold_logit_env is not None and _pad_threshold_env is None:
-    PAD_THRESHOLD_LOGIT = _get_env_float(
-        "PAD_THRESHOLD_LOGIT", _runtime_pad_threshold_logit
-    )
+    PAD_THRESHOLD_LOGIT = _threshold_override("PAD_THRESHOLD_LOGIT", _pad_threshold_logit_env)
     if PAD_THRESHOLD_LOGIT >= 0.0:
         PAD_THRESHOLD = 1.0 / (1.0 + math.exp(-PAD_THRESHOLD_LOGIT))
     else:
         exp_logit = math.exp(PAD_THRESHOLD_LOGIT)
         PAD_THRESHOLD = exp_logit / (1.0 + exp_logit)
+    PAD_THRESHOLD_SOURCE = "env:PAD_THRESHOLD_LOGIT"
+elif _pad_threshold_env is not None and _pad_threshold_logit_env is not None:
+    PAD_THRESHOLD = _threshold_override("PAD_THRESHOLD", _pad_threshold_env)
+    PAD_THRESHOLD_LOGIT = _threshold_override("PAD_THRESHOLD_LOGIT", _pad_threshold_logit_env)
+    PAD_THRESHOLD_SOURCE = "env:PAD_THRESHOLD+PAD_THRESHOLD_LOGIT"
 else:
-    PAD_THRESHOLD = _get_env_float("PAD_THRESHOLD", _runtime_pad_threshold)
-    PAD_THRESHOLD_LOGIT = _get_env_float(
-        "PAD_THRESHOLD_LOGIT", _runtime_pad_threshold_logit
-    )
+    PAD_THRESHOLD = _runtime_pad_threshold
+    PAD_THRESHOLD_LOGIT = _runtime_pad_threshold_logit
+    PAD_THRESHOLD_SOURCE = "runtime_json" if (_has_runtime_probability or _has_runtime_logit) else "default"
+
+if not math.isfinite(PAD_THRESHOLD_LOGIT):
+    raise ValueError("PAD_THRESHOLD_LOGIT phải là một số hữu hạn")
 
 if not (0.0 < PAD_THRESHOLD < 1.0):
     raise ValueError(
@@ -419,7 +436,7 @@ RECOGNITION_LABEL_HOLD_SECONDS = max(0.0, _get_env_float("RECOGNITION_LABEL_HOLD
 PAD_SMOOTH_WINDOW = _get_env_int("PAD_SMOOTH_WINDOW", 5)
 
 # PAD_MIN_VOTES: số phiếu tối thiểu cần tích lũy trước khi track thoát khỏi trạng thái PAD_PENDING
-PAD_MIN_VOTES = _get_env_int("PAD_MIN_VOTES", PAD_SMOOTH_WINDOW)
+PAD_MIN_VOTES = _get_env_int("PAD_MIN_VOTES", 3)
 
 # PAD_SPOOF_MIN_RATIO: tỉ lệ tối thiểu phiếu SPOOF trong window để bị kết luận SPOOF.
 #   0.6 = cần ≥ 60% phiếu SPOOF → mới hiện đỏ. Mặt thật di chuyển thường chỉ

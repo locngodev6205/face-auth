@@ -184,4 +184,3 @@ class FaceDetector:
 
 # Alias tương thích ngược với code cũ
 YunNetFaceDetector = FaceDetector
-

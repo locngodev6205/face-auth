@@ -392,7 +392,7 @@ FPS_AVG_WINDOW = _get_env_int("FPS_AVG_WINDOW", 30)
 # Tracking Config
 # Khuôn mặt được track bằng IOU giữa các frame; danh tính chỉ được re-verify
 # (chạy lại align+embed+DB search) sau mỗi RECOGNIZE_INTERVAL_SECONDS giây
-# thay vì đếm số frame. Đặt theo thời gian (0.5s) giúp hệ thống hoạt động
+# thay vì đếm số frame. Chu kỳ mặc định 1.0s giúp hệ thống hoạt động
 # hoàn toàn nhất quán bất kể chạy trên thiết bị có FPS cao (Mac 30-60 FPS)
 # hay thiết bị Edge có FPS thấp (Raspberry Pi 5-15 FPS).
 RECOGNIZE_INTERVAL_SECONDS = _get_env_float("RECOGNIZE_INTERVAL_SECONDS", 1.0)
@@ -439,24 +439,12 @@ PAD_CROP_SMOOTHING = _pad_contract_value(
     False,
 )
 
-# PAD_INTERVAL_SECONDS: khoảng cách giữa 2 lần chạy PAD inference cho cùng 1 track.
-#
-# KHÔNG ĐẶT THỦ CÔNG — được tự động tính từ:
-#   PAD_INTERVAL = RECOGNIZE_INTERVAL / PAD_SMOOTH_WINDOW
-#
-# Ý nghĩa: PAD chạy đúng PAD_SMOOTH_WINDOW lần trong mỗi 1 chu kỳ recognition.
-# → Khi recognition fire (mỗi 0.5s), rolling window đã đủ SMOOTH_WINDOW phiếu → verdict ổn định.
-# → PAD và Recognition luôn đồng bộ, không cần chỉnh thêm.
-PAD_INTERVAL_SECONDS = _get_env_float(
-    "PAD_INTERVAL_SECONDS",
-    round(RECOGNIZE_INTERVAL_SECONDS / max(PAD_SMOOTH_WINDOW, 1), 4),
-)
+# PAD and detection cadence are configured independently of recognition/vote count.
+# Defaults: recognition 1.0s, PAD 0.2s, detection 0.2s.
+PAD_INTERVAL_SECONDS = _get_env_float("PAD_INTERVAL_SECONDS", 0.2)
 
-# Face detector cadence. 0 means detect every frame (debug/rollback mode).
-# Mặc định đồng bộ với PAD cadence để không chạy detector dày hơn cần thiết.
-DETECTION_INTERVAL_SECONDS = _get_env_float(
-    "DETECTION_INTERVAL_SECONDS", PAD_INTERVAL_SECONDS
-)
+# 0 means detect every frame (debug/rollback mode).
+DETECTION_INTERVAL_SECONDS = _get_env_float("DETECTION_INTERVAL_SECONDS", 0.2)
 
 # Ngưỡng IOU để coi 2 bbox ở 2 frame liên tiếp là cùng một track.
 TRACK_IOU_THRESHOLD = _get_env_float("TRACK_IOU_THRESHOLD", 0.3)

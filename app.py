@@ -87,6 +87,11 @@ def draw_track(
         - Unknown (đỏ đậm)   : không khớp ai trong DB.
     """
     x1, y1, x2, y2 = bbox
+    # Keep operational waits/errors visible; hide recognition backend telemetry.
+    recognition_status = " | ".join(
+        part.strip() for part in recognition_status.split("|")
+        if part.strip() and part.strip().split()[0].upper() not in ("CLOUD", "CACHE")
+    )
 
     if is_spoof:
         color = COLOR_SPOOF
@@ -110,7 +115,7 @@ def draw_track(
         label = "Kiem tra PAD..."
     elif is_pending:
         color = COLOR_PENDING
-        label = "Nhan dien..."
+        label = name if name.startswith("CONFIRM ") else "Nhan dien..."
     elif name == "UNKNOWN":
         color = COLOR_UNKNOWN
         label = f"UNKNOWN  {score:.2f}"
@@ -125,10 +130,9 @@ def draw_track(
     if stable_label and not (is_spoof or is_pad_pending or pad_invalid_reason or recognition_error):
         if not is_pending and name != "UNKNOWN":
             label = f"[ID] {name}"
-            detail = f"score={score:.2f} | "
             if is_reverifying:
-                detail += "RECHECK | "
-        detail += recognition_status
+                detail = "RECHECK"
+        detail = " | ".join(part for part in (detail, recognition_status) if part)
         if is_pending and recognition_status.startswith(("WAIT", "QUEUE")):
             color = COLOR_REVERIFY
     elif recognition_status and not (is_spoof or is_pad_pending or pad_invalid_reason):
@@ -156,6 +160,37 @@ def draw_track(
                     font, 0.45, color, 1, cv2.LINE_AA)
 
 
+def draw_pad_margin(frame, bbox, track, threshold):
+    """Display the latest raw PAD margin separately from the temporal verdict."""
+    score = track.last_pad_score
+    stale = (
+        track.last_pad_time is not None
+        and config.PAD_STALE_TIMEOUT_SECONDS > 0
+        and time.monotonic() - track.last_pad_time > config.PAD_STALE_TIMEOUT_SECONDS
+    )
+    if track.pad_invalid_reason or score is None or stale or not math.isfinite(score):
+        reason = "INVALID" if track.pad_invalid_reason else "STALE" if stale else "WAIT"
+        lines = [f"PAD d: -- ({reason})", f"t={threshold:+.3f}   d-t: --"]
+        color = COLOR_PENDING
+    else:
+        gap = score - threshold
+        raw = "REAL" if gap >= 0 else "SPOOF"
+        lines = [f"d={score:+.3f}   t={threshold:+.3f}",
+                 f"d-t={gap:+.3f}   raw {raw}"]
+        color = (110, 235, 150) if gap >= 0 else (110, 130, 255)
+
+    font, scale = cv2.FONT_HERSHEY_SIMPLEX, 0.50
+    width = max(cv2.getTextSize(line, font, scale, 1)[0][0] for line in lines) + 12
+    height = 48
+    x = max(0, min(int(bbox[0]), frame.shape[1] - width))
+    y = max(0, min(int(bbox[3]) + 28, frame.shape[0] - height))
+    cv2.rectangle(frame, (x, y), (min(x + width, frame.shape[1] - 1), y + height - 1),
+                  (25, 25, 25), cv2.FILLED)
+    for index, line in enumerate(lines):
+        cv2.putText(frame, line, (x + 5, y + 18 + index * 22), font, scale,
+                    (235, 235, 235) if index == 0 else color, 1, cv2.LINE_AA)
+
+
 def draw_fps(frame, fps: float):
     """Vẽ FPS ở góc trên-trái của frame."""
     label = f"FPS: {fps:.1f}"
@@ -165,7 +200,7 @@ def draw_fps(frame, fps: float):
 
 def draw_pad_badge(frame, enabled: bool):
     """Vẽ badge nhỏ cho biết module PAD đang bật hay tắt."""
-    text  = "PAD: ON" if enabled else "PAD: OFF"
+    text  = "PAD: ON | d=z_real-z_fake" if enabled else "PAD: OFF"
     color = (0, 200, 80) if enabled else (100, 100, 100)
     cv2.putText(frame, text, (10, 56),
                 cv2.FONT_HERSHEY_SIMPLEX, 0.6, color, 2, cv2.LINE_AA)
@@ -281,9 +316,10 @@ def orchestrate_track_step(
 def collect_recognition_results(worker, tracked, pad_enabled_rt):
     """Only the camera thread mutates tracks; late results need valid continuity."""
     valid = {}
-    for _, track in tracked:
+    visible = {track.track_id: track for _, track in tracked}
+    for track_id, track in {**worker.visible_tracks, **visible}.items():
         key = (track.track_id, track.verification_generation)
-        eligible = track.missing_frames == 0 and (
+        eligible = track_id in visible and track.missing_frames == 0 and (
             not pad_enabled_rt or (track.is_real and not track.pad_invalid_reason)
         )
         if eligible:
@@ -296,6 +332,7 @@ def collect_recognition_results(worker, tracked, pad_enabled_rt):
             track.invalidate_recognition()
             track.recognition_status = ""
             track.recognition_eligible = False
+    worker.visible_tracks = visible
     worker.retain(set(valid))
     for result in worker.poll():
         track = valid.get(result.key)
@@ -314,6 +351,12 @@ def collect_recognition_results(worker, tracked, pad_enabled_rt):
             )
             track.recognition_status = f"{result.source} {result.latency:.1f}s"
         print(f"[Recognition] track_id={track.track_id} {track.recognition_status}")
+
+
+def attendance_confirmation_ready(track):
+    """Readiness only; the demo never writes attendance directly."""
+    return bool(track.employee_id is not None and not track.recognition_error
+                and track.stable_recognitions >= config.ATTENDANCE_STABLE_COUNT)
 
 
 def submit_recognition_step(worker, track, detection, frame, embedder, pad_enabled_rt):
@@ -667,7 +710,14 @@ def main():
 
                 # Trạng thái hiển thị
                 name, score, label_stale = track.display_result(config.RECOGNITION_LABEL_HOLD_SECONDS)
-                is_pending = track.is_pending
+                confirmations = track.stable_recognitions
+                if not attendance_confirmation_ready(track):
+                    if confirmations > 0 and track.employee_id is not None and not track.is_pending:
+                        name = f"CONFIRM {confirmations}/{config.ATTENDANCE_STABLE_COUNT}"
+                    else:
+                        name = "UNKNOWN"
+                    score = 0.0
+                is_pending = track.is_pending or not attendance_confirmation_ready(track)
                 is_reverifying = (
                     not is_pending
                     and not orch_res["is_pad_pending"]
@@ -705,6 +755,8 @@ def main():
                     ),
                     stable_label=True,
                 )
+                if pad_enabled_rt and pad_predictor is not None:
+                    draw_pad_margin(display_frame, bbox, track, pad_predictor.logit_threshold)
 
 
             # ── Overlay FPS & PAD badge ───────────────────────────────────────

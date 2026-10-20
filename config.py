@@ -484,7 +484,7 @@ MATCH_THRESHOLD = _get_env_float("MATCH_THRESHOLD", 0.35)
 # Attendance Tracking
 ATTENDANCE_MODE = (_get_env_str("ATTENDANCE_MODE", "checkin") or "checkin").lower()
 ATTENDANCE_GAP_MINUTES = _get_env_int("ATTENDANCE_GAP_MINUTES", 15)
-ATTENDANCE_STABLE_COUNT = _get_env_int("ATTENDANCE_STABLE_COUNT", 3)
+ATTENDANCE_STABLE_COUNT = max(1, _get_env_int("ATTENDANCE_STABLE_COUNT", 3))
 
 
 # Validation

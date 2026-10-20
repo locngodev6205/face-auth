@@ -119,6 +119,33 @@ class TestRecognitionWorker(unittest.TestCase):
             self.assertFalse(track.recognized_once)
             self.assertIsNone(track.employee_id)
 
+    def test_spoof_or_disappearance_resets_confirmation_even_if_same_id_returns(self):
+        import app
+        for interruption in ("spoof", "lost"):
+            with self.subTest(interruption=interruption), patch("app.config.ATTENDANCE_STABLE_COUNT", 3):
+                worker, _ = self.make_worker()
+                track = Track(1, (0,0,100,100), pad_min_votes=1)
+                track.update_pad(True)
+                app.collect_recognition_results(worker, [({}, track)], True)
+                track.update_result("A", "Alice", .9)
+                track.update_result("A", "Alice", .9)
+                old_generation = track.verification_generation
+                if interruption == "spoof":
+                    track._pad_window.clear()
+                    track.update_pad(False)
+                    app.collect_recognition_results(worker, [({}, track)], True)
+                else:
+                    app.collect_recognition_results(worker, [], True)
+                self.assertEqual(track.stable_recognitions, 0)
+                self.assertGreater(track.verification_generation, old_generation)
+                self.assertFalse(app.attendance_confirmation_ready(track))
+                track._pad_window.clear()
+                track.update_pad(True)
+                app.collect_recognition_results(worker, [({}, track)], True)
+                for index in range(1,4):
+                    track.update_result("A", "Alice", .9)
+                    self.assertEqual(app.attendance_confirmation_ready(track), index == 3)
+
     def test_collect_applies_late_valid_result_on_main_thread(self):
         import app
         worker, db = self.make_worker()

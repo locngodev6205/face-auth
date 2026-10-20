@@ -78,3 +78,6 @@ output/
 /output/
 
 md/future/
+
+# Local MAST-PAD manuscript and all generated LaTeX artifacts.
+/paper/

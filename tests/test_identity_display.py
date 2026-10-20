@@ -54,6 +54,20 @@ class TestIdentityDisplay(unittest.TestCase):
         self.track.invalidate_verification()
         self.assertEqual(self.track.display_result()[0], "UNKNOWN")
 
+    def test_three_consecutive_matches_are_required_for_attendance_readiness(self):
+        with patch("app.config.ATTENDANCE_STABLE_COUNT", 3):
+            for index in range(1, 4):
+                self.track.update_result("A", "Alice", .9)
+                self.assertEqual(app.attendance_confirmation_ready(self.track), index == 3)
+            self.track.update_result(None, "UNKNOWN", 0.)
+            self.assertFalse(app.attendance_confirmation_ready(self.track))
+            self.track.update_result("A", "Alice", .9)
+            self.assertEqual(self.track.stable_recognitions, 1)
+            self.track.update_result("B", "Bob", .9)
+            self.assertEqual(self.track.stable_recognitions, 1)
+            self.track.invalidate_verification()
+            self.assertFalse(app.attendance_confirmation_ready(self.track))
+
     def test_worker_status_does_not_change_identity_header(self):
         headers = []
         for status, reverifying in [("CLOUD 0.3s", False), ("WAIT 0.1s", True), ("CACHE 0.1s", False)]:
@@ -62,7 +76,11 @@ class TestIdentityDisplay(unittest.TestCase):
                                "Alice", .9, False, reverifying,
                                recognition_status=status, stable_label=True)
             headers.append(text.call_args_list[0].args[1])
-            self.assertIn(status, text.call_args_list[1].args[1])
+            labels = [call.args[1] for call in text.call_args_list]
+            if status.startswith(("CLOUD", "CACHE")):
+                self.assertEqual(labels, ["[ID] Alice"])
+            else:
+                self.assertIn(status, labels[1])
         self.assertEqual(headers, ["[ID] Alice"] * 3)
 
 

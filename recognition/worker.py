@@ -38,6 +38,7 @@ class RecognitionWorker:
         self.requests = Queue(maxsize=queue_size)
         self.results = Queue(maxsize=queue_size + 1)
         self.pending = {}  # Main thread only; includes queued/running/completed jobs.
+        self.visible_tracks = {}  # Camera thread only; detects disappearance between frames.
         self.cache = {}  # Worker only; per verification generation, not a partial gallery.
         self.stop = Event()
         self.stats = dict(submitted=0, cloud=0, cache=0, errors=0, discarded=0)

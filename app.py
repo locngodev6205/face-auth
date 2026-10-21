@@ -115,7 +115,7 @@ def draw_track(
         label = "Kiem tra PAD..."
     elif is_pending:
         color = COLOR_PENDING
-        label = name if name.startswith("CONFIRM ") else "Nhan dien..."
+        label = "Nhan dien..."
     elif name == "UNKNOWN":
         color = COLOR_UNKNOWN
         label = f"UNKNOWN  {score:.2f}"
@@ -710,14 +710,7 @@ def main():
 
                 # Trạng thái hiển thị
                 name, score, label_stale = track.display_result(config.RECOGNITION_LABEL_HOLD_SECONDS)
-                confirmations = track.stable_recognitions
-                if not attendance_confirmation_ready(track):
-                    if confirmations > 0 and track.employee_id is not None and not track.is_pending:
-                        name = f"CONFIRM {confirmations}/{config.ATTENDANCE_STABLE_COUNT}"
-                    else:
-                        name = "UNKNOWN"
-                    score = 0.0
-                is_pending = track.is_pending or not attendance_confirmation_ready(track)
+                is_pending = track.is_pending
                 is_reverifying = (
                     not is_pending
                     and not orch_res["is_pad_pending"]

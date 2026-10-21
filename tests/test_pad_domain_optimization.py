@@ -2,6 +2,7 @@
 from pathlib import Path
 import sys
 import unittest
+from unittest.mock import patch
 import numpy as np
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'scripts'))
 from optimize_pad_domain import reconstruct_crop, fit, profiles
@@ -12,6 +13,16 @@ from tracking.tracker import Track
 
 
 class DomainTests(unittest.TestCase):
+    def test_margin_overlay_uses_the_threshold_from_the_same_crop(self):
+        import app
+        track=Track(1,(20,20,120,120))
+        track.update_pad(False,.5,1.)
+        with patch('app.cv2.putText') as text:
+            app.draw_pad_margin(np.zeros((240,320,3),np.uint8),track.bbox,track,-10.)
+        labels=[call.args[1] for call in text.call_args_list]
+        self.assertTrue(any('t=+1.000' in label for label in labels))
+        self.assertTrue(any('d-t=-0.500' in label and 'SPOOF' in label for label in labels))
+
     def test_adaptive_threshold_is_bounded_and_never_mutates_base(self):
         adapter = BrightnessThreshold(dict(reference_luma=110.,scale=50.,slope=3.,max_offset=2.))
         base = -1.815

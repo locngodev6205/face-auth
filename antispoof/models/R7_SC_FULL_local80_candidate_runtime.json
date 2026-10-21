@@ -3,7 +3,7 @@
   "architecture_source_file": "MiniFASNet.py",
   "architecture_source_sha256": "e498c4ec5e1ddfaba62b941a126c19d65aa564999f3309661fe43ee8bf38acd7",
   "bbox_expansion_factor": 1.45,
-  "calibrated_logit_threshold": -1.815033942317963,
+  "calibrated_logit_threshold": -1.315033942317963,
   "class_names": [
     "real",
     "spoof"
@@ -37,7 +37,7 @@
     "batch",
     2
   ],
-  "predictor_threshold_probability": 0.14003082816938806,
+  "predictor_threshold_probability": 0.21164570259965143,
   "run_id": "R7_SC_FULL_crop15",
   "schema": "face_auth_pad_runtime_config_v1",
   "score_formula": "logits[:,0] - logits[:,1]",
@@ -47,10 +47,12 @@
   "source_checkpoint_sha256": "843a8a693c6135be2a532122df19cb0e0151ce83d6c49f23c414c34e52b570af",
   "source_run_config_sha256": "47b62d9371464924a1a3878cd8eb81c7b4c7ff3adc8f8f77b3ba690df599e278",
   "std": null,
-  "threshold_source": "All local labelled captures plus synthetic perturbations; bounded brightness threshold; no held-out",
+  "threshold_source": "Local81 exploratory mitigation: raise local80 base threshold by +0.5; bounded brightness offset unchanged; no held-out",
   "threshold_calibration": {
-    "report": "docs/experiments/2026-10-21-pad-domain/RESULTS.md",
-    "heldout": false
+    "report": "docs/experiments/2026-10-21-pad-domain/NEW_FAKE81_RESULTS.md",
+    "heldout": false,
+    "previous_base_threshold": -1.815033942317963,
+    "base_threshold_adjustment": 0.5
   },
   "lighting": {
     "gamma": 0.4,

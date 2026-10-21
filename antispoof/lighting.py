@@ -4,13 +4,21 @@ import cv2
 import numpy as np
 
 
+def raw_luma_features(crop):
+    """Raw 80x80 PAD crop: full luminance and central 60% luminance."""
+    if crop.shape != (80, 80, 3) or crop.dtype != np.uint8:
+        raise ValueError('Shadow PAD profile expects raw BGR uint8 80x80 crops')
+    y = cv2.cvtColor(crop, cv2.COLOR_BGR2YCrCb)[:, :, 0]
+    return float(y.mean()), float(y[16:64, 16:64].mean())
+
+
 class LightingTransform:
     def __init__(self, profile=None):
         if profile is not None and not isinstance(profile, dict):
             raise ValueError('PAD lighting profile must be an object')
         self.profile = dict(profile or {'method': 'none'})
         self.method = self.profile.get('method', 'none')
-        if self.method not in ('none', 'gamma', 'gamma_y', 'gamma_clahe_y', 'adaptive_gamma', 'legacy_gamma', 'gain_y', 'clahe_y', 'stretch_y'):
+        if self.method not in ('none', 'shadow_gamma', 'gamma', 'gamma_y', 'gamma_clahe_y', 'adaptive_gamma', 'legacy_gamma', 'gain_y', 'clahe_y', 'stretch_y'):
             raise ValueError(f'Unknown PAD lighting method: {self.method}')
         for key, value in self.profile.items():
             if key != 'method' and (isinstance(value, bool) or not isinstance(value, (int, float)) or not math.isfinite(value)):
@@ -27,6 +35,10 @@ class LightingTransform:
             raise ValueError('Invalid lighting blend/clip')
         if not 0 <= p.get('low_percentile', 1) < p.get('high_percentile', 99) <= 100 or p.get('max_gain', 1.5) <= 0:
             raise ValueError('Invalid lighting percentile/gain')
+        if self.method == 'shadow_gamma':
+            required = {'method', 'min_gamma', 'max_gamma', 'transition_low', 'transition_high', 'blur_sigma', 'blend'}
+            if set(p) != required or not p['transition_low'] < p['transition_high'] or p['blur_sigma'] <= 0 or p['max_gamma'] > 4:
+                raise ValueError('Invalid shadow gamma parameters')
         self.luts = {}
         self.clahe = None
         if self.method in ('clahe_y', 'gamma_clahe_y'):
@@ -45,6 +57,14 @@ class LightingTransform:
         p, method = self.profile, self.method
         if method == 'none':
             return image
+        if method == 'shadow_gamma':
+            full, center = raw_luma_features(image)
+            alpha = float(np.clip((full - center - p['transition_low']) /
+                                  (p['transition_high'] - p['transition_low']), 0., 1.))
+            gamma = round(p['min_gamma'] + (p['max_gamma'] - p['min_gamma']) * alpha, 2)
+            blurred = cv2.GaussianBlur(image, (3, 3), p['blur_sigma'])
+            filtered = cv2.addWeighted(image, 1 - p['blend'], blurred, p['blend'], 0)
+            return self.gamma(filtered, gamma)
         if method == 'legacy_gamma':
             from .preprocess import adaptive_gamma
             return adaptive_gamma(image)
@@ -89,18 +109,28 @@ class BrightnessThreshold:
         self.profile = profile
         if profile is not None:
             required = {'reference_luma', 'scale', 'slope', 'max_offset'}
+            if profile.get('method') == 'face_background':
+                required = {'method', 'reference_luma', 'scale', 'slope', 'gap_scale', 'gap_slope', 'max_offset'}
             if set(profile) != required or not all(
                 isinstance(v, (float, int)) and not isinstance(v, bool) and math.isfinite(v)
-                for v in profile.values()
+                for k, v in profile.items() if k != 'method'
             ):
                 raise ValueError('Invalid adaptive threshold parameters')
             if not 0 <= profile['reference_luma'] <= 255 or profile['scale'] <= 0 or profile['max_offset'] < 0:
                 raise ValueError('Invalid adaptive threshold bounds')
+            if profile.get('method') == 'face_background' and profile['gap_scale'] <= 0:
+                raise ValueError('Invalid adaptive threshold gap scale')
 
     def __call__(self, crop, base_threshold):
         if self.profile is None:
             return float(base_threshold)
         p = self.profile
+        if p.get('method') == 'face_background':
+            full, center = raw_luma_features(crop)
+            offset = np.clip(p['slope'] * (center - p['reference_luma']) / p['scale'] +
+                             p['gap_slope'] * (center - full) / p['gap_scale'],
+                             -p['max_offset'], p['max_offset'])
+            return float(base_threshold + offset)
         mean = float(cv2.cvtColor(crop, cv2.COLOR_BGR2YCrCb)[:, :, 0].mean())
         offset = np.clip(p['slope'] * (mean - p['reference_luma']) / p['scale'],
                          -p['max_offset'], p['max_offset'])

@@ -11,6 +11,31 @@ from antispoof.preprocess import crop_for_runtime, crop_minifasnet_train_v1
 from vision_pipeline import _pad_face_skip_reason
 
 
+def _read_json_object(path):
+    if not path.exists():
+        return {}
+    value = json.loads(path.read_text(encoding='utf-8'))
+    if not isinstance(value, dict):
+        raise ValueError(f'{path.name} phải là JSON object')
+    return value
+
+
+def _write_json(path, value):
+    def serializable(item):
+        if isinstance(item, np.ndarray):
+            return item.tolist()
+        if isinstance(item, np.generic):
+            return item.item()
+        raise TypeError(type(item).__name__)
+    temporary = path.with_name(f'.{path.name}.{uuid.uuid4().hex}.tmp')
+    try:
+        temporary.write_text(json.dumps(value, ensure_ascii=False, indent=2,
+                                       default=serializable), encoding='utf-8')
+        temporary.replace(path)
+    finally:
+        temporary.unlink(missing_ok=True)
+
+
 class PADCapture:
     def __init__(self, output, subject, condition, session=None):
         self.directory = Path(output).expanduser() / (session or uuid.uuid4().hex)
@@ -22,6 +47,11 @@ class PADCapture:
             raise ValueError('Cần model PAD để lưu đúng crop và threshold.')
         batch = uuid.uuid4().hex
         self.directory.mkdir(parents=True, exist_ok=True)
+        labels_path = self.directory / 'labels.json'
+        metadata_path = self.directory / 'metadata.json'
+        # Read on every save so manually assigned labels survive subsequent shots.
+        labels = _read_json_object(labels_path)
+        metadata_index = _read_json_object(metadata_path)
         saved = []
         for detection, track in tracked[:config.MAX_FACES_PER_FRAME]:
             bbox = detection['bbox']
@@ -40,10 +70,9 @@ class PADCapture:
             input_path = self.directory / f'{stem}_input.png'
             gray = cv2.cvtColor(native, cv2.COLOR_BGR2GRAY)
             metadata = {
-                'schema_version': 1, 'captured_at': datetime.now(timezone.utc).isoformat(),
+                'schema_version': 2, 'captured_at': datetime.now(timezone.utc).isoformat(),
                 'capture_batch': batch, 'session_id': self.directory.name,
                 'subject_id': self.subject, 'condition': self.condition,
-                'label': None, 'label_options': ['real', 'fake'],
                 'track_id': track.track_id, 'bbox_xyxy': list(bbox),
                 'detector_score': detection.get('score'),
                 'landmarks': detection.get('landmarks'),
@@ -66,19 +95,13 @@ class PADCapture:
                 'bright_fraction': float(np.mean(gray >= 245)),
                 'crop_file': crop_path.name, 'input_file': input_path.name,
             }
-            # Model verdict is diagnostic only; label remains null even for SPOOF.
+            # Model verdict is diagnostic only; labels live exclusively in labels.json.
             for path, pixels in ((crop_path, native), (input_path, model_crop)):
                 if not cv2.imwrite(str(path), pixels):
                     raise OSError(f'Không ghi được {path}')
-            def serializable(value):
-                if isinstance(value, np.ndarray):
-                    return value.tolist()
-                if isinstance(value, np.generic):
-                    return value.item()
-                raise TypeError(type(value).__name__)
-            (self.directory / f'{stem}.json').write_text(
-                json.dumps(metadata, ensure_ascii=False, indent=2, default=serializable),
-                encoding='utf-8',
-            )
+            metadata_index[crop_path.name] = metadata
+            labels.setdefault(crop_path.name, None)
+            _write_json(metadata_path, metadata_index)
+            _write_json(labels_path, labels)
             saved.append(crop_path)
         return saved

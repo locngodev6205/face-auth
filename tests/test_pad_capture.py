@@ -36,8 +36,13 @@ class CaptureTests(unittest.TestCase):
             paths = capture.save(frame, [(detection, SimpleNamespace(track_id=1))], predictor)
             self.assertEqual(len(paths), 1)
             self.assertEqual(cv2.imread(str(paths[0])).shape, (151, 151, 3))
-            meta = json.loads(next(capture.directory.glob('*.json')).read_text())
-            self.assertIsNone(meta['label'])
+            metadata_path = capture.directory / 'metadata.json'
+            labels_path = capture.directory / 'labels.json'
+            meta = json.loads(metadata_path.read_text())[paths[0].name]
+            labels = json.loads(labels_path.read_text())
+            self.assertIsNone(labels[paths[0].name])
+            self.assertNotIn('label', meta)
+            self.assertNotIn('label_options', meta)
             self.assertEqual(meta['subject_id'], 'person01')
             self.assertEqual(meta['condition'], 'backlight')
             self.assertFalse(meta['capture_pad_result']['is_real'])
@@ -47,5 +52,21 @@ class CaptureTests(unittest.TestCase):
             np.testing.assert_array_equal(frame, original)
             self.assertTrue(meta['already_expanded'])
             self.assertFalse(meta['lighting_adjusted'])
+            labels[paths[0].name] = 'real'
+            labels_path.write_text(json.dumps(labels))
             predictor.predict_crops.return_value = []
             self.assertEqual(len(capture.save(frame, [(detection, SimpleNamespace(track_id=1))], predictor)), 1)
+            updated_labels = json.loads(labels_path.read_text())
+            self.assertEqual(updated_labels[paths[0].name], 'real')
+            self.assertEqual(len(updated_labels), 2)
+            self.assertEqual(list(updated_labels.values()).count(None), 1)
+            self.assertEqual(set(updated_labels), set(json.loads(metadata_path.read_text())))
+            self.assertEqual(sorted(p.name for p in capture.directory.glob('*.json')),
+                             ['labels.json', 'metadata.json'])
+            # A broken manual edit must not overwrite labels or create new captures.
+            labels_path.write_text('{broken')
+            before = set(capture.directory.iterdir())
+            with self.assertRaises(json.JSONDecodeError):
+                capture.save(frame, [(detection, SimpleNamespace(track_id=1))], predictor)
+            self.assertEqual(labels_path.read_text(), '{broken')
+            self.assertEqual(set(capture.directory.iterdir()), before)

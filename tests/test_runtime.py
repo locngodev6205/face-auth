@@ -285,7 +285,7 @@ class TestRuntimeFrameLoop(unittest.TestCase):
         embedder.input_size = (112, 112)
         embedder.embed_aligned.return_value = np.ones(512) / np.sqrt(512)
         db.search.return_value = [("A", "Alice", 0.9, np.ones(512))]
-        args = argparse.Namespace(pad_enabled=False, pad_threshold=app.config.PAD_THRESHOLD,
+        args = argparse.Namespace(capture_dir=None, pad_enabled=False, pad_threshold=app.config.PAD_THRESHOLD,
                                   pad_threshold_logit=None, pad_model=app.config.PAD_MODEL_PATH,
                                   camera=0, show_fps=False, mode="none")
         with contextlib.ExitStack() as stack:

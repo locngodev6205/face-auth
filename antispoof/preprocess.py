@@ -357,7 +357,7 @@ def crop_minifasnet_train_v1(
     img: np.ndarray,
     bbox: Tuple[int, int, int, int],
     bbox_expansion_factor: float = 2.7,
-    model_img_size: int = 80,
+    model_img_size: Optional[int] = 80,
 ) -> np.ndarray:
     """Reproduce the MiniFASNet final notebooks' ``mini_crop_bgr`` exactly."""
     src_h, src_w = img.shape[:2]
@@ -394,6 +394,8 @@ def crop_minifasnet_train_v1(
     patch = img[ty : by + 1, lx : rx + 1]
     if patch.size == 0:
         raise RuntimeError("Empty MiniFASNet crop")
+    if model_img_size is None:  # Dataset capture: retain native expanded pixels.
+        return patch.copy()
     return cv2.resize(patch, (model_img_size, model_img_size))
 
 

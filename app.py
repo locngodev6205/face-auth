@@ -32,7 +32,7 @@ from recognition.worker import RecognitionWorker
 from alignment.aligner import get_input_face
 from database.vector_db import VectorDB, decide_identity
 from tracking.tracker import FaceTracker
-from vision_pipeline import _pad_face_skip_reason, update_track_pad
+from vision_pipeline import _pad_face_skip_reason, update_track_pad, limit_faces
 
 # ── Chọn detector theo APP_DETECTOR trong config / .env ────────────────────
 if config.APP_DETECTOR == "scrfd":
@@ -453,6 +453,9 @@ def parse_args():
         "--mode", type=str, default=config.ATTENDANCE_MODE, choices=["checkin", "checkout", "none"],
         help=f"Chế độ ứng dụng: checkin, checkout hoặc none (mặc định: {config.ATTENDANCE_MODE})"
     )
+    parser.add_argument('--capture-dir', help='Thư mục lưu crop PAD chưa gán nhãn; nhấn C để chụp')
+    parser.add_argument('--subject', default='unspecified', help='Mã người được chụp (không phải nhãn real/spoof)')
+    parser.add_argument('--condition', default='unspecified', help='Điều kiện ánh sáng / camera của phiên')
     return parser.parse_args()
 
 
@@ -460,6 +463,11 @@ def parse_args():
 
 def main():
     args = parse_args()
+    capture = None
+    if args.capture_dir:
+        from pad_capture import PADCapture
+        capture = PADCapture(args.capture_dir, args.subject, args.condition)
+        print(f'[Capture] C: lưu crop chưa gán nhãn vào {capture.directory}')
     effective_pad_threshold_logit = args.pad_threshold_logit
     if effective_pad_threshold_logit is None and args.pad_threshold == config.PAD_THRESHOLD:
         effective_pad_threshold_logit = config.PAD_THRESHOLD_LOGIT
@@ -664,7 +672,7 @@ def main():
             if detector_due or tracker.needs_redetection():
                 detector_t0 = time.perf_counter()
                 try:
-                    detections = detector.detect(frame)
+                    detections = limit_faces(detector.detect(frame))
                 except Exception as e:
                     print(f"[Detector error] {e}")
                     detections = []
@@ -676,6 +684,10 @@ def main():
                 tracked = tracker.update(detections, frame=frame, detector_called=True)
                 counters["tracker_ms"] += (time.perf_counter() - tracker_t0) * 1000.0
                 counters["tracker_updates"] += 1
+
+            selected = limit_faces([d for d, _ in tracked])
+            selected_ids = {id(d) for d in selected}
+            tracked = [(d, t) for d, t in tracked if id(d) in selected_ids]
 
             # ── PAD batch ────────────────────────────────────────────────
             if pad_enabled_rt and pad_predictor is not None and tracked:
@@ -764,6 +776,9 @@ def main():
                 cv2.putText(display_frame, attendance_msg, (10, frame.shape[0] - 30),
                             cv2.FONT_HERSHEY_SIMPLEX, 0.7, attendance_msg_color, 2, cv2.LINE_AA)
 
+            if capture is not None:
+                cv2.putText(display_frame, 'C: save unlabelled PAD crops', (10, frame.shape[0] - 10),
+                            cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 255), 1, cv2.LINE_AA)
             cv2.imshow("SmartFace — Face Auth", display_frame)
 
             # ── Key handling ─────────────────────────────────────────────────
@@ -778,6 +793,12 @@ def main():
 
             if key == ord("q") or key == 27:
                 break
+            elif key == ord("c") and capture is not None:
+                try:
+                    paths = capture.save(frame, tracked, pad_predictor)
+                    print(f'[Capture] Đã lưu {len(paths)} mặt: {capture.directory}')
+                except Exception as exc:
+                    print(f'[Capture error] {exc}')
             elif key == ord("p"):
                 if pad_predictor is None:
                     try:

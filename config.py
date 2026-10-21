@@ -350,10 +350,18 @@ if FORCE_GAMMA:
 PAD_GAMMA_TARGET  = _get_env_float("PAD_GAMMA_TARGET", 110.0)
 
 # Hệ số mở rộng bbox khi crop khuôn mặt đưa vào PAD.
-PAD_BBOX_EXPANSION_FACTOR = _pad_contract_value(
-    "bbox_expansion_factor", "PAD_BBOX_EXPANSION_FACTOR",
-    _runtime_float, _get_env_float, 1.55,
-)
+_pad_crop_factor_env = _clean_env_val(os.getenv("PAD_BBOX_EXPANSION_FACTOR"))
+if _pad_crop_factor_env is None or _pad_crop_factor_env.lower() in ("", "none"):
+    PAD_BBOX_EXPANSION_FACTOR = _runtime_float(
+        _PAD_RUNTIME_CONFIG, "bbox_expansion_factor", 1.55,
+    )
+else:
+    try:
+        PAD_BBOX_EXPANSION_FACTOR = float(_pad_crop_factor_env)
+    except ValueError as exc:
+        raise ValueError("PAD_BBOX_EXPANSION_FACTOR phải là số dương, để trống hoặc None") from exc
+if not math.isfinite(PAD_BBOX_EXPANSION_FACTOR) or PAD_BBOX_EXPANSION_FACTOR <= 0:
+    raise ValueError("PAD_BBOX_EXPANSION_FACTOR phải là số dương hữu hạn")
 PAD_CROP_MODE = _pad_contract_value(
     "crop_mode", "PAD_CROP_MODE", _runtime_str, _get_env_str,
     "square_reflect_v1",
@@ -543,3 +551,8 @@ def validate_config():
 
 
 validate_config()
+
+# Maximum selected faces passed to tracking, PAD and recognition.
+MAX_FACES_PER_FRAME = _get_env_int("MAX_FACES_PER_FRAME", 3)
+if MAX_FACES_PER_FRAME < 1:
+    raise ValueError("MAX_FACES_PER_FRAME phải >= 1")

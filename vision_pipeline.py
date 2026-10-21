@@ -3,6 +3,13 @@ import math
 import time
 import config
 
+def limit_faces(detections):
+    """Select largest faces; stable sorting preserves detector order for ties."""
+    if len(detections) <= config.MAX_FACES_PER_FRAME:
+        return list(detections)
+    return sorted(detections, key=lambda d: max(0, d['bbox'][2] - d['bbox'][0])
+                  * max(0, d['bbox'][3] - d['bbox'][1]), reverse=True)[:config.MAX_FACES_PER_FRAME]
+
 def _pad_face_skip_reason(detection, frame_shape):
     """Reject low-confidence or incomplete faces near the camera-frame edge."""
     try:
@@ -144,5 +151,4 @@ def update_track_pad(
                 f"raw={'REAL' if res['is_real'] else 'SPOOF'} smoothed={track.pad_status}"
             )
     return len(results)
-
 

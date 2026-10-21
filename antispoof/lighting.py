@@ -18,13 +18,13 @@ class LightingTransform:
             raise ValueError('PAD lighting profile must be an object')
         self.profile = dict(profile or {'method': 'none'})
         self.method = self.profile.get('method', 'none')
-        if self.method not in ('none', 'shadow_gamma', 'gamma', 'gamma_y', 'gamma_clahe_y', 'adaptive_gamma', 'legacy_gamma', 'gain_y', 'clahe_y', 'stretch_y'):
+        if self.method not in ('none', 'shadow_gamma', 'wb_gamma', 'wb_exposure_gamma', 'gamma', 'gamma_y', 'gamma_clahe_y', 'adaptive_gamma', 'legacy_gamma', 'gain_y', 'clahe_y', 'stretch_y'):
             raise ValueError(f'Unknown PAD lighting method: {self.method}')
         for key, value in self.profile.items():
             if key != 'method' and (isinstance(value, bool) or not isinstance(value, (int, float)) or not math.isfinite(value)):
                 raise ValueError(f'Invalid lighting parameter: {key}')
         p = self.profile
-        if self.method in ('gamma', 'gamma_y', 'gamma_clahe_y') and not 0 < p.get('gamma', 0) <= 4:
+        if self.method in ('gamma', 'gamma_y', 'gamma_clahe_y', 'wb_gamma') and not 0 < p.get('gamma', 0) <= 4:
             raise ValueError('PAD gamma must be in (0,4]')
         if not 0 < p.get('target', 110) < 255 or p.get('deadband', 10) < 0:
             raise ValueError('Invalid lighting target/deadband')
@@ -39,6 +39,8 @@ class LightingTransform:
             required = {'method', 'min_gamma', 'max_gamma', 'transition_low', 'transition_high', 'blur_sigma', 'blend'}
             if set(p) != required or not p['transition_low'] < p['transition_high'] or p['blur_sigma'] <= 0 or p['max_gamma'] > 4:
                 raise ValueError('Invalid shadow gamma parameters')
+        if self.method == 'wb_exposure_gamma' and p.get('max_gamma', 1.5) > 4:
+            raise ValueError('PAD exposure gamma must be <=4')
         self.luts = {}
         self.clahe = None
         if self.method in ('clahe_y', 'gamma_clahe_y'):
@@ -57,6 +59,19 @@ class LightingTransform:
         p, method = self.profile, self.method
         if method == 'none':
             return image
+        if method in ('wb_gamma', 'wb_exposure_gamma'):
+            # Bounded gray-world balance, followed by the cached BGR gamma LUT.
+            means = image.reshape(-1, 3).mean(axis=0)
+            gains = np.clip(means.mean() / np.maximum(means, 1.),
+                            p.get('min_gain', .7), p.get('max_gain', 1.3))
+            gains = 1. + p.get('blend', 1.) * (gains - 1.)
+            balanced = np.clip(image.astype(np.float32) * gains, 0, 255).astype(np.uint8)
+            gamma = p.get('gamma', 1.)
+            if method == 'wb_exposure_gamma':
+                _, center = raw_luma_features(balanced)
+                gamma = math.log(p.get('target', 110.) / 255.) / math.log(float(np.clip(center, 1., 254.)) / 255.)
+                gamma = float(np.clip(gamma, p.get('min_gamma', .7), p.get('max_gamma', 1.5)))
+            return self.gamma(balanced, gamma)
         if method == 'shadow_gamma':
             full, center = raw_luma_features(image)
             alpha = float(np.clip((full - center - p['transition_low']) /

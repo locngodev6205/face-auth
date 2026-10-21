@@ -162,6 +162,8 @@ def draw_track(
 
 def draw_pad_margin(frame, bbox, track, threshold):
     """Display the latest raw PAD margin separately from the temporal verdict."""
+    if track.last_pad_threshold is not None:
+        threshold = track.last_pad_threshold
     score = track.last_pad_score
     stale = (
         track.last_pad_time is not None

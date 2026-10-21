@@ -136,6 +136,8 @@ def _get_env_float_vector(key: str, default):
 
 
 PAD_RUNTIME_CONFIG_PATH, _PAD_RUNTIME_CONFIG, _PAD_RUNTIME_CONFIG_DIR = _load_pad_runtime_config()
+PAD_LIGHTING_PROFILE = _PAD_RUNTIME_CONFIG.get("lighting")
+PAD_ADAPTIVE_THRESHOLD_PROFILE = _PAD_RUNTIME_CONFIG.get("adaptive_threshold")
 
 
 def _pad_contract_value(runtime_key, env_key, runtime_reader, env_reader, default):

@@ -52,6 +52,9 @@ class PADCapture:
         # Read on every save so manually assigned labels survive subsequent shots.
         labels = _read_json_object(labels_path)
         metadata_index = _read_json_object(metadata_path)
+        frame_path = self.directory / f'{batch}_frame.png'
+        if tracked and not cv2.imwrite(str(frame_path), frame):
+            raise OSError(f'Không ghi được {frame_path}')
         saved = []
         for detection, track in tracked[:config.MAX_FACES_PER_FRAME]:
             bbox = detection['bbox']
@@ -70,7 +73,7 @@ class PADCapture:
             input_path = self.directory / f'{stem}_input.png'
             gray = cv2.cvtColor(native, cv2.COLOR_BGR2GRAY)
             metadata = {
-                'schema_version': 2, 'captured_at': datetime.now(timezone.utc).isoformat(),
+                'schema_version': 3, 'captured_at': datetime.now(timezone.utc).isoformat(),
                 'capture_batch': batch, 'session_id': self.directory.name,
                 'subject_id': self.subject, 'condition': self.condition,
                 'track_id': track.track_id, 'bbox_xyxy': list(bbox),
@@ -86,6 +89,8 @@ class PADCapture:
                 'model_sha256': config.PAD_RUNTIME_MODEL_SHA256,
                 'threshold_logit': predictor.logit_threshold,
                 'runtime_gamma_enabled': config.PAD_GAMMA_ENABLED,
+                'runtime_lighting_profile': config.PAD_LIGHTING_PROFILE,
+                'runtime_adaptive_threshold': config.PAD_ADAPTIVE_THRESHOLD_PROFILE,
                 'gamma_target': config.PAD_GAMMA_TARGET,
                 'color_order': config.PAD_COLOR_ORDER,
                 'mean': config.PAD_MEAN, 'std': config.PAD_STD,
@@ -94,6 +99,7 @@ class PADCapture:
                 'dark_fraction': float(np.mean(gray <= 10)),
                 'bright_fraction': float(np.mean(gray >= 245)),
                 'crop_file': crop_path.name, 'input_file': input_path.name,
+                'frame_file': frame_path.name,
             }
             # Model verdict is diagnostic only; labels live exclusively in labels.json.
             for path, pixels in ((crop_path, native), (input_path, model_crop)):

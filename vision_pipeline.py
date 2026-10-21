@@ -124,6 +124,9 @@ def update_track_pad(
             if not isinstance(res.get("is_real"), bool):
                 raise ValueError("PAD result has no boolean is_real verdict")
             score = float(res.get("pad_score", res.get("logit_diff", float("nan"))))
+            threshold = res.get("threshold_logit")
+            if threshold is not None and not math.isfinite(float(threshold)):
+                raise ValueError("PAD result has a non-finite threshold")
             if not math.isfinite(score):
                 raise ValueError("PAD result has a non-finite score")
     except Exception as exc:
@@ -134,7 +137,7 @@ def update_track_pad(
 
     for (detection, track, crop_bbox), res in zip(due, results):
         score = float(res.get("pad_score", res.get("logit_diff")))
-        track.update_pad(res["is_real"], score)
+        track.update_pad(res["is_real"], score, res.get("threshold_logit"))
         if diagnostic_log:
             exp_score = math.exp(-abs(score))
             p_real = 1.0 / (1.0 + exp_score) if score >= 0 else exp_score / (1.0 + exp_score)

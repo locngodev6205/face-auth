@@ -17,6 +17,7 @@ from typing import List, Dict, Tuple, Optional
 import config as _cfg
 from .loader import load_model
 from .preprocess import preprocess_batch, preprocess_dct_batch, crop_for_runtime
+from .lighting import LightingTransform, BrightnessThreshold
 
 # Đường dẫn mặc định tới checkpoint PAD của runtime hiện tại.
 DEFAULT_MODEL_PATH = Path(_cfg.PAD_MODEL_PATH)
@@ -190,6 +191,10 @@ class AntiSpoofPredictor:
             self.color_order = "BGR"
 
         self.convert_rgb = (self.color_order == "RGB")
+        self.lighting_transform = LightingTransform(_cfg.PAD_LIGHTING_PROFILE if uses_default_runtime else None)
+        self.threshold_adapter = BrightnessThreshold(_cfg.PAD_ADAPTIVE_THRESHOLD_PROFILE if uses_default_runtime else None)
+        if self.lighting_transform.method != 'none' and self.apply_gamma:
+            raise ValueError('PAD lighting profile requires apply_gamma=false to avoid double correction')
 
         if mean is not None and std is not None:
             self.mean = mean
@@ -207,7 +212,7 @@ class AntiSpoofPredictor:
             self.mean = None
             self.std = None
 
-    def process_with_logits(self, raw_logits: np.ndarray) -> Dict:
+    def process_with_logits(self, raw_logits: np.ndarray, threshold_logit=None) -> Dict:
         """
         Chuyển đổi kết quả Logits thô từ đầu ra mô hình thành từ điển kết quả phân loại chi tiết.
 
@@ -234,6 +239,9 @@ class AntiSpoofPredictor:
                 - spoof_logit (float): Điểm logsumexp (hoặc logit) của các lớp mặt giả.
                 - confidence (float): Độ tự tin abs(pad_score - logit_threshold).
         """
+        decision_threshold = self.logit_threshold if threshold_logit is None else float(threshold_logit)
+        if not np.isfinite(decision_threshold):
+            raise ValueError("PAD threshold must be finite")
         raw_arr = np.asarray(raw_logits, dtype=np.float64)
         expected_classes = getattr(self, "output_classes", None)
         if (
@@ -256,7 +264,7 @@ class AntiSpoofPredictor:
 
         # pad_score tổng quát: real_logit - logsumexp(spoof_logits)
         pad_score = float(real_logit - spoof_logsumexp)
-        is_real = bool(pad_score >= self.logit_threshold)
+        is_real = bool(pad_score >= decision_threshold)
 
         if len(raw_arr) == 2:
             spoof_logit = float(raw_arr[1])
@@ -289,7 +297,7 @@ class AntiSpoofPredictor:
         if np.isnan(pad_score):
             confidence = 0.0
         else:
-            confidence = float(abs(pad_score - self.logit_threshold))
+            confidence = float(abs(pad_score - decision_threshold))
 
         return {
             "is_real": is_real,
@@ -301,8 +309,8 @@ class AntiSpoofPredictor:
             "real_logit": real_logit,
             "spoof_logit": float(spoof_logit),
             "confidence": confidence,
-            "threshold_logit": float(self.logit_threshold),
-            "threshold_probability": float(self.threshold_probability),
+            "threshold_logit": float(decision_threshold),
+            "threshold_probability": float(1 / (1 + np.exp(-np.clip(decision_threshold, -700, 700)))),
         }
 
     def predict_crops(self, face_crops: List[np.ndarray]) -> List[Dict]:
@@ -320,7 +328,11 @@ class AntiSpoofPredictor:
             return []
 
         try:
+            # Measure input brightness before lighting correction; never mutate the shared base threshold.
+            thresholds = [self.threshold_adapter(crop, self.logit_threshold) for crop in face_crops]
             # 1. Chạy tiền xử lý hình ảnh thành Tensor đầu vào
+            if self.lighting_transform.method != 'none':
+                face_crops = [self.lighting_transform(crop) for crop in face_crops]
             if self.is_frequency_model:
                 batch_input = preprocess_dct_batch(face_crops, self.model_img_size)
             else:
@@ -342,7 +354,7 @@ class AntiSpoofPredictor:
                 )
 
             # 3. Chuyển đổi từng kết quả logit về dict
-            return [self.process_with_logits(logits[i]) for i in range(len(face_crops))]
+            return [self.process_with_logits(logits[i], thresholds[i]) for i in range(len(face_crops))]
         except Exception as e:
             print(f"Lỗi suy luận AntiSpoof: {e}", file=sys.stderr)
             return []

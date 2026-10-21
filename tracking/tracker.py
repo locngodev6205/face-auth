@@ -73,6 +73,7 @@ class Track:
         self._pad_stale_timeout: Optional[float] = pad_stale_timeout
         self.last_pad_time: Optional[float] = None  # None = chưa chạy PAD lần nào
         self.last_pad_score: Optional[float] = None
+        self.last_pad_threshold: Optional[float] = None
         self.pad_invalid_reason: Optional[str] = None
         self._pad_crop_geometry = None
         self._pad_crop_time = None
@@ -83,7 +84,7 @@ class Track:
         self.last_attendance_time: Optional[float] = None
         self._unknown_streak = 0
 
-    def update_pad(self, is_real: bool, pad_score: Optional[float] = None) -> None:
+    def update_pad(self, is_real: bool, pad_score: Optional[float] = None, threshold_logit: Optional[float] = None) -> None:
         """Ghi nhận verdict PAD của frame hiện tại vào rolling window và cập nhật timestamp.
 
         Nếu verdict cuối cùng đã quá cũ (>_pad_stale_timeout giây), reset window trước khi thêm
@@ -97,6 +98,7 @@ class Track:
             self._pad_window.clear()
         self._pad_window.append(bool(is_real))
         self.last_pad_time = time.monotonic()
+        self.last_pad_threshold = float(threshold_logit) if threshold_logit is not None else None
         if pad_score is not None:
             self.last_pad_score = float(pad_score)
 
@@ -105,6 +107,7 @@ class Track:
         self._pad_window.clear()
         self.last_pad_time = None
         self.last_pad_score = None
+        self.last_pad_threshold = None
         self.pad_invalid_reason = None
         self._pad_crop_geometry = None
         self._pad_crop_time = None

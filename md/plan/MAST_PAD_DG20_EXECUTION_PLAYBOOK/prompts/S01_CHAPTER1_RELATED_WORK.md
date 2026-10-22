@@ -1,0 +1,24 @@
+# CODEX PROMPT — Three-chapter restructure and Chapter 1 related work
+
+## Your role and non-negotiable rules
+You are an academic research assistant, computer-vision engineer, and careful Word/LaTeX editor working in the existing `face_auth` repository. Execute **S01 only**. Read `00_DATA_LOCK_FOR_CODEX.md`, `01_MASTER_EXECUTION_PLAYBOOK.md`, original DG20, latest Word `(2).docx`, paper, and relevant `paper/review/dg20_evidence_audit/00–08` reports. Resolve actual locations from the repo, do not invent paths. Source of truth hierarchy: matching raw prediction + saved run configuration/manifest > per-run JSON > verified audit > old Word or summary. Every numerical value must have population, unit, source, and seed.
+
+**Language:** revised academic Word and DG20 response in polished Vietnamese; any article text stays academic English. **Preserve:** original Word, previous versions, article/release, Stage-1 locks, code, artifacts, hashes, source/reference PDFs. Create incremented output versions, never overwrite originals. **Excluded:** the unfinished Adaptive Threshold module, its code, design, results and claims; do not discuss or edit it. No new inference or training unless this stage explicitly says offline reanalysis from already stored predictions. No fake results, missing metadata, independent-holdout or causal-gate claims. Do not say you performed tasks you did not perform.
+
+Use a precise change log mapping old OOXML `Pnnnn` / `Tn` locator (not physical page) to new section, action, provenance, and verification. Reuse approved vector figures where possible; do not fabricate experimental graphics. If editing DOCX, use a reversible method, rebuild heading/caption fields where applicable, render a PDF and inspect impacted pages when a converter is available. If not, explicitly mark pagination and visual layout **UNVERIFIED**; don't invent page counts. Restrict edits to the paths allowed below. Stop at the stage gate.
+
+## Stage-specific instructions
+**Prerequisite:** S00 reviewed. **Allowed writes:** incremented working DOCX `report_revision/report_s1.docx`, optional PDF and S01 logs; no original DOCX/article/edit to experiments.
+
+1. Create the **three-chapter frame**: Ch1 `Tổng quan và các nghiên cứu liên quan`, Ch2 `Giải pháp đề xuất`, Ch3 `Thực nghiệm và đánh giá`; a conclusion should be §3.6, not a fourth chapter. Preserve all original useful content by first copying/reconciling it into working staging; remove historical screening results from submission, not from source repository. Track moved/cut sections.
+2. Write COMPLETE Chapter 1 according to `01_MASTER_EXECUTION_PLAYBOOK.md` target 11 pages / max15: §1.1 problem/threat/objective (2pp), §1.2 related directions (4pp), §1.3 advantages/limitations/gap (3pp), §1.4 approach/contributions (2pp). Clearly position MAST-PAD's design, without claiming gate-only causal superiority.
+3. Build a native Word table with **at least six well-grounded research groups**: MiniFASNet/Silent-Face, CelebA-Spoof/AENet, MADDG/SSDG, PatchNet/SA-FAS/GAC-FAS/AMEL, Chen/Bi-FPNFAS, FSDA/Cao–Ma. Columns: methods/verified citation, core mechanism, strength, limitation/protocol, distinction from MAST-PAD. Only assert drawbacks supported by sources, not speculative attacks on other papers.
+4. Explicitly call WBST an **internally implemented comparison configuration** and AENet the **Auxiliary Information Embedding Network** introduced with CelebA-Spoof. Imported LCC AENet86.80 comes from external benchmark repository, not the ECCV paper directly. Correct original Word bibliography attribution without inventing missing DOI/venue.
+5. Use one source-backed conceptual figure or existing academic diagram, marked illustrative if not an observed experiment. Do NOT insert fabricated ROC or LCC blinded evaluation.
+6. Preserve system section content for later S02/S03. Update provisional headings/navigation; do not build Ch2/Ch3 substantive prose in this stage. Render affected pages, audit citation mapping, log old→new anchors and stage-specific page count if render is available.
+
+**Deliverables:** `report_s1.docx`, `report_s1.pdf` if possible, `review/S01_CHAPTER1_REVIEW.md`, `review/S01_CHANGES.md`, `review/S01_COMPLETION_REPORT.md`.
+**Acceptance:** only three chapter headings in working shell, academically written Ch1 covers actual strengths and weaknesses, Ch1≤15 pages when rendered, no made-up citations, no source changes.
+
+## Completion requirements
+Write a clear `S01_COMPLETION_REPORT.md` including input hashes, changed files, command/validation results, unresolved issues, source evidence anchors, and a stage-specific author-approval checklist. Make sure outputs physically exist; do not present success merely because you wrote a plan. State what was not verified. **STOP immediately after S01, and do not start another stage, training, upload, external publication, or Word/article rewrite outside the allowed scope.**

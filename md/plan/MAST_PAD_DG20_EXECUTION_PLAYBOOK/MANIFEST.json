@@ -1,0 +1,66 @@
+{
+  "00_DATA_LOCK_FOR_CODEX.md": {
+    "bytes": 12794,
+    "sha256": "fc99b1c4b6501d0d1a704ae1158b454c576a49f6da005cc22759608c686eb23f"
+  },
+  "01_MASTER_EXECUTION_PLAYBOOK.md": {
+    "bytes": 29960,
+    "sha256": "113a3ef4535accd7ae919fd451758f7ff24986b58e67c16d494ffb49c2b4f0bb"
+  },
+  "02_DG20_RESPONSE_MATRIX_DETAILED.md": {
+    "bytes": 32519,
+    "sha256": "03785d4e033e9896d45b26e64b5dee1058c2823bf174f4c2d71abe0e9701bc98"
+  },
+  "03_EXPERIMENT_EXECUTION_PLAN.md": {
+    "bytes": 22616,
+    "sha256": "13157def33cef4f448f89bbb4485a530c951c8faa2e66e6ca63514cce5aa2b81"
+  },
+  "START_HERE.md": {
+    "bytes": 3181,
+    "sha256": "eb7878c947a705b3f4738a22384a62cea9883d808b3ad434133fe756a8347108"
+  },
+  "prompts/S00_FREEZE_INVENTORY.md": {
+    "bytes": 4324,
+    "sha256": "6847df696ab856813836f240737bda025f57ca23549a251de61dad62a4ad239c"
+  },
+  "prompts/S01_CHAPTER1_RELATED_WORK.md": {
+    "bytes": 4967,
+    "sha256": "3d6dd39d8ba419879c51a79bf579dd190370f41a99dbef4e4ebb647abaa2f5e1"
+  },
+  "prompts/S02_CHAPTER2_PIPELINE.md": {
+    "bytes": 5319,
+    "sha256": "dfac4db144d1487522be92d0a59d0a404019f36539aa69af89a15f0b3896a1f3"
+  },
+  "prompts/S03_CHAPTER2_MAST_METHOD.md": {
+    "bytes": 5191,
+    "sha256": "c4bce3ca369e4e4b506518823ba3d2f1ae93f4eb46da7b40a638f41de2c617ac"
+  },
+  "prompts/S04_OFFLINE_EVIDENCE.md": {
+    "bytes": 5646,
+    "sha256": "11ffd0aad7d4e8ac2d5dd1c19cec75a29cd9873931e337181077ecb9f21c2655"
+  },
+  "prompts/S05_CHAPTER3_RESULTS.md": {
+    "bytes": 5594,
+    "sha256": "737c96587253828a9cfc3caf2220bf4feb1c9df4ffac05fe9f4f195906d07a5e"
+  },
+  "prompts/S06_FORMAT_AND_PAGINATE.md": {
+    "bytes": 5055,
+    "sha256": "3e0bc0de100af9f244fe7b0ecef6d9b9ec8f933bac14796136b6639ccdd49b88"
+  },
+  "prompts/S07_DG20_FINAL_QA.md": {
+    "bytes": 4440,
+    "sha256": "4d0f57c6f773945b23bf43434f15d37c4f54f83adef3654e8b3fded7c203073e"
+  },
+  "prompts/S08_OPTIONAL_ARTICLE.md": {
+    "bytes": 3765,
+    "sha256": "9bcc9ddaa43a776da8298f796df14f122351d99b3132acd375f749e489c088c7"
+  },
+  "prompts/S09_FUTURE_SEEDS.md": {
+    "bytes": 4078,
+    "sha256": "0422e4b813f1b22be7164dea5bca072d371ec71a2a5974a86b4734706147e8af"
+  },
+  "prompts/S10_OPTIONAL_ABLATION_PLAN.md": {
+    "bytes": 4237,
+    "sha256": "5ebfdccd468eedbe5e5ec680c3f63444e51bb76da7f663ded5613643822105c1"
+  }
+}

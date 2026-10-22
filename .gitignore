@@ -85,6 +85,10 @@ md/future/
 !/md/README.md
 !/md/source_of_truth/
 !/md/source_of_truth/**
+!/md/plan/
+!/md/plan/**/
+!/md/plan/**/*.md
+!/md/plan/**/*.json
 
 # Local MAST-PAD manuscript and all generated LaTeX artifacts.
 /paper/

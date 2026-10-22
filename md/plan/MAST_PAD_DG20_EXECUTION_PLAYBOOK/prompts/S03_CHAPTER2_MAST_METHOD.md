@@ -1,0 +1,25 @@
+# CODEX PROMPT — Rewrite MAST-PAD method and exact four-control comparison
+
+## Your role and non-negotiable rules
+You are an academic research assistant, computer-vision engineer, and careful Word/LaTeX editor working in the existing `face_auth` repository. Execute **S03 only**. Read `00_DATA_LOCK_FOR_CODEX.md`, `01_MASTER_EXECUTION_PLAYBOOK.md`, original DG20, latest Word `(2).docx`, paper, and relevant `paper/review/dg20_evidence_audit/00–08` reports. Resolve actual locations from the repo, do not invent paths. Source of truth hierarchy: matching raw prediction + saved run configuration/manifest > per-run JSON > verified audit > old Word or summary. Every numerical value must have population, unit, source, and seed.
+
+**Language:** revised academic Word and DG20 response in polished Vietnamese; any article text stays academic English. **Preserve:** original Word, previous versions, article/release, Stage-1 locks, code, artifacts, hashes, source/reference PDFs. Create incremented output versions, never overwrite originals. **Excluded:** the unfinished Adaptive Threshold module, its code, design, results and claims; do not discuss or edit it. No new inference or training unless this stage explicitly says offline reanalysis from already stored predictions. No fake results, missing metadata, independent-holdout or causal-gate claims. Do not say you performed tasks you did not perform.
+
+Use a precise change log mapping old OOXML `Pnnnn` / `Tn` locator (not physical page) to new section, action, provenance, and verification. Reuse approved vector figures where possible; do not fabricate experimental graphics. If editing DOCX, use a reversible method, rebuild heading/caption fields where applicable, render a PDF and inspect impacted pages when a converter is available. If not, explicitly mark pagination and visual layout **UNVERIFIED**; don't invent page counts. Restrict edits to the paths allowed below. Stop at the stage gate.
+
+## Stage-specific instructions
+**Prerequisite:** reviewed S02. **Allowed writes:** new `report_revision/report_s3.docx`, Ch2 §2.4–2.5 equations/table/figures and logs; do not edit Ch1, Ch3, code, original research, article.
+
+1. Read raw notebook18 CELL1/CELL2 implementations, verified audit `02_CODE_AND_METHOD_EVIDENCE.md`, article Section III. Write coherent explanation §2.4 Fourier construction with normalized radial radius sqrt(u²+v²)/sqrt(2·40²), centers1/12,1/4,5/12, Gaussian overlap, per-image g~Uniform(.65,.90) common across candidate bands/channels, phase and DC retained **before clipping**. Illustrate spectral profiles vector; no claim bands directly identify Moiré physically.
+2. Write §2.5 complete method: clean branch/aux heads 128→11,128→5,128→40 plus binary128→2; Laux0.1CEspoof+0.1CElighting+BCEattr(real); score d=z_real-z_attack, aligned m=±d, exactly ONE worst of LOW/MID/HIGH per image, excluding clean from argmin; strict detached gate h=1[m_worst<m_clean].
+3. State selector temporary eval/no_grad (BN stored stats unchanged), restore train and forward **ALL B selected views**; mask only direct per-sample spectral CE. `L_worst=ΣCE/B` for WBST, `L_harmful=ΣhCE/H` for MAST H>0, differentiable zero H=0; clean coefficient remains 0.75 if H=0; after warmup epoch1 clean+aux use 0.75clean+0.25spectral+aux.
+4. **Replace Word T15 completely**: 4 methods CE-only / Clean + Aux / WBST / MAST-PAD, selected worst per image, CE activation/reduction, losses, sigma=1/18 vs0.10, warmup1epoch. Remove R7_SEV, micro/severity run identifiers, incorrect L_worst in MAST, mistaken 1/N or1/H as per-band sample-weighting, and incorrect spoof head 128→1 at `P0558`.
+5. Include Algorithm 1 (clean/3 spectral → selector with no grads → compare margins → full B train forward → gate loss) plus training-vs-inference diagram. Reuse approved IEEE vector figures if possible; redraw in high-quality vector preserving actual mechanism, no made-up attack photos.
+6. Explicitly qualify **WBST vs MAST changes BOTH sigma and gate**; adding 3 seeds does not isolate gating. Last epoch harmful83.21% is a descriptive diagnostic, not causal effect. Distinguish gate-on spectral loss from no additional FFT at deployment.
+7. Reconcile symbol dictionary and every equation/table/figure, inspect math typesetting after render. Do not change experimental results or article here.
+
+**Deliverables:** `report_s3.docx`, `report_s3.pdf` if possible, `review/S03_EQUATION_CHECK.md`, `review/S03_TABLE15_REPLACEMENT.md`, `review/S03_COMPLETION_REPORT.md`.
+**Acceptance:** check every loss term/mask/denominator, H=0, BN, sigma; no R7_SEV; score signs correct; deployed PAD footprint distinguished. Stop.
+
+## Completion requirements
+Write a clear `S03_COMPLETION_REPORT.md` including input hashes, changed files, command/validation results, unresolved issues, source evidence anchors, and a stage-specific author-approval checklist. Make sure outputs physically exist; do not present success merely because you wrote a plan. State what was not verified. **STOP immediately after S03, and do not start another stage, training, upload, external publication, or Word/article rewrite outside the allowed scope.**

@@ -22,7 +22,7 @@ md/
 - [Recognition worker](source_of_truth/REALTIME_RECOGNITION_WORKER.md): thiết kế và hành vi nhận diện bất đồng bộ.
 - [Kế hoạch tiếp nối slide MAST-PAD](source_of_truth/mast_pad_existing_deck_continuation_plan_FULLSCALE.md): tài liệu phục vụ trình bày, không thay thế kết quả thực nghiệm.
 
-`source_of_truth/` và README này được mở theo dõi Git bằng ngoại lệ trong `face_auth/.gitignore`. Các thư mục tài liệu khác tiếp tục chịu quy tắc ignore hiện có; những tệp đã được Git theo dõi vẫn được theo dõi.
+`source_of_truth/`, các file Markdown/JSON trong `plan/` và README này được mở theo dõi Git bằng ngoại lệ trong `face_auth/.gitignore`. Các thư mục tài liệu khác tiếp tục chịu quy tắc ignore hiện có; những tệp đã được Git theo dõi vẫn được theo dõi.
 
 ## Runtime
 
@@ -32,6 +32,7 @@ md/
 
 ## Đánh giá và kế hoạch chỉnh sửa
 
+- [MAST-PAD DG20 Execution Playbook](plan/MAST_PAD_DG20_EXECUTION_PLAYBOOK/START_HERE.md): bộ kế hoạch chỉnh sửa báo cáo, numeric lock, ma trận phản hồi DG20 và prompt S00–S10. Chỉ thực thi từng stage khi được yêu cầu; `MANIFEST.json` ghi checksum các tài liệu trong bộ kế hoạch.
 - [Đánh giá báo cáo Word ngày 20/10/2026](plan/MAST_PAD_DANH_GIA_VA_KE_HOACH_CHINH_SUA_BAO_CAO_WORD_FINAL_2026-10-20.md): đề nghị biên tập ở thời điểm đánh giá; số liệu và nhận xét cần đối chiếu với nguồn mới nhất.
 - Hồ sơ DG20 audit ngày 22/10/2026 nằm tại `paper/review/dg20_evidence_audit/` trên máy. Thư mục `paper/` vẫn bị ignore; số liệu cần cho lượt sửa đã được tổng hợp vào `source_of_truth/MAST_PAD_REVISION_NUMBERS_SOURCE_OF_TRUTH.md`.
 

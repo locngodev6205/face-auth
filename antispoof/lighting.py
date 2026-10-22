@@ -12,6 +12,16 @@ def raw_luma_features(crop):
     return float(y.mean()), float(y[16:64, 16:64].mean())
 
 
+def raw_color_features(crop):
+    """Full/central raw Y and central Cb/Cr; OpenCV stores channels Y,Cr,Cb."""
+    if crop.shape != (80, 80, 3) or crop.dtype != np.uint8:
+        raise ValueError('Raw-color PAD profile expects BGR uint8 80x80 crops')
+    ycc = cv2.cvtColor(crop, cv2.COLOR_BGR2YCrCb)
+    center = ycc[16:64, 16:64]
+    return (float(ycc[:, :, 0].mean()), float(center[:, :, 0].mean()),
+            float(center[:, :, 2].mean()), float(center[:, :, 1].mean()))
+
+
 class LightingTransform:
     def __init__(self, profile=None):
         if profile is not None and not isinstance(profile, dict):
@@ -126,6 +136,10 @@ class BrightnessThreshold:
             required = {'reference_luma', 'scale', 'slope', 'max_offset'}
             if profile.get('method') == 'face_background':
                 required = {'method', 'reference_luma', 'scale', 'slope', 'gap_scale', 'gap_slope', 'max_offset'}
+            if profile.get('method') == 'raw_color':
+                required = {'method', 'reference_luma', 'scale', 'slope', 'gap_scale', 'gap_slope',
+                            'cb_reference', 'cr_reference', 'chroma_scale', 'cb_slope', 'cr_slope',
+                            'bias', 'max_offset'}
             if set(profile) != required or not all(
                 isinstance(v, (float, int)) and not isinstance(v, bool) and math.isfinite(v)
                 for k, v in profile.items() if k != 'method'
@@ -133,13 +147,25 @@ class BrightnessThreshold:
                 raise ValueError('Invalid adaptive threshold parameters')
             if not 0 <= profile['reference_luma'] <= 255 or profile['scale'] <= 0 or profile['max_offset'] < 0:
                 raise ValueError('Invalid adaptive threshold bounds')
-            if profile.get('method') == 'face_background' and profile['gap_scale'] <= 0:
+            if profile.get('method') in ('face_background', 'raw_color') and profile['gap_scale'] <= 0:
                 raise ValueError('Invalid adaptive threshold gap scale')
+            if profile.get('method') == 'raw_color' and (
+                profile['chroma_scale'] <= 0 or not 0 <= profile['cb_reference'] <= 255
+                or not 0 <= profile['cr_reference'] <= 255
+            ):
+                raise ValueError('Invalid adaptive threshold chroma bounds')
 
     def __call__(self, crop, base_threshold):
         if self.profile is None:
             return float(base_threshold)
         p = self.profile
+        if p.get('method') == 'raw_color':
+            full, center, cb, cr = raw_color_features(crop)
+            offset = (p['slope'] * (center - p['reference_luma']) / p['scale']
+                      + p['gap_slope'] * (center - full) / p['gap_scale']
+                      + p['cb_slope'] * (cb - p['cb_reference']) / p['chroma_scale']
+                      + p['cr_slope'] * (cr - p['cr_reference']) / p['chroma_scale'] + p['bias'])
+            return float(base_threshold + np.clip(offset, -p['max_offset'], p['max_offset']))
         if p.get('method') == 'face_background':
             full, center = raw_luma_features(crop)
             offset = np.clip(p['slope'] * (center - p['reference_luma']) / p['scale'] +

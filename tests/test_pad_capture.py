@@ -87,3 +87,16 @@ class CaptureTests(unittest.TestCase):
                 capture.save(frame, [(detection, SimpleNamespace(track_id=1))], predictor)
             self.assertEqual(labels_path.read_text(), '{broken')
             self.assertEqual(set(capture.directory.iterdir()), before)
+
+    def test_save_with_predefined_label(self):
+        frame = np.zeros((240, 320, 3), dtype=np.uint8)
+        detection = {'bbox': np.array([50, 50, 150, 150]), 'score': np.float32(0.95)}
+        predictor = Mock(bbox_expansion_factor=1.5, model_img_size=80,
+                         crop_mode='minifasnet_train_v1', model_path=Path('model.onnx'),
+                         logit_threshold=1.65)
+        predictor.predict_crops.return_value = [{'is_real': True, 'pad_score': np.float32(1.0)}]
+        with tempfile.TemporaryDirectory() as output:
+            capture = PADCapture(output, 'loc', 'room_normal', 'session_real', label='real')
+            paths = capture.save(frame, [(detection, SimpleNamespace(track_id=1))], predictor)
+            labels = json.loads((capture.directory / 'labels.json').read_text())
+            self.assertEqual(labels[paths[0].name], 'real')

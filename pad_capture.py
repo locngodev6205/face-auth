@@ -37,10 +37,12 @@ def _write_json(path, value):
 
 
 class PADCapture:
-    def __init__(self, output, subject, condition, session=None):
+    def __init__(self, output, subject, condition, session=None, label=None):
         self.directory = Path(output).expanduser() / (session or uuid.uuid4().hex)
         self.subject = subject
         self.condition = condition
+        self.label = label
+        self.saved_count = len(_read_json_object(self.directory / 'labels.json'))
 
     def save(self, frame, tracked, predictor):
         if predictor is None:
@@ -106,8 +108,12 @@ class PADCapture:
                 if not cv2.imwrite(str(path), pixels):
                     raise OSError(f'Không ghi được {path}')
             metadata_index[crop_path.name] = metadata
-            labels.setdefault(crop_path.name, None)
+            if self.label is not None:
+                labels[crop_path.name] = self.label
+            else:
+                labels.setdefault(crop_path.name, None)
             _write_json(metadata_path, metadata_index)
             _write_json(labels_path, labels)
+            self.saved_count = len(labels)
             saved.append(crop_path)
         return saved

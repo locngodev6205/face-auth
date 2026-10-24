@@ -455,9 +455,11 @@ def parse_args():
         "--mode", type=str, default=config.ATTENDANCE_MODE, choices=["checkin", "checkout", "none"],
         help=f"Chế độ ứng dụng: checkin, checkout hoặc none (mặc định: {config.ATTENDANCE_MODE})"
     )
-    parser.add_argument('--capture-dir', help='Thư mục lưu crop PAD chưa gán nhãn; nhấn C để chụp')
+    parser.add_argument('--capture-dir', help='Thư mục lưu crop PAD; nhấn C để chụp')
     parser.add_argument('--subject', default='unspecified', help='Mã người được chụp (không phải nhãn real/spoof)')
     parser.add_argument('--condition', default='unspecified', help='Điều kiện ánh sáng / camera của phiên')
+    parser.add_argument('--label', choices=['real', 'fake'], default=None,
+                        help='Gán nhãn ground-truth tự động cho phiên chụp (real hoặc fake)')
     return parser.parse_args()
 
 
@@ -468,8 +470,9 @@ def main():
     capture = None
     if args.capture_dir:
         from pad_capture import PADCapture
-        capture = PADCapture(args.capture_dir, args.subject, args.condition)
-        print(f'[Capture] C: lưu crop chưa gán nhãn vào {capture.directory}')
+        capture = PADCapture(args.capture_dir, args.subject, args.condition, label=args.label)
+        label_info = f" [nhãn tự động: '{args.label}']" if args.label else " [chưa gán nhãn]"
+        print(f'[Capture] C: lưu crop vào {capture.directory}{label_info}')
     effective_pad_threshold_logit = args.pad_threshold_logit
     if effective_pad_threshold_logit is None and args.pad_threshold == config.PAD_THRESHOLD:
         effective_pad_threshold_logit = config.PAD_THRESHOLD_LOGIT
@@ -779,8 +782,10 @@ def main():
                             cv2.FONT_HERSHEY_SIMPLEX, 0.7, attendance_msg_color, 2, cv2.LINE_AA)
 
             if capture is not None:
-                cv2.putText(display_frame, 'C: save unlabelled PAD crops', (10, frame.shape[0] - 10),
-                            cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 255), 1, cv2.LINE_AA)
+                lbl_tag = f" [{capture.label}]" if capture.label else ""
+                capture_text = f"C: Save sample{lbl_tag} | Captured: {capture.saved_count}"
+                cv2.putText(display_frame, capture_text, (10, frame.shape[0] - 10),
+                            cv2.FONT_HERSHEY_SIMPLEX, 0.55, (0, 255, 255), 2, cv2.LINE_AA)
             cv2.imshow("SmartFace — Face Auth", display_frame)
 
             # ── Key handling ─────────────────────────────────────────────────
@@ -798,7 +803,10 @@ def main():
             elif key == ord("c") and capture is not None:
                 try:
                     paths = capture.save(frame, tracked, pad_predictor)
-                    print(f'[Capture] Đã lưu {len(paths)} mặt: {capture.directory}')
+                    if paths:
+                        print(f'[Capture] +{len(paths)} mat moi -> Tong so anh da chup: {capture.saved_count} ({capture.directory})')
+                    else:
+                        print('[Capture] Khong phat hien khuon mat de chup!')
                 except Exception as exc:
                     print(f'[Capture error] {exc}')
             elif key == ord("p"):

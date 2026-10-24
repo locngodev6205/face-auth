@@ -33,19 +33,20 @@ def ensure_test_employee(db, folder_name, create_missing=True):
             if not folder_name.strip() or len(folder_name) > 100:
                 raise ValueError("Tên nhân viên phải có từ 1 đến 100 ký tự")
 
-            token = uuid4().hex
+            token = uuid4().hex[:8]
             rng = random.SystemRandom()
             department = conn.execute("SELECT id FROM departments ORDER BY random() LIMIT 1").fetchone()
+            position = conn.execute("SELECT id FROM positions ORDER BY random() LIMIT 1").fetchone()
             row = conn.execute("""
                 INSERT INTO employees (
-                    id, employee_code, full_name, department_id,
-                    position, phone, email, hourly_rate, status
-                ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, 'ACTIVE')
+                    id, employee_code, full_name, department_id, position_id,
+                    phone, email, hourly_rate, status, created_at, updated_at
+                ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, 'ACTIVE', NOW(), NOW())
                 RETURNING employee_code, full_name
             """, (
                 str(uuid4()), f"TEST-{token}", folder_name,
                 department[0] if department else None,
-                rng.choice(["Nhân viên", "Thu ngân", "Bảo vệ"]),
+                position[0] if position else None,
                 f"09{rng.randrange(100000000):08d}",
                 f"test-{token}@example.invalid", rng.randint(20, 80) * 1000,
             )).fetchone()

@@ -1,0 +1,7 @@
+{
+  "best_epoch": 9,
+  "run_id": "CE_CLEAN_FULL_crop15",
+  "source_threshold": 4.6982421875,
+  "status": "complete",
+  "train_threshold_calibration": true
+}

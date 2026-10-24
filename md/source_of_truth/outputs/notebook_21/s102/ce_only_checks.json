@@ -1,0 +1,6 @@
+{
+  "auxiliary_loss": 0.0,
+  "gradient_equals_binary_ce": true,
+  "single_clean_forward": true,
+  "spectral_loss": 0.0
+}

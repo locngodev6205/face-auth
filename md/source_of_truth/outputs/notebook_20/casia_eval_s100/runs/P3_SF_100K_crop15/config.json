@@ -1,0 +1,21 @@
+{
+  "run_id": "P3_SF_100K_crop15",
+  "method": "WBST (100K)",
+  "scale": "100K",
+  "checkpoint_path": "/kaggle/input/datasets/locngodev/models-100k/runs/P3_SF_100K_crop15/best.pth",
+  "config_path": "/kaggle/input/datasets/locngodev/models-100k/runs/P3_SF_100K_crop15/config.json",
+  "frozen_threshold_path": "/kaggle/input/datasets/locngodev/models-100k/runs/P3_SF_100K_crop15/evaluation_freeze.json",
+  "best_epoch": 15,
+  "threshold": 0.29180908203125,
+  "threshold_source": "CelebA Val15K",
+  "amp": true,
+  "train_seed": 100,
+  "input": "80x80 BGR float [0,1] crop1.5",
+  "evaluation_protocol_file": "../../evaluation_protocol.json",
+  "training": false,
+  "pools": [
+    "train",
+    "test",
+    "combined"
+  ]
+}

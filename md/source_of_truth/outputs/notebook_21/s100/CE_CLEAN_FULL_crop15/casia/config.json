@@ -1,0 +1,15 @@
+{
+  "amp": true,
+  "best_epoch": 9,
+  "crop_factor": 1.5,
+  "loss": "CE_clean only",
+  "pools": [
+    "train",
+    "test",
+    "combined"
+  ],
+  "run_id": "CE_CLEAN_FULL_crop15",
+  "scale": "full-scale",
+  "threshold": 4.5966796875,
+  "training": false
+}

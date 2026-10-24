@@ -1,0 +1,9 @@
+{
+  "all_methods_identical": true,
+  "best_selection_not_delayed": true,
+  "earliest_possible_stop_epoch": 11,
+  "early_stop_patience": 3,
+  "epoch_boundary_counter_replay": true,
+  "improvement_resets_counter": true,
+  "patience_start_epoch": 9
+}

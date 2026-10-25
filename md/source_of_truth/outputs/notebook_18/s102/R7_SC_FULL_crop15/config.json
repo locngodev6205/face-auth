@@ -1,0 +1,74 @@
+{
+  "albumentations_version": "2.0.8",
+  "amp": true,
+  "augmentation_api": "legacy_limits",
+  "base_order": "torch Generator(TRAIN_SEED+epoch)",
+  "batch_size": 256,
+  "bbox_rng_seed": "worker_seed+500000",
+  "celeba_root": "/content/celeba_spoof/CelebA_Spoof_/CelebA_Spoof",
+  "data_seed": 43,
+  "early_stop_patience": 3,
+  "gain_rng_seed": 11102,
+  "gamma": 0.2,
+  "initial_state_sha256": "6f6f9d1e665970a1dce2a4970b0e41c37a3ef15c83dbeb4af70bc2e4e1287b98",
+  "input": "80x80 BGR float [0,1] crop1.5",
+  "lcc_crop_factor": 1.5,
+  "lcc_root": "/content/lcc_fasd/LCC_FASD",
+  "manifest_sha256": {
+    "full_test.csv": "d3fee50ddb0061c3193fee09044a1f410a7490c781e099cb3c0aa12175ba98f4",
+    "full_train.csv": "fe947b4d3e1f620f7c5cda9f59906e803646b6bf809e857095a493e171fbfb71"
+  },
+  "max_epochs": 12,
+  "milestones": [
+    4,
+    8
+  ],
+  "model_source": "/content/minifasnet/MiniFASNet.py",
+  "num_workers": 4,
+  "optimizer": {
+    "lr": 0.005,
+    "momentum": 0.9,
+    "name": "SGD",
+    "weight_decay": 0.0005
+  },
+  "patience_start_epoch": 9,
+  "pretrained_checkpoint": "/content/minifasnet/2.7_80x80_MiniFASNetV2.pth",
+  "resource_root": "/content/full_resources/minifasnet_binary_crossdomain_resources_v2_lcc_pooled",
+  "run_id": "R7_SC_FULL_crop15",
+  "selection_set": "Full official CelebA Test-as-Val; reused selection set, not untouched Test",
+  "spec": {
+    "centers": [
+      0.08333333333333331,
+      0.24999999999999997,
+      0.41666666666666663
+    ],
+    "clean_ce_weight": 0.75,
+    "crop_factor": 1.5,
+    "method": "HARMFUL",
+    "sigma": 0.1,
+    "spectral_ce_weight": 0.25,
+    "warmup_epochs": 1
+  },
+  "spectral": {
+    "centers": [
+      0.08333333333333331,
+      0.24999999999999997,
+      0.41666666666666663
+    ],
+    "gain": [
+      0.65,
+      0.9
+    ],
+    "preserve_dc": true,
+    "selection_chunk_size": 32,
+    "sigma": 0.1
+  },
+  "test_crop_factor": 1.5,
+  "train_crop_factor": 1.5,
+  "train_manifest": "full_train.csv",
+  "train_seed": 102,
+  "val_crop_factor": 1.5,
+  "val_manifest": "full_test.csv",
+  "warmup_epochs": 1,
+  "worker_seed": "TRAIN_SEED+epoch*1000+worker_id"
+}

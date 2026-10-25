@@ -14,7 +14,7 @@
 |---|---|:---:|:---:|:---:|---|
 | **Notebook 18** | **C_FULL_crop15** (Clean CE) | Hoàn thành | Hoàn thành | Hoàn thành | CelebA Test, LCC (Train, Dev, Eval, Combined) |
 | **Notebook 18** | **P3_SF_FULL_crop15** (Worst-band CE) | Hoàn thành | Hoàn thành (Epoch 9) | Dừng epoch 7 | CelebA Test, LCC Combined (Seed 100, 101) |
-| **Notebook 18** | **R7_SC_FULL_crop15** (Harmful-band CE) | Hoàn thành | Chưa chạy | Chưa chạy | CelebA Test, LCC Combined (Seed 100) |
+| **Notebook 18** | **R7_SC_FULL_crop15** (Harmful-band CE) | Hoàn thành | Chưa chạy | Hoàn thành (Epoch 9) | CelebA Test, LCC Combined (Seed 100, 102) |
 | **Notebook 21** | **CE_CLEAN_FULL_crop15** (Clean Baseline) | Hoàn thành | Hoàn thành | Hoàn thành | CelebA Test, LCC (4 splits), CASIA-FASD (3 splits) |
 
 ---
@@ -85,6 +85,16 @@
 | **LCC Evaluation** | 0.8197 | 0.8500 | **0.8348 ± 0.0214** | **23.61% ± 1.72%** | **26.43% ± 1.28%** | **15.76% ± 0.67%** |
 | **LCC Combined** | 0.8608 | 0.8764 | **0.8686 ± 0.0110** | **21.26% ± 0.76%** | **25.82% ± 1.37%** | **22.21% ± 0.51%** |
 
+### 3.4. `R7_SC_FULL_crop15` (MAST-PAD) qua 2 Seeds (100, 102)
+
+| Phân Tập Đánh Giá | Seed 100 AUC | Seed 102 AUC | **AUC (Mean ± Std)** | **EER (Mean ± Std)** | **ACER (Mean ± Std)** | **TPR@1% (Mean ± Std)** |
+|---|:---:|:---:|:---:|:---:|:---:|:---:|
+| **CelebA Test** | 0.9923 | 0.9909 | **0.9916 ± 0.0010** | **4.62% ± 0.38%** | **4.59% ± 0.35%** | **85.64% ± 2.14%** |
+| **LCC Training** | 0.8775 | 0.8785 | **0.8780 ± 0.0007** | **20.70% ± 0.46%** | **27.04% ± 0.16%** | **26.02% ± 5.32%** |
+| **LCC Development** | 0.8547 | 0.8472 | **0.8509 ± 0.0053** | **23.81% ± 1.25%** | **26.20% ± 0.20%** | **19.63% ± 0.17%** |
+| **LCC Evaluation** | 0.8401 | 0.8157 | **0.8279 ± 0.0172** | **25.14% ± 1.35%** | **27.80% ± 1.77%** | **17.04% ± 2.93%** |
+| **LCC Combined** | 0.8603 | 0.8564 | **0.8583 ± 0.0027** | **22.49% ± 0.61%** | **27.16% ± 0.05%** | **21.46% ± 2.08%** |
+
 ---
 
 ## 4. Đối Chiếu Kết Quả Giữa Notebook 18 và Notebook 21 (Baseline CE)
@@ -108,4 +118,4 @@
 | **MobileNetV3 Small 0.75** | CelebA-Spoof | 0.9910 | 6.09% | 0.8790 | 21.04% | 0.60 M | 0.030 G |
 | **Dự án: CE Baseline (3 Seeds)** | CelebA-Spoof | 0.9920 ± 0.0002 | 4.44% ± 0.01% | 0.8368 ± 0.0051 | 30.16% ± 0.82% | 0.43 M (~1.7 MB) | 0.081 G |
 | **Dự án: P3_SF (2 Seeds: 100, 101)** | CelebA-Spoof | 0.9924 ± 0.0002 | 4.40% ± 0.06% | 0.8686 ± 0.0110 | 25.82% ± 1.37% | 0.43 M (~1.7 MB) | 0.081 G |
-| **Dự án: R7_SC (Seed 100)** | CelebA-Spoof | 0.9923 | 4.35% | 0.8603 | 27.12% | 0.43 M (~1.7 MB) | 0.081 G |
+| **Dự án: R7_SC (2 Seeds: 100, 102)** | CelebA-Spoof | 0.9916 ± 0.0010 | 4.59% ± 0.35% | 0.8583 ± 0.0027 | 27.16% ± 0.05% | 0.43 M (~1.7 MB) | 0.081 G |

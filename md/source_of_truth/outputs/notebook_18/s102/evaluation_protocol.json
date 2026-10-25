@@ -1,0 +1,15 @@
+{
+  "comparison_role": "Descriptive one-seed confirmatory frozen-design comparison; no PASS/FAIL survival gate",
+  "earliest_possible_stop_epoch": 11,
+  "early_stop_patience": 3,
+  "final_source": "Reload best; re-infer full usable Test once; recalibrate/freeze source threshold before LCC",
+  "historical_protocol_identical": false,
+  "independent_test": false,
+  "lcc": "Full physical training/development/evaluation and pooled Combined; no LCC tuning",
+  "max_epochs": 12,
+  "patience_start_epoch": 9,
+  "reference_comparison": "Full Test/full LCC scope; differing preprocessing permitted by user",
+  "selection": "Full official CelebA Test-as-Val at every epoch; C eligible epoch1, P3/R7 epoch1 excluded",
+  "train": "Entire eligible official CelebA Train, no sampling",
+  "training_budget_note": "The full CelebA-Spoof training set is approximately 500K samples. Therefore the full-scale training budget uses 12 epochs with milestones [4,8], while preserving the same three-phase SGD schedule structure."
+}

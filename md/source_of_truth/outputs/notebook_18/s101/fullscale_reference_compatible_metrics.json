@@ -1,0 +1,68 @@
+{
+  "audit_file": "reference_metric_compatibility_audit.json",
+  "runs": {
+    "P3_SF_FULL_crop15": {
+      "lcc_combined": {
+        "acer": 0.21336152693871696,
+        "apcer": 0.12570839773312725,
+        "auc": 0.8763747882904063,
+        "bpcer": 0.30101465614430667,
+        "candidate_n": 18827,
+        "convention": "Reference variable names: APCER=real->attack; BPCER=attack->real; argmax logits; ROC attack probability",
+        "coverage": 0.9982471981728369,
+        "eer": 0.2071097372488408,
+        "global_argmax_accuracy": 0.7170905608172821,
+        "scored_n": 18794
+      },
+      "lcc_development": {
+        "acer": 0.2358500645938359,
+        "apcer": 0.09876543209876543,
+        "auc": 0.8640921409214093,
+        "bpcer": 0.37293469708890636,
+        "candidate_n": 2948,
+        "convention": "Reference variable names: APCER=real->attack; BPCER=attack->real; argmax logits; ROC attack probability",
+        "coverage": 0.9996607869742198,
+        "eer": 0.22147915027537368,
+        "global_argmax_accuracy": 0.664743807261622,
+        "scored_n": 2947
+      },
+      "lcc_evaluation": {
+        "acer": 0.2411535251482539,
+        "apcer": 0.16878980891719744,
+        "auc": 0.8499547551065233,
+        "bpcer": 0.31351724137931036,
+        "candidate_n": 7580,
+        "convention": "Reference variable names: APCER=real->attack; BPCER=attack->real; argmax logits; ROC attack probability",
+        "coverage": 0.9978891820580474,
+        "eer": 0.2229299363057325,
+        "global_argmax_accuracy": 0.692490745637229,
+        "scored_n": 7564
+      },
+      "lcc_training": {
+        "acer": 0.19292685832670223,
+        "apcer": 0.12356792144026187,
+        "auc": 0.8927699488511499,
+        "bpcer": 0.2622857952131426,
+        "candidate_n": 8299,
+        "convention": "Reference variable names: APCER=real->attack; BPCER=attack->real; argmax logits; ROC attack probability",
+        "coverage": 0.9980720568743222,
+        "eer": 0.19798895340603317,
+        "global_argmax_accuracy": 0.7581794035977303,
+        "scored_n": 8283
+      },
+      "test": {
+        "acer": 0.1166114037456207,
+        "apcer": 0.004178413209826822,
+        "auc": 0.9924978876028063,
+        "bpcer": 0.2290443942814146,
+        "candidate_n": 67170,
+        "convention": "Reference variable names: APCER=real->attack; BPCER=attack->real; argmax logits; ROC attack probability",
+        "coverage": 0.9882239094834003,
+        "eer": 0.04460926582822744,
+        "global_argmax_accuracy": 0.8382470359601681,
+        "scored_n": 66379
+      }
+    }
+  },
+  "units": "AUC and rates fractions; displayed rates percent"
+}

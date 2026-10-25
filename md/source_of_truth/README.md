@@ -25,7 +25,7 @@ source_of_truth/
 └── outputs/                                   # Toàn bộ Artifacts của các Run ĐÃ HOÀN THÀNH HOÀN TOÀN
     ├── notebook_18/                           # Huấn luyện đa phương pháp (C_FULL, P3_SF, R7_SC)
     │   ├── s100/                              # Seed 100: Đầy đủ 3 mô hình (C_FULL, P3_SF, R7_SC)
-    │   ├── s101/                              # Seed 101: C_FULL_crop15 (Clean+Aux) hoàn thành
+    │   ├── s101/                              # Seed 101: C_FULL_crop15 & P3_SF_FULL_crop15 hoàn thành
     │   └── s102/                              # Seed 102: C_FULL_crop15 (Clean+Aux) hoàn thành
     ├── notebook_20/                           # Đánh giá độc lập CASIA-FASD
     │   ├── casia_eval_s100/                   # Đánh giá hoàn chỉnh Seed 100
@@ -44,7 +44,7 @@ source_of_truth/
 |---|---|:---:|:---:|:---:|---|
 | **1. CE-only (Baseline)** | `CE_CLEAN_FULL_crop15` (NB 21) | ✅ Hoàn thành | ✅ Hoàn thành | ✅ Hoàn thành | • CelebA Test: Đủ 3 seeds<br>• LCC Combined: Đủ 3 seeds (83.68 ± 0.51%)<br>• CASIA Combined: Đủ 3 seeds (89.57 ± 1.94%) |
 | **2. Clean + Aux** | `C_FULL_crop15` (NB 18) | ✅ Hoàn thành | ✅ Hoàn thành | ✅ Hoàn thành | • CelebA Test: Đủ 3 seeds (99.08 ± 0.07%)<br>• LCC Combined: Đủ 3 seeds (85.10 ± 0.43%)<br>• CASIA Combined: **Đủ 3 seeds (90.93 ± 0.99%) [Mới bổ sung]** |
-| **3. WBST (Worst-band)** | `P3_SF_FULL_crop15` (NB 18) | ✅ Hoàn thành | ⚠️ Gián đoạn Epoch 8 | ⚠️ Gián đoạn Epoch 7 | • S100: CelebA (0.9936), LCC (85.25%), CASIA (90.49%)<br>• S101 & S102: Cần chạy lại khi có quota |
+| **3. WBST (Worst-band)** | `P3_SF_FULL_crop15` (NB 18) | ✅ Hoàn thành | ✅ Hoàn thành (Epoch 9) | ⚠️ Gián đoạn Epoch 7 | • S100: CelebA (0.9922), LCC (86.08%), CASIA (90.49%)<br>• S101: CelebA (0.9925), LCC (87.64%) [Mới bổ sung]<br>• S102: Cần chạy lại khi có quota |
 | **4. MAST-PAD (Đề xuất)** | `R7_SC_FULL_crop15` (NB 18) | ✅ Hoàn thành | ⏳ Đang chạy / Chờ GPU | ⏳ Chưa chạy | • S100: CelebA (0.9941), LCC (86.13%), CASIA (92.41%)<br>• S101 & S102: Cần chạy huấn luyện nguồn |
 
 ---

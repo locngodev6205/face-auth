@@ -1,6 +1,6 @@
 # Full-scale model results — source of truth
 
-Gộp tài liệu: **2026-10-20**. Snapshot C/P3/R7 gốc: **2026-10-12**. Phạm vi: ba checkpoint full-scale của thí nghiệm 18, đánh giá CASIA train/test/combined từ notebook 20 và báo cáo baseline CE-clean-only của notebook 21. Không trộn với kết quả 100K hoặc E1/E3 thuộc protocol khác. **Phạm vi seed: toàn bộ kết quả hiện tại là seed100; seed101 và seed102 sẽ được bổ sung sau, chưa thuộc phạm vi tổng hợp này.**
+Gộp tài liệu: **2026-10-20**. Snapshot C/P3/R7 gốc: **2026-10-12**. Phạm vi: ba checkpoint full-scale của thí nghiệm 18, đánh giá CASIA train/test/combined từ notebook 20 và báo cáo baseline CE-clean-only của notebook 21. Không trộn với kết quả 100K hoặc E1/E3 thuộc protocol khác. **Phạm vi seed:** Chi tiết phân rã theo epoch đơn lẻ trong tài liệu này phản ánh snapshot gốc Seed 100. Toàn bộ ma trận đa seed (Seed 100, 101, 102 cùng độ lệch chuẩn Mean ± Std) đã hoàn thành đầy đủ cho CelebA, LCC và CASIA-FASD, được tổng hợp tại [FULLSCALE_3SEEDS_SUMMARY_REPORT.md](FULLSCALE_3SEEDS_SUMMARY_REPORT.md) và các bảng đa seed cập nhật bên dưới.
 
 Tài liệu tổng hợp số đo đã có, phục vụ slide/paper/report. JSON/CSV per-run là bằng chứng gốc; bảng C/P3/R7 được tính/đối chiếu từ các nguồn đó theo snapshot gốc, không chọn metric nhỏ nhất giữa các ngưỡng khác nhau. Đơn vị, ngưỡng và population luôn đi cùng số liệu.
 
@@ -156,6 +156,21 @@ Combined dedup `(video_id,frame_index)` trước detection, ưu tiên test copy;
 | combined | P3_SF / WBST | 0.89866379 | 19.1605 | 2.9204 | 53.2641 | 28.0923 | 84.3233 | 30.2671 |
 | combined | R7_SC / MAST-PAD | 0.90941412 | 18.2384 | 4.4814 | 44.3620 | 24.4217 | 85.4135 | 40.3561 |
 
+### CASIA đa seed (3 Seeds: 100, 101, 102) — Source-Frozen Video & Frame (Test Pool)
+
+*Tổng hợp đầy đủ cả 3 seeds cho tập kiểm tra CASIA Test dưới ngưỡng đóng băng từ CelebA:*
+
+| Mô hình | Cấp độ đánh giá | Seed 100 AUC | Seed 101 AUC | Seed 102 AUC | **AUC (Mean ± Std)** | **EER (Mean ± Std)** | **ACER (Mean ± Std)** | **TPR@1% (Mean ± Std)** |
+| --- | --- | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| **Base / CE_clean †** | Video | 0.8837 | 0.8623 | 0.9014 | **0.8825 ± 0.0160** | **20.96% ± 2.75%** | **37.12% ± 0.00%** | **37.50% ± 0.00%** |
+| **C / Clean** | Video | 0.9087 | 0.8911 | 0.8912 | **0.8970 ± 0.0102** | **21.53% ± 1.23%** | **29.73% ± 1.05%** | **44.32% ± 1.97%** |
+| **P3_SF / WBST** | Video | 0.9118 | 0.8970 | 0.8779 | **0.8956 ± 0.0170** | **19.26% ± 2.19%** | **31.69% ± 2.03%** | **37.88% ± 4.30%** |
+| **R7_SC / MAST-PAD** | Video | 0.9259 | 0.8909 | 0.8680 | **0.8949 ± 0.0291** | **20.01% ± 1.61%** | **30.43% ± 2.41%** | **40.91% ± 4.55%** |
+| **Base / CE_clean †** | Frame | 0.8621 | 0.8389 | 0.8761 | **0.8590 ± 0.0153** | **22.76% ± 1.60%** | **34.04% ± 1.78%** | **27.69% ± 3.96%** |
+| **C / Clean** | Frame | 0.8831 | 0.8671 | 0.8620 | **0.8707 ± 0.0110** | **22.42% ± 1.41%** | **30.62% ± 1.82%** | **30.63% ± 0.45%** |
+| **P3_SF / WBST** | Frame | 0.8911 | 0.8790 | 0.8509 | **0.8737 ± 0.0206** | **21.35% ± 2.51%** | **31.20% ± 1.33%** | **29.25% ± 2.31%** |
+| **R7_SC / MAST-PAD** | Frame | 0.9032 | 0.8690 | 0.8408 | **0.8710 ± 0.0313** | **21.36% ± 2.89%** | **30.34% ± 4.03%** | **32.26% ± 8.74%** |
+
 ## 7. CASIA — train-calibrated operating points
 
 Mỗi model fit threshold riêng cho frame/video, **chỉ dùng train scores**, tối thiểu pooled ACER/HTER; ties chọn gần source threshold nhất. Sau fit, chuyển nguyên threshold sang test và combined. Không fit test/combined, không retrain/checkpoint selection, không đổi AUC/EER.
@@ -202,6 +217,21 @@ Train metrics là fitting-set diagnostics; combined chứa train calibration dat
 | combined | C / Clean | 0.89177245 | 20.0098 | 11.1279 | 30.5638 | 20.8458 | 83.9474 | 35.1424 | 26.6338 | 5.7879 |
 | combined | P3_SF / WBST | 0.89866379 | 19.1605 | 11.7825 | 28.3383 | 20.0604 | 84.0226 | 30.2671 | 28.0923 | 8.0319 |
 | combined | R7_SC / MAST-PAD | 0.90941412 | 18.2384 | 13.9476 | 22.7003 | 18.3240 | 83.8346 | 40.3561 | 24.4217 | 6.0977 |
+
+### CASIA đa seed (3 Seeds: 100, 101, 102) — Calibrated Video & Frame (Test Pool)
+
+*Tối ưu ngưỡng cắt trên CASIA Train và kiểm chứng trên CASIA Test:*
+
+| Mô hình | Cấp độ đánh giá | Seed 100 ACER | Seed 101 ACER | Seed 102 ACER | **ACER (Mean ± Std)** | **Giảm ACER TB** | **TPR@1% (Mean ± Std)** |
+| --- | --- | :---: | :---: | :---: | :---: | :---: | :---: |
+| **Base / CE_clean †** | Video | 23.11% | 22.16% | 21.21% | **22.16% ± 0.95%** | **-14.96 pp** | **37.50% ± 0.00%** |
+| **C / Clean** | Video | 21.21% | 22.54% | 21.40% | **21.72% ± 0.72%** | **-8.02 pp** | **44.32% ± 1.97%** |
+| **P3_SF / WBST** | Video | 17.05% | 18.56% | 21.97% | **19.19% ± 2.52%** | **-12.50 pp** | **37.88% ± 4.30%** |
+| **R7_SC / MAST-PAD** | Video | 18.75% | 18.94% | 23.30% | **20.33% ± 2.57%** | **-10.10 pp** | **40.91% ± 4.55%** |
+| **Base / CE_clean †** | Frame | 21.48% | 24.28% | 22.68% | **22.81% ± 1.40%** | **-11.23 pp** | **27.07% ± 0.00%** |
+| **C / Clean** | Frame | 22.31% | 24.61% | 25.32% | **24.08% ± 1.88%** | **-6.54 pp** | **30.96% ± 0.00%** |
+| **P3_SF / WBST** | Frame | 21.43% | 22.06% | 24.05% | **22.51% ± 1.46%** | **-8.68 pp** | **27.75% ± 0.00%** |
+| **R7_SC / MAST-PAD** | Frame | 19.37% | 20.91% | 24.22% | **21.50% ± 2.52%** | **-8.84 pp** | **40.61% ± 0.00%** |
 
 ## 8. Reference-compatible metrics — bảng riêng
 

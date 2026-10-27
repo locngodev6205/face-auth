@@ -1,0 +1,21 @@
+{
+  "run_id": "R7_SC_FULL_crop15_s101",
+  "method": "MAST-PAD (full-scale, s101)",
+  "scale": "full-scale",
+  "checkpoint_path": "/kaggle/input/datasets/locngodev/minifasnet-fullscale-seeds-checkpoints/s101/R7_SC_FULL_crop15/best.pth",
+  "config_path": "/kaggle/input/datasets/locngodev/minifasnet-fullscale-seeds-checkpoints/s101/R7_SC_FULL_crop15/config.json",
+  "frozen_threshold_path": "/kaggle/input/datasets/locngodev/minifasnet-fullscale-seeds-checkpoints/s101/R7_SC_FULL_crop15/evaluation_freeze.json",
+  "best_epoch": 10,
+  "threshold": 5.8095703125,
+  "threshold_source": "full official CelebA Test-as-Val",
+  "amp": true,
+  "train_seed": 101,
+  "input": "80x80 BGR float [0,1] crop1.5",
+  "evaluation_protocol_file": "../../evaluation_protocol.json",
+  "training": false,
+  "pools": [
+    "train",
+    "test",
+    "combined"
+  ]
+}

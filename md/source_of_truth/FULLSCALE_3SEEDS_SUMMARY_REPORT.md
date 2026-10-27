@@ -12,10 +12,10 @@
 
 | Notebook | Mô hình | Seed 100 | Seed 101 | Seed 102 | Tập Đánh Giá Đã Hoàn Thành |
 |---|---|:---:|:---:|:---:|---|
-| **Notebook 18** | **C_FULL_crop15** (Clean CE) | Hoàn thành | Hoàn thành | Hoàn thành | CelebA Test, LCC (Train, Dev, Eval, Combined) |
-| **Notebook 18** | **P3_SF_FULL_crop15** (Worst-band CE) | Hoàn thành | Hoàn thành (Epoch 9) | Hoàn thành (Epoch 11) | CelebA Test, LCC Combined (Đủ 3 Seeds: 100, 101, 102) |
-| **Notebook 18** | **R7_SC_FULL_crop15** (Harmful-band CE) | Hoàn thành | Chưa chạy | Hoàn thành (Epoch 9) | CelebA Test, LCC Combined (Seed 100, 102) |
-| **Notebook 21** | **CE_CLEAN_FULL_crop15** (Clean Baseline) | Hoàn thành | Hoàn thành | Hoàn thành | CelebA Test, LCC (4 splits), CASIA-FASD (3 splits) |
+| **Notebook 18** | **C_FULL_crop15** (Clean CE) | Hoàn thành | Hoàn thành (Epoch 9) | Hoàn thành (Epoch 9) | CelebA Test, LCC (4 splits), CASIA-FASD (3 splits) |
+| **Notebook 18** | **P3_SF_FULL_crop15** (Worst-band CE) | Hoàn thành | Hoàn thành (Epoch 9) | Hoàn thành (Epoch 11) | CelebA Test, LCC (4 splits), CASIA-FASD (3 splits) |
+| **Notebook 18** | **R7_SC_FULL_crop15** (Harmful-band CE) | Hoàn thành | Hoàn thành (Epoch 10) | Hoàn thành (Epoch 9) | CelebA Test, LCC (4 splits), CASIA-FASD (3 splits) |
+| **Notebook 21** | **CE_CLEAN_FULL_crop15** (Clean Baseline) | Hoàn thành | Hoàn thành (Epoch 9) | Hoàn thành (Epoch 12) | CelebA Test, LCC (4 splits), CASIA-FASD (3 splits) |
 
 ---
 
@@ -85,15 +85,58 @@
 | **LCC Evaluation** | 0.8197 | 0.8500 | 0.8183 | **0.8293 ± 0.0179** | **24.13% ± 1.51%** | **27.21% ± 1.63%** | **14.33% ± 2.53%** |
 | **LCC Combined** | 0.8608 | 0.8764 | 0.8519 | **0.8630 ± 0.0124** | **21.90% ± 1.24%** | **26.51% ± 1.54%** | **21.42% ± 1.40%** |
 
-### 3.4. `R7_SC_FULL_crop15` (MAST-PAD) qua 2 Seeds (100, 102)
+### 3.4. `R7_SC_FULL_crop15` (MAST-PAD) qua 3 Seeds (100, 101, 102)
 
-| Phân Tập Đánh Giá | Seed 100 AUC | Seed 102 AUC | **AUC (Mean ± Std)** | **EER (Mean ± Std)** | **ACER (Mean ± Std)** | **TPR@1% (Mean ± Std)** |
-|---|:---:|:---:|:---:|:---:|:---:|:---:|
-| **CelebA Test** | 0.9923 | 0.9909 | **0.9916 ± 0.0010** | **4.62% ± 0.38%** | **4.59% ± 0.35%** | **85.64% ± 2.14%** |
-| **LCC Training** | 0.8775 | 0.8785 | **0.8780 ± 0.0007** | **20.70% ± 0.46%** | **27.04% ± 0.16%** | **26.02% ± 5.32%** |
-| **LCC Development** | 0.8547 | 0.8472 | **0.8509 ± 0.0053** | **23.81% ± 1.25%** | **26.20% ± 0.20%** | **19.63% ± 0.17%** |
-| **LCC Evaluation** | 0.8401 | 0.8157 | **0.8279 ± 0.0172** | **25.14% ± 1.35%** | **27.80% ± 1.77%** | **17.04% ± 2.93%** |
-| **LCC Combined** | 0.8603 | 0.8564 | **0.8583 ± 0.0027** | **22.49% ± 0.61%** | **27.16% ± 0.05%** | **21.46% ± 2.08%** |
+| Phân Tập Đánh Giá | Seed 100 AUC | Seed 101 AUC | Seed 102 AUC | **AUC (Mean ± Std)** | **EER (Mean ± Std)** | **ACER (Mean ± Std)** | **TPR@1% (Mean ± Std)** |
+|---|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
+| **CelebA Test** | 0.9923 | 0.9919 | 0.9909 | **0.9917 ± 0.0007** | **4.59% ± 0.27%** | **4.56% ± 0.25%** | **85.64% ± 1.51%** |
+| **LCC Training** | 0.8775 | 0.8833 | 0.8785 | **0.8797 ± 0.0031** | **20.68% ± 0.32%** | **27.82% ± 1.37%** | **26.81% ± 4.01%** |
+| **LCC Development** | 0.8547 | 0.8381 | 0.8472 | **0.8466 ± 0.0083** | **24.12% ± 1.03%** | **26.58% ± 0.67%** | **16.87% ± 4.78%** |
+| **LCC Evaluation** | 0.8401 | 0.8331 | 0.8157 | **0.8296 ± 0.0126** | **24.72% ± 1.20%** | **28.33% ± 1.54%** | **17.30% ± 2.12%** |
+| **LCC Combined** | 0.8603 | 0.8619 | 0.8564 | **0.8595 ± 0.0028** | **22.38% ± 0.47%** | **27.76% ± 1.05%** | **20.45% ± 2.28%** |
+
+### 3.5. Đánh Giá CASIA-FASD Video (Source-Frozen Threshold) qua 3 Seeds
+
+*Đánh giá cross-dataset không qua hiệu chỉnh ngưỡng (áp dụng trực tiếp ngưỡng đóng băng từ CelebA-Spoof).*
+
+| Mô hình | Phân Tập CASIA | Seed 100 AUC | Seed 101 AUC | Seed 102 AUC | **AUC (Mean ± Std)** | **EER (Mean ± Std)** | **ACER (Mean ± Std)** | **TPR@1% (Mean ± Std)** |
+|---|---|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
+| **C_FULL_crop15 (Clean CE)** | train | 0.9210 | 0.8967 | 0.8979 | **0.9052 ± 0.0137** | **19.44% ± 0.85%** | **28.34% ± 2.55%** | **41.81% ± 6.42%** |
+| **C_FULL_crop15 (Clean CE)** | test | 0.9087 | 0.8911 | 0.8912 | **0.8970 ± 0.0102** | **21.53% ± 1.23%** | **29.73% ± 1.05%** | **44.32% ± 1.97%** |
+| **C_FULL_crop15 (Clean CE)** | combined | 0.9204 | 0.9063 | 0.9013 | **0.9093 ± 0.0099** | **19.21% ± 2.34%** | **28.33% ± 1.03%** | **46.30% ± 1.70%** |
+| **P3_SF_FULL_crop15 (WBST)** | train | 0.9027 | 0.9224 | 0.8854 | **0.9035 ± 0.0185** | **20.28% ± 2.69%** | **29.28% ± 1.55%** | **34.46% ± 0.98%** |
+| **P3_SF_FULL_crop15 (WBST)** | test | 0.9118 | 0.8970 | 0.8779 | **0.8956 ± 0.0170** | **19.26% ± 2.19%** | **31.69% ± 2.03%** | **37.88% ± 4.30%** |
+| **P3_SF_FULL_crop15 (WBST)** | combined | 0.9223 | 0.9129 | 0.8922 | **0.9091 ± 0.0154** | **18.84% ± 2.05%** | **30.31% ± 1.13%** | **41.11% ± 2.94%** |
+| **R7_SC_FULL_crop15 (MAST-PAD)** | train | 0.9192 | 0.9153 | 0.8848 | **0.9064 ± 0.0188** | **18.78% ± 1.65%** | **29.09% ± 3.47%** | **37.85% ± 12.26%** |
+| **R7_SC_FULL_crop15 (MAST-PAD)** | test | 0.9259 | 0.8909 | 0.8680 | **0.8949 ± 0.0291** | **20.01% ± 1.61%** | **30.43% ± 2.41%** | **40.91% ± 4.55%** |
+| **R7_SC_FULL_crop15 (MAST-PAD)** | combined | 0.9352 | 0.9075 | 0.8809 | **0.9078 ± 0.0272** | **19.33% ± 2.25%** | **29.02% ± 2.34%** | **43.33% ± 4.84%** |
+
+### 3.6. Đánh Giá CASIA-FASD Video (Domain Calibrated - Threshold Fit trên Train) qua 3 Seeds
+
+*Tối ưu ngưỡng cắt trên tập CASIA Train rồi chuyển sang đánh giá trên CASIA Test.*
+
+| Mô hình | Phân Tập CASIA | Seed 100 ACER | Seed 101 ACER | Seed 102 ACER | **ACER (Mean ± Std)** | **Giảm ACER TB** | **TPR@1% (Mean ± Std)** |
+|---|---|:---:|:---:|:---:|:---:|:---:|:---:|
+| **C_FULL_crop15 (Clean CE)** | train | 17.15% | 18.88% | 17.74% | **17.92% ± 0.88%** | **-10.42 pp** | **41.81% ± 6.42%** |
+| **C_FULL_crop15 (Clean CE)** | test | 21.21% | 22.54% | 21.40% | **21.72% ± 0.72%** | **-8.02 pp** | **44.32% ± 1.97%** |
+| **C_FULL_crop15 (Clean CE)** | combined | 19.55% | 21.90% | 20.63% | **20.69% ± 1.18%** | **-7.64 pp** | **46.30% ± 1.70%** |
+| **P3_SF_FULL_crop15 (WBST)** | train | 19.17% | 16.33% | 19.17% | **18.22% ± 1.64%** | **-11.06 pp** | **34.46% ± 0.98%** |
+| **P3_SF_FULL_crop15 (WBST)** | test | 17.05% | 18.56% | 21.97% | **19.19% ± 2.52%** | **-12.50 pp** | **37.88% ± 4.30%** |
+| **P3_SF_FULL_crop15 (WBST)** | combined | 16.71% | 17.65% | 21.54% | **18.63% ± 2.56%** | **-11.68 pp** | **41.11% ± 2.94%** |
+| **R7_SC_FULL_crop15 (MAST-PAD)** | train | 15.49% | 16.60% | 19.14% | **17.07% ± 1.87%** | **-12.02 pp** | **37.85% ± 12.26%** |
+| **R7_SC_FULL_crop15 (MAST-PAD)** | test | 18.75% | 18.94% | 23.30% | **20.33% ± 2.57%** | **-10.10 pp** | **40.91% ± 4.55%** |
+| **R7_SC_FULL_crop15 (MAST-PAD)** | combined | 16.74% | 18.05% | 21.94% | **18.91% ± 2.71%** | **-10.11 pp** | **43.33% ± 4.84%** |
+
+### 3.7. Đánh Giá CASIA-FASD Cấp Độ Frame (Frame-Level) qua 3 Seeds
+
+| Mô hình | Chế Độ Ngưỡng (Test Split) | Seed 100 ACER | Seed 101 ACER | Seed 102 ACER | **ACER (Mean ± Std)** | **AUC (Mean ± Std)** | **EER (Mean ± Std)** |
+|---|---|:---:|:---:|:---:|:---:|:---:|:---:|
+| **C_FULL_crop15 (Clean CE)** | Zero-Shot (CelebA Frozen) | 28.53% | 31.87% | 31.46% | **30.62% ± 1.82%** | **0.8707 ± 0.0110** | **22.42% ± 1.41%** |
+| **C_FULL_crop15 (Clean CE)** | Domain Calibrated (CASIA-Fit) | 22.31% | 24.61% | 25.32% | **24.08% ± 1.88%** | **0.8707 ± 0.0110** | **22.42% ± 1.41%** |
+| **P3_SF_FULL_crop15 (WBST)** | Zero-Shot (CelebA Frozen) | 29.72% | 31.59% | 32.29% | **31.20% ± 1.33%** | **0.8737 ± 0.0206** | **21.35% ± 2.51%** |
+| **P3_SF_FULL_crop15 (WBST)** | Domain Calibrated (CASIA-Fit) | 21.43% | 22.06% | 24.05% | **22.51% ± 1.46%** | **0.8737 ± 0.0206** | **21.35% ± 2.51%** |
+| **R7_SC_FULL_crop15 (MAST-PAD)** | Zero-Shot (CelebA Frozen) | 25.72% | 32.16% | 33.15% | **30.34% ± 4.03%** | **0.8710 ± 0.0313** | **21.36% ± 2.89%** |
+| **R7_SC_FULL_crop15 (MAST-PAD)** | Domain Calibrated (CASIA-Fit) | 19.37% | 20.91% | 24.22% | **21.50% ± 2.52%** | **0.8710 ± 0.0313** | **21.36% ± 2.89%** |
 
 ---
 
@@ -118,4 +161,4 @@
 | **MobileNetV3 Small 0.75** | CelebA-Spoof | 0.9910 | 6.09% | 0.8790 | 21.04% | 0.60 M | 0.030 G |
 | **Dự án: CE Baseline (3 Seeds)** | CelebA-Spoof | 0.9920 ± 0.0002 | 4.44% ± 0.01% | 0.8368 ± 0.0051 | 30.16% ± 0.82% | 0.43 M (~1.7 MB) | 0.081 G |
 | **Dự án: P3_SF (3 Seeds)** | CelebA-Spoof | 0.9921 ± 0.0005 | 4.44% ± 0.09% | 0.8630 ± 0.0124 | 26.51% ± 1.54% | 0.43 M (~1.7 MB) | 0.081 G |
-| **Dự án: R7_SC (2 Seeds: 100, 102)** | CelebA-Spoof | 0.9916 ± 0.0010 | 4.59% ± 0.35% | 0.8583 ± 0.0027 | 27.16% ± 0.05% | 0.43 M (~1.7 MB) | 0.081 G |
+| **Dự án: R7_SC (3 Seeds)** | CelebA-Spoof | 0.9917 ± 0.0007 | 4.56% ± 0.25% | 0.8595 ± 0.0028 | 27.76% ± 1.05% | 0.43 M (~1.7 MB) | 0.081 G |

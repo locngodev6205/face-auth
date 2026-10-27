@@ -1,18 +1,91 @@
 {
-  "audit_file": "reference_metric_compatibility_audit.json",
   "runs": {
-    "P3_SF_FULL_crop15": {
+    "C_FULL_crop15": {
+      "test": {
+        "acer": 0.11557320890298683,
+        "apcer": 0.004681836488119211,
+        "auc": 0.9899867659690322,
+        "bpcer": 0.22646458131785446,
+        "candidate_n": 67170,
+        "convention": "Reference variable names: APCER=real->attack; BPCER=attack->real; argmax logits; ROC attack probability",
+        "coverage": 0.9882239094834003,
+        "eer": 0.04908376963350786,
+        "global_argmax_accuracy": 0.8399041865650281,
+        "scored_n": 66379
+      },
+      "lcc_training": {
+        "acer": 0.21496754608136576,
+        "apcer": 0.1890343698854337,
+        "auc": 0.8745169809685114,
+        "bpcer": 0.24090072227729784,
+        "candidate_n": 8299,
+        "convention": "Reference variable names: APCER=real->attack; BPCER=attack->real; argmax logits; ROC attack probability",
+        "coverage": 0.9980720568743222,
+        "eer": 0.21522094926350246,
+        "global_argmax_accuracy": 0.7667511771097428,
+        "scored_n": 8283
+      },
+      "lcc_development": {
+        "acer": 0.2531757826538839,
+        "apcer": 0.15308641975308643,
+        "auc": 0.8428810793484278,
+        "bpcer": 0.35326514555468136,
+        "candidate_n": 2948,
+        "convention": "Reference variable names: APCER=real->attack; BPCER=attack->real; argmax logits; ROC attack probability",
+        "coverage": 0.9996607869742198,
+        "eer": 0.2271604938271605,
+        "global_argmax_accuracy": 0.674244994910078,
+        "scored_n": 2947
+      },
+      "lcc_evaluation": {
+        "acer": 0.2600105424994509,
+        "apcer": 0.2197452229299363,
+        "auc": 0.8225299802328135,
+        "bpcer": 0.3002758620689655,
+        "candidate_n": 7580,
+        "convention": "Reference variable names: APCER=real->attack; BPCER=attack->real; argmax logits; ROC attack probability",
+        "coverage": 0.9978891820580474,
+        "eer": 0.25337931034482764,
+        "global_argmax_accuracy": 0.7030671602326811,
+        "scored_n": 7564
+      },
       "lcc_combined": {
-        "acer": 0.21336152693871696,
-        "apcer": 0.12570839773312725,
-        "auc": 0.8763747882904063,
-        "bpcer": 0.30101465614430667,
+        "acer": 0.2349467421002894,
+        "apcer": 0.18650180319422976,
+        "auc": 0.8540420723819293,
+        "bpcer": 0.28339168100634904,
         "candidate_n": 18827,
         "convention": "Reference variable names: APCER=real->attack; BPCER=attack->real; argmax logits; ROC attack probability",
         "coverage": 0.9982471981728369,
-        "eer": 0.2071097372488408,
-        "global_argmax_accuracy": 0.7170905608172821,
+        "eer": 0.23183925811437403,
+        "global_argmax_accuracy": 0.7266148770884325,
         "scored_n": 18794
+      }
+    },
+    "P3_SF_FULL_crop15": {
+      "test": {
+        "acer": 0.1166114037456207,
+        "apcer": 0.004178413209826822,
+        "auc": 0.9924978876028063,
+        "bpcer": 0.2290443942814146,
+        "candidate_n": 67170,
+        "convention": "Reference variable names: APCER=real->attack; BPCER=attack->real; argmax logits; ROC attack probability",
+        "coverage": 0.9882239094834003,
+        "eer": 0.04460926582822744,
+        "global_argmax_accuracy": 0.8382470359601681,
+        "scored_n": 66379
+      },
+      "lcc_training": {
+        "acer": 0.19292685832670223,
+        "apcer": 0.12356792144026187,
+        "auc": 0.8927699488511499,
+        "bpcer": 0.2622857952131426,
+        "candidate_n": 8299,
+        "convention": "Reference variable names: APCER=real->attack; BPCER=attack->real; argmax logits; ROC attack probability",
+        "coverage": 0.9980720568743222,
+        "eer": 0.19798895340603317,
+        "global_argmax_accuracy": 0.7581794035977303,
+        "scored_n": 8283
       },
       "lcc_development": {
         "acer": 0.2358500645938359,
@@ -38,31 +111,82 @@
         "global_argmax_accuracy": 0.692490745637229,
         "scored_n": 7564
       },
-      "lcc_training": {
-        "acer": 0.19292685832670223,
-        "apcer": 0.12356792144026187,
-        "auc": 0.8927699488511499,
-        "bpcer": 0.2622857952131426,
-        "candidate_n": 8299,
+      "lcc_combined": {
+        "acer": 0.21336152693871696,
+        "apcer": 0.12570839773312725,
+        "auc": 0.8763747882904063,
+        "bpcer": 0.30101465614430667,
+        "candidate_n": 18827,
         "convention": "Reference variable names: APCER=real->attack; BPCER=attack->real; argmax logits; ROC attack probability",
-        "coverage": 0.9980720568743222,
-        "eer": 0.19798895340603317,
-        "global_argmax_accuracy": 0.7581794035977303,
-        "scored_n": 8283
-      },
+        "coverage": 0.9982471981728369,
+        "eer": 0.2071097372488408,
+        "global_argmax_accuracy": 0.7170905608172821,
+        "scored_n": 18794
+      }
+    },
+    "R7_SC_FULL_crop15": {
       "test": {
-        "acer": 0.1166114037456207,
-        "apcer": 0.004178413209826822,
-        "auc": 0.9924978876028063,
-        "bpcer": 0.2290443942814146,
+        "acer": 0.12484369310581003,
+        "apcer": 0.0032722513089005235,
+        "auc": 0.9919158268269812,
+        "bpcer": 0.24641513490271955,
         "candidate_n": 67170,
         "convention": "Reference variable names: APCER=real->attack; BPCER=attack->real; argmax logits; ROC attack probability",
         "coverage": 0.9882239094834003,
-        "eer": 0.04460926582822744,
-        "global_argmax_accuracy": 0.8382470359601681,
+        "eer": 0.04516822530366549,
+        "global_argmax_accuracy": 0.8263456816161738,
         "scored_n": 66379
+      },
+      "lcc_training": {
+        "acer": 0.21009464866717925,
+        "apcer": 0.12193126022913257,
+        "auc": 0.8832755290523011,
+        "bpcer": 0.2982580371052259,
+        "candidate_n": 8299,
+        "convention": "Reference variable names: APCER=real->attack; BPCER=attack->real; argmax logits; ROC attack probability",
+        "coverage": 0.9980720568743222,
+        "eer": 0.20621931260229132,
+        "global_argmax_accuracy": 0.7277556440903055,
+        "scored_n": 8283
+      },
+      "lcc_development": {
+        "acer": 0.2512593369661295,
+        "apcer": 0.08395061728395062,
+        "auc": 0.8380588823809385,
+        "bpcer": 0.41856805664830843,
+        "candidate_n": 2948,
+        "convention": "Reference variable names: APCER=real->attack; BPCER=attack->real; argmax logits; ROC attack probability",
+        "coverage": 0.9996607869742198,
+        "eer": 0.24691358024691357,
+        "global_argmax_accuracy": 0.6274177129284018,
+        "scored_n": 2947
+      },
+      "lcc_evaluation": {
+        "acer": 0.2623949044585987,
+        "apcer": 0.16878980891719744,
+        "auc": 0.833133318690973,
+        "bpcer": 0.356,
+        "candidate_n": 7580,
+        "convention": "Reference variable names: APCER=real->attack; BPCER=attack->real; argmax logits; ROC attack probability",
+        "coverage": 0.9978891820580474,
+        "eer": 0.23875862068965514,
+        "global_argmax_accuracy": 0.6517715494447383,
+        "scored_n": 7564
+      },
+      "lcc_combined": {
+        "acer": 0.23141584656951053,
+        "apcer": 0.12158681092220505,
+        "auc": 0.8618679179141954,
+        "bpcer": 0.341244882216816,
+        "candidate_n": 18827,
+        "convention": "Reference variable names: APCER=real->attack; BPCER=attack->real; argmax logits; ROC attack probability",
+        "coverage": 0.9982471981728369,
+        "eer": 0.22153529108706851,
+        "global_argmax_accuracy": 0.681440885388954,
+        "scored_n": 18794
       }
     }
   },
+  "audit_file": "reference_metric_compatibility_audit.json",
   "units": "AUC and rates fractions; displayed rates percent"
 }

@@ -1,0 +1,14 @@
+{
+  "auc": 0.896952479338843,
+  "eer": 0.17992424242424238,
+  "tpr_at_fpr_1pct": 0.4090909090909091,
+  "apcer": 0.0,
+  "bpcer": 0.625,
+  "acer": 0.3125,
+  "hter": 0.3125,
+  "binary_accuracy": 0.84375,
+  "locked_source_threshold": 5.14599609375,
+  "candidate_n": 360,
+  "scored_n": 352,
+  "detector_coverage": 0.9777777777777777
+}

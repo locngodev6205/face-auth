@@ -1,9 +1,12 @@
 import base64
+import os
+import secrets
+from threading import BoundedSemaphore
 import sys
 from typing import List, Optional
 import cv2
 import numpy as np
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Header, Depends
 from pydantic import BaseModel, Field
 
 import config
@@ -12,6 +15,7 @@ from database.vector_db import VectorDB
 from detection.detector import FaceDetector
 from enrollment.enroll import build_identity_embedding
 from recognition.embedder import FaceEmbedder
+from remote_extraction import AlignedFaceExtractor
 
 # Reconfigure stdout/stderr to UTF-8
 if hasattr(sys.stdout, "reconfigure"):
@@ -29,11 +33,13 @@ app = FastAPI(
 detector: Optional[FaceDetector] = None
 embedder: Optional[FaceEmbedder] = None
 db: Optional[VectorDB] = None
+remote_extractor: Optional[AlignedFaceExtractor] = None
+remote_slot = BoundedSemaphore(1)
 
 
 @app.on_event("startup")
 def startup_event():
-    global detector, embedder, db
+    global detector, embedder, db, remote_extractor
     print("[api_service] Loading models...")
     detector = FaceDetector(
         model_name=config.MODEL_PACK_NAME,
@@ -46,6 +52,9 @@ def startup_event():
     embedder = FaceEmbedder(
         model_name=config.MODEL_PACK_NAME,
         ctx_id=config.MODEL_CTX_ID,
+    )
+    remote_extractor = AlignedFaceExtractor(
+        embedder._model.session, embedder._model.model_file, config.EMBEDDING_MODEL_VERSION,
     )
     print(f"[api_service] Embedder loaded: {config.MODEL_PACK_NAME}")
     db = VectorDB(
@@ -206,3 +215,38 @@ def delete_employee_faces(employee_code: str):
             )
 
     return {"status": "ok", "employee_code": employee_code}
+
+
+class AlignedEmbeddingRequest(BaseModel):
+    model_config = {"extra": "forbid"}
+    request_id: str = Field(..., pattern=r"^[a-f0-9]{32}$")
+    image_png_b64: str = Field(..., min_length=44, max_length=60000)
+    model_sha256: str = Field(..., pattern=r"^[a-f0-9]{64}$")
+    model_version: str = Field(..., min_length=1, max_length=80)
+
+
+def require_internal_key(x_face_auth_key: str = Header(default="")):
+    expected = os.getenv("FACE_AUTH_INTERNAL_KEY", "")
+    if len(expected) < 32:
+        raise HTTPException(503, "Server extraction is not configured")
+    if not secrets.compare_digest(expected.encode(), x_face_auth_key.encode()):
+        raise HTTPException(401, "Invalid internal credentials")
+
+
+@app.post("/internal/face-embedding", dependencies=[Depends(require_internal_key)])
+def extract_aligned_embedding(req: AlignedEmbeddingRequest):
+    # Extraction only: never search identities or write attendance from this endpoint.
+    if remote_extractor is None:
+        raise HTTPException(503, "ArcFace is not ready")
+    if not remote_slot.acquire(blocking=False):
+        raise HTTPException(429, "ArcFace is busy; retry with a fresh frame")
+    try:
+        return {"request_id": req.request_id, **remote_extractor.extract(
+            req.image_png_b64, req.model_sha256, req.model_version,
+        )}
+    except ValueError as exc:
+        raise HTTPException(422, str(exc)) from exc
+    except Exception as exc:
+        raise HTTPException(503, "ArcFace extraction failed") from exc
+    finally:
+        remote_slot.release()

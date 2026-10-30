@@ -3,7 +3,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends build-essential
 WORKDIR /app
 COPY requirements.txt requirements-api-constraints.txt ./
 RUN pip install --no-cache-dir cython setuptools wheel && pip install --no-cache-dir --no-build-isolation -r requirements.txt -c requirements-api-constraints.txt
-COPY config.py api_service.py ./
+COPY config.py api_service.py remote_extraction.py ./
 COPY alignment ./alignment
 COPY database ./database
 COPY detection ./detection

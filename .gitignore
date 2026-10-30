@@ -97,6 +97,13 @@ md/source_of_truth/*.zip
 # Local MAST-PAD manuscript and all generated LaTeX artifacts.
 /paper/
 
+# Keep generated local files ignored after the source_of_truth allowlist above.
+**/.DS_Store
+**/__pycache__/
+**/.ipynb_checkpoints/
+**/.vscode/*
+!**/.vscode/extensions.json
+
 # Ignore heavy raw arrays, candidate dumps, and zip archives inside source_of_truth
 md/source_of_truth/**/*.zip
 md/source_of_truth/**/*.npy

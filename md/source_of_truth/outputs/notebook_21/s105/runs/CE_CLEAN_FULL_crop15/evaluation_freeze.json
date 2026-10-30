@@ -1,0 +1,43 @@
+{
+  "best_epoch": 11,
+  "checkpoint_sha256": "42afdf930ac4d0a5af81dacae9496368f3ee7ae121425d62b924332356db28e9",
+  "lcc_crop_factor": 1.5,
+  "locked_threshold": 4.8642578125,
+  "manifest_sha256": {
+    "full_test.csv": "d3fee50ddb0061c3193fee09044a1f410a7490c781e099cb3c0aa12175ba98f4",
+    "full_train.csv": "fe947b4d3e1f620f7c5cda9f59906e803646b6bf809e857095a493e171fbfb71"
+  },
+  "run_id": "CE_CLEAN_FULL_crop15",
+  "selection_set": "Full official Test-as-Val",
+  "source_metrics": {
+    "acer": 0.04406433488666715,
+    "apcer": 0.05006986993442975,
+    "auc": 0.9922898519780795,
+    "binary_accuracy": 0.9535244580364272,
+    "bpcer": 0.038058799838904554,
+    "candidate_n": 67170,
+    "detector_coverage": 0.9882239094834003,
+    "eer": 0.0443729361160784,
+    "hter": 0.04406433488666715,
+    "locked_source_threshold": 4.8642578125,
+    "scored_n": 66379,
+    "tpr_at_fpr_1pct": 0.8559046516310914
+  },
+  "test_crop_factor": 1.5,
+  "train_crop_factor": 1.5,
+  "val_crop_factor": 1.5,
+  "val_metrics": {
+    "acer": 0.04406433488666715,
+    "apcer": 0.05006986993442975,
+    "auc": 0.9922898519780795,
+    "binary_accuracy": 0.9535244580364272,
+    "bpcer": 0.038058799838904554,
+    "candidate_n": 67170,
+    "detector_coverage": 0.9882239094834003,
+    "eer": 0.0443729361160784,
+    "hter": 0.04406433488666715,
+    "locked_source_threshold": 4.8642578125,
+    "scored_n": 66379,
+    "tpr_at_fpr_1pct": 0.8559046516310914
+  }
+}

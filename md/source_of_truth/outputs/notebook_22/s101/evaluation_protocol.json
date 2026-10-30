@@ -1,0 +1,46 @@
+{
+  "casia_evaluation": {
+    "enabled": true,
+    "min_valid_frames": 4,
+    "primary": "source-frozen frame/video train/test/combined",
+    "train_only_calibration": true
+  },
+  "comparison_role": "Descriptive one-seed confirmatory frozen-design comparison; no PASS/FAIL survival gate",
+  "earliest_possible_stop_epoch": 11,
+  "early_stop_patience": 3,
+  "final_source": "Reload best; re-infer full usable Test once; recalibrate/freeze source threshold before LCC",
+  "historical_protocol_identical": false,
+  "independent_test": false,
+  "lcc": "Full physical training/development/evaluation and pooled Combined; no LCC tuning",
+  "max_epochs": 12,
+  "patience_start_epoch": 9,
+  "r7_gate_ablation": {
+    "ablation_run_id": "R7_SC_NOGATE_FULL_crop15",
+    "centers": [
+      0.08333333333333331,
+      0.24999999999999997,
+      0.41666666666666663
+    ],
+    "controls": "same seed/init/manifests/crop/input/augmentation/selector/gain/sigma/auxiliary/optimizer/warmup/stopping",
+    "data_seed": 43,
+    "full_selected_batch_forward": true,
+    "gain": [
+      0.65,
+      0.9
+    ],
+    "hypothesis": "estimate direction and magnitude of the gate-policy contrast without presuming improvement",
+    "metrics": "source/LCC AUC,EER,source-frozen APCER/BPCER/ACER,coverage; CASIA evaluation separately",
+    "no_gate_diagnostic_note": "harmful_count/fraction=0 indicate disabled harmful-loss counters, not measured absence of margin degradation",
+    "question": "R7 harmful-only versus all-selected worst-view CE under the same spectral width",
+    "reference_run_id": "R7_SC_FULL_crop15",
+    "selection": "min source Test-as-Val ACER, source AUC tie-break; warmup excluded",
+    "sigma": 0.1,
+    "source_notebook_sha256": "100a858c09a3739203c1417d39a04acab203cee5a699526bcaa44db2032f685f",
+    "train_seed": 101,
+    "treatment": "harmful gate with H-normalization versus no gate with B-normalization"
+  },
+  "reference_comparison": "Full Test/full LCC scope; differing preprocessing permitted by user",
+  "selection": "Full official CelebA Test-as-Val at every epoch; C eligible epoch1, P3/R7 epoch1 excluded",
+  "train": "Entire eligible official CelebA Train, no sampling",
+  "training_budget_note": "The full CelebA-Spoof training set is approximately 500K samples. Therefore the full-scale training budget uses 12 epochs with milestones [4,8], while preserving the same three-phase SGD schedule structure."
+}

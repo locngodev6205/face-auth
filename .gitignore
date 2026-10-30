@@ -96,3 +96,8 @@ md/source_of_truth/*.zip
 
 # Local MAST-PAD manuscript and all generated LaTeX artifacts.
 /paper/
+
+# Ignore heavy raw arrays, candidate dumps, and zip archives inside source_of_truth
+md/source_of_truth/**/*.zip
+md/source_of_truth/**/*.npy
+md/source_of_truth/**/full_train_candidates.csv

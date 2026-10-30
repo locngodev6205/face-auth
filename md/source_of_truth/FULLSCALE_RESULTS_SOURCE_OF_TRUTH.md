@@ -346,7 +346,7 @@ Notebook: [21_fullscale_CE_clean_baseline_crop15.ipynb](../../antispoof/notebook
 
 Đã hash cả bản root và per-run của `full_train.csv`/`full_test.csv`, khớp `evaluation_freeze.json`. `config.json` xác nhận CE_clean=1, CE_worst=0, L_aux=0, seed100, crop1.5 BGR80 và cấu hình huấn luyện; completion, freeze, CASIA config và training history nhất quán về best epoch/threshold.
 
-**Phạm vi run:** kết quả CE_clean trong tài liệu này là seed100, nhất quán với các kết quả C/P3/R7 hiện tại. Theo kế hoạch của tác giả, seed101 và seed102 sẽ được bổ sung sau; cấu hình notebook chuẩn bị cho seed tiếp theo không được dùng để mô tả lại run seed100.
+**Phạm vi run:** Ban đầu kết quả CE_clean trong tài liệu này là seed100. Hiện tại, Notebook 21 đã hoàn thành trọn vẹn cả 4 seeds (Seed 100, 101, 102 và 105). Số liệu chi tiết đa seed được lưu trữ và tổng hợp tại [FULLSCALE_3SEEDS_SUMMARY_REPORT.md](FULLSCALE_3SEEDS_SUMMARY_REPORT.md).
 
 **Giới hạn provenance:** không xác lập được exact training git revision chỉ từ các artifact đã kiểm tra. Initial-state SHA được đối chiếu giữa metadata, chưa tái tạo khởi tạo; checkpoint best đã được hash trực tiếp. Thư mục chưa có complexity report, ONNX hoặc runtime config CE-only. Không suy ra latency/FPS hay hiệu quả webcam.
 
@@ -475,3 +475,41 @@ Tất cả rate ở JSON dưới đây là fraction (không phải %). `threshol
 {"acer": 0.21969320066334994, "acer_reduction": 0.14883913764510773, "apcer": 0.31716417910447764, "auc": 0.8983001658374792, "binary_accuracy": 0.7318435754189944, "bpcer": 0.12222222222222222, "candidate_n": 360, "casia_calibrated_threshold": -3.428955, "dataset": "casia_combined", "detector_coverage": 0.9944444444444445, "eer": 0.1654228855721393, "evaluation_policy": "CASIA train threshold transferred unchanged; no test/combined fitting", "fit_n": 237, "fit_split": "train", "hter": 0.21969320066334994, "hter_reduction": 0.14883913764510773, "objective": "minimum pooled binary ACER/HTER", "run_id": "CE_CLEAN_FULL_crop15", "scored_n": 358, "source_acer": 0.36853233830845766, "source_hter": 0.36853233830845766, "source_threshold": 4.5966796875, "split": "combined", "status": "calibrated", "threshold_policy": "CASIA train-calibrated", "tie_break": "closest to source threshold", "tpr_at_fpr_1pct": 0.4222222222222222, "train_test_copy_overlap": {"frame_ids": 1403, "subjects": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20], "video_ids": 240}, "unit": "video"}
 ]
 ```
+
+---
+
+## 13. Ablation Study: Khảo sát cơ chế Harmful Gate (Notebook 22)
+
+Chi tiết thực nghiệm, phân tích và so sánh đa miền được ghi nhận tại [R7_HARMFUL_GATE_ABLATION_SOURCE_OF_TRUTH.md](R7_HARMFUL_GATE_ABLATION_SOURCE_OF_TRUTH.md).
+
+### 13.1. Thiết lập thí nghiệm
+- **Run ID:** `R7_SC_NOGATE_FULL_crop15`
+- **Thay đổi chính sách (Treatment):** Loại bỏ Harmful Gate, tính Cross-Entropy trên góc nhìn xấu nhất (All-Selected Worst-View CE) của toàn bộ batch với chuẩn hóa $B$-normalization qua batch size $B=256$, giữ nguyên $\sigma=0.10$ và hệ số hàm mất mát ($0.75 L_{clean} + 0.25 L_{spectral} + L_{aux}$).
+- **Trạng thái:** Hoàn tất đầy đủ cả **3 random seeds độc lập**:
+  - Seed 100: Best Epoch 11, Locked Source Threshold = `5.1689`.
+  - Seed 101: Best Epoch 9, Locked Source Threshold = `5.2744`.
+  - Seed 105: Best Epoch 10, Locked Source Threshold = `5.4795`.
+  - Toàn bộ đều hoàn tất đánh giá full LCC (4 splits) và CASIA-FASD zero-shot / calibrated (video & frame).
+
+### 13.2. Bảng chỉ số đối chiếu nhanh (Mean 3-seed và 1:1 Seed 105)
+
+| Tập đánh giá | Chỉ số đo | R7_SC (MAST Chuẩn, Seed 105) | R7_SC_NOGATE (w/o Gate, Seed 105) | R7_SC_NOGATE (w/o Gate, Mean 3 Seeds) | R7_SC (MAST Chuẩn, Mean 3 Seeds) |
+|---|---|:---:|:---:|:---:|:---:|
+| **CelebA Test** | AUC | **0.9905** | 0.9902 | **0.9909 ± 0.0006** | **0.9917 ± 0.0007** |
+| **CelebA Test** | ACER (%) | **4.67%** | 4.65% | **4.56% ± 0.14%** | **4.56% ± 0.25%** |
+| **CelebA Test** | TPR@1% (%) | **82.42%** | 81.79% | **83.06% ± 1.85%** | **85.64% ± 1.51%** *(vượt +2.58 pp)* |
+| **LCC Combined** | AUC | **0.8498** | 0.8574 | **0.8569 ± 0.0094** | **0.8595 ± 0.0028** |
+| **LCC Combined** | ACER (Source-frozen) | **25.63%** *(vượt trội)* | 26.86% | **26.66% ± 0.58%** | **27.76% ± 1.05%** |
+| **LCC Combined** | BPCER (%) | **40.80%** *(giảm -5.41 pp)* | 46.21% | **45.17% ± 1.01%** | — |
+| **LCC Combined** | TPR@1% (%) | 11.70% | 18.60% | **17.27% ± 4.79%** | **20.45% ± 2.28%** *(vượt +3.18 pp)* |
+| **CASIA Video Test** | AUC (Zero-shot) | **0.8726** | 0.8793 | **0.8889 ± 0.0088** | **0.8949 ± 0.0291** |
+| **CASIA Video Test** | HTER (Calibrated) | **23.48%** | 20.45% | **19.19% ± 1.72%** | **20.33% ± 2.57%** |
+| **CASIA Video Combined** | AUC | **0.8877** | 0.8914 | **0.9033 ± 0.0115** | **0.9078 ± 0.0272** |
+| **CASIA Video Combined** | HTER (Calibrated) | **22.30%** | 18.93% | **17.96% ± 1.54%** | **18.91% ± 2.71%** |
+
+### 13.3. Trạng thái các seed và tiến độ hoàn thành
+- **Đã hoàn thành 100%:**
+  1. `R7_SC_NOGATE_FULL_crop15` (Notebook 22): Đủ cả 3 seeds (Seed 100, Seed 101, Seed 105) với đầy đủ đánh giá CelebA, LCC và CASIA-FASD.
+  2. `R7_SC_FULL_crop15` (Notebook 18 & 20): Đủ cả 4 seeds (Seed 100, 101, 102 và 105 mới bổ sung kèm đánh giá CASIA qua Notebook 20).
+  3. `CE_CLEAN_FULL_crop15` (Notebook 21): Đủ cả 4 seeds (Seed 100, 101, 102, 105) với đầy đủ đánh giá CelebA, LCC và CASIA-FASD.
+  4. `C_FULL_crop15` và `P3_SF_FULL_crop15` (Notebook 18): Đã hoàn tất đủ 3 seeds chuẩn (Seed 100, Seed 101, Seed 102).

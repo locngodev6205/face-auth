@@ -1,0 +1,22 @@
+{
+  "casia": "all extracted train/test color frames + deduplicated combined; notebook20 preprocessing",
+  "casia_calibration": "train only, separate frame/video thresholds",
+  "comparison": "CE-only vs historical C (CE_clean + L_aux) and P3/R7; descriptive one-seed",
+  "crop_factor": 1.5,
+  "early_stop_patience": 3,
+  "lcc": "full training/development/evaluation/combined; source threshold, no target fitting",
+  "max_epochs": 12,
+  "milestones": [
+    4,
+    8
+  ],
+  "objective": {
+    "CE_clean": 1.0,
+    "CE_worst": 0.0,
+    "L_aux": 0.0
+  },
+  "patience_start_epoch": 9,
+  "seed": 105,
+  "selection": "full official CelebA Test-as-Val; reused, not independent Test",
+  "train": "full eligible official CelebA Train"
+}

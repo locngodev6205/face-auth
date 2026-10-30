@@ -1,0 +1,16 @@
+[
+  {
+    "run_id": "R7_SC_FULL_crop15",
+    "method": "MAST-PAD (full-scale)",
+    "scale": "full-scale",
+    "checkpoint_path": "/kaggle/input/datasets/locngodev/full-scale/runs/R7_SC_FULL_crop15/best.pth",
+    "config_path": "/kaggle/input/datasets/locngodev/full-scale/runs/R7_SC_FULL_crop15/config.json",
+    "frozen_threshold_path": "/kaggle/input/datasets/locngodev/full-scale/runs/R7_SC_FULL_crop15/evaluation_freeze.json",
+    "best_epoch": 11,
+    "threshold": 5.7451171875,
+    "threshold_source": "full official CelebA Test-as-Val",
+    "amp": true,
+    "train_seed": 105,
+    "input": "80x80 BGR float [0,1] crop1.5"
+  }
+]

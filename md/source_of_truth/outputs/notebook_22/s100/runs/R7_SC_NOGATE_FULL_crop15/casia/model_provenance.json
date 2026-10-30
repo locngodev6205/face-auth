@@ -1,0 +1,19 @@
+[
+  {
+    "amp": true,
+    "best_epoch": 11,
+    "checkpoint_sha256": "57d460dbdf454ba0d0cf5f229f8a7d07d4b0a98ac82db8f785845e6e3f3840ee",
+    "crop_factor": 1.5,
+    "data_seed": 43,
+    "loss": "0.75 CE_clean + 0.25 CE_all_selected_worst + L_aux",
+    "method": "MAST-PAD w/o harmful gate (full-scale)",
+    "run_id": "R7_SC_NOGATE_FULL_crop15",
+    "scale": "full-scale",
+    "source_config_sha256": "5be1adef3ec0003b2b008cfae1ce549806c5bdb20c312e3ae0c449e50a6ad5c6",
+    "source_evaluator": "notebook21 CASIA function",
+    "source_evaluator_sha256": "5e912f5d212eca531763d3d9ff7ee26ca3736de8f8c43e0d3c2bcb910ea6a717",
+    "source_freeze_sha256": "b84584e8939d8800a1c8251ef92e8d5fb07e8c271d753a700277c3667820d7b2",
+    "threshold": 5.1689453125,
+    "train_seed": 100
+  }
+]

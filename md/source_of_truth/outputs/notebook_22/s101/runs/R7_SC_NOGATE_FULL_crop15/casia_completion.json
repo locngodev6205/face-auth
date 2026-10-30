@@ -1,0 +1,37 @@
+{
+  "contract": {
+    "amp": true,
+    "best_epoch": 9,
+    "casia_root": "/content/casiafasd",
+    "checkpoint_sha256": "b02ca62b2b81ec01272ff69dcb2a239f49a69e5a53d9028090e99be5fe33f674",
+    "crop_factor": 1.5,
+    "data_seed": 43,
+    "detector_confidence": 0.5,
+    "detector_sizes": [
+      [
+        640,
+        640
+      ],
+      [
+        480,
+        480
+      ],
+      [
+        320,
+        320
+      ]
+    ],
+    "input_size": 80,
+    "min_valid_frames": 4,
+    "run_id": "R7_SC_NOGATE_FULL_crop15",
+    "scrfd_model_path": "/content/scrfd/det_500m.onnx",
+    "scrfd_model_sha256": "5e4447f50245bbd7966bd6c0fa52938c61474a04ec7def48753668a9d8b4ea3a",
+    "source_config_sha256": "3403bcc89765def12cfd994e0878803d2a4a34e2d008955bed6ca88b432d19c0",
+    "source_freeze_sha256": "a8e273efed5f8e5d75141e7d55bd1ac5ff10fbc0e46cd3633be49d17646b5869",
+    "source_threshold": 5.2744140625,
+    "train_seed": 101,
+    "train_threshold_calibration": true
+  },
+  "run_id": "R7_SC_NOGATE_FULL_crop15",
+  "status": "complete"
+}

@@ -1,0 +1,21 @@
+{
+  "BN_safe_detached_hard_selection": true,
+  "C_clean_only_epoch1_eligible": true,
+  "P3_R7_clean_warmup_excluded": true,
+  "P3_reference_objective": true,
+  "R7_harmful_denominator_and_differentiable_zero": true,
+  "R7_no_gate_preserves_full_batch_BN": true,
+  "R7_no_gate_same_sigma_and_all_sample_CE": true,
+  "R7_no_harmful_clean_coefficient_075": true,
+  "gain_and_bbox_rng_restore": true,
+  "one_selected_gradient_view": true,
+  "phase_aware_patience": {
+    "all_methods_identical": true,
+    "best_selection_not_delayed": true,
+    "earliest_possible_stop_epoch": 11,
+    "early_stop_patience": 3,
+    "epoch_boundary_counter_replay": true,
+    "improvement_resets_counter": true,
+    "patience_start_epoch": 9
+  }
+}

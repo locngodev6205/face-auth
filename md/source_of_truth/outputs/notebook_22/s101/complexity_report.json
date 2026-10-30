@@ -1,0 +1,221 @@
+{
+  "reference_values": [
+    {
+      "acer_percent": 3.8,
+      "apcer_percent": 0.69,
+      "auc": 0.998,
+      "bpcer_percent": 6.92,
+      "dataset": "CelebA",
+      "eer_percent": 2.26,
+      "gflops_published": 0.15,
+      "model": "MN3_large",
+      "params_m": 3.02
+    },
+    {
+      "acer_percent": 3.25,
+      "apcer_percent": 0.23,
+      "auc": 0.999,
+      "bpcer_percent": 6.27,
+      "dataset": "CelebA",
+      "eer_percent": 1.12,
+      "gflops_published": 3.64,
+      "model": "AENET",
+      "params_m": 11.22
+    },
+    {
+      "acer_percent": 3.32,
+      "apcer_percent": 1.21,
+      "auc": 0.997,
+      "bpcer_percent": 5.44,
+      "dataset": "CelebA",
+      "eer_percent": 2.79,
+      "gflops_published": 0.1,
+      "model": "MN3_large_075",
+      "params_m": 1.86
+    },
+    {
+      "acer_percent": 5.05,
+      "apcer_percent": 1.47,
+      "auc": 0.994,
+      "bpcer_percent": 8.63,
+      "dataset": "CelebA",
+      "eer_percent": 3.84,
+      "gflops_published": 0.04,
+      "model": "MN3_small",
+      "params_m": 1.0
+    },
+    {
+      "acer_percent": 6.09,
+      "apcer_percent": 1.62,
+      "auc": 0.991,
+      "bpcer_percent": 10.55,
+      "dataset": "CelebA",
+      "eer_percent": 4.74,
+      "gflops_published": 0.03,
+      "model": "MN3_small_075",
+      "params_m": 0.6
+    },
+    {
+      "acer_percent": 16.33,
+      "apcer_percent": 17.26,
+      "auc": 0.921,
+      "bpcer_percent": 15.4,
+      "dataset": "LCC",
+      "eer_percent": 16.13,
+      "gflops_published": 0.15,
+      "model": "MN3_large",
+      "params_m": 3.02
+    },
+    {
+      "acer_percent": 22.61,
+      "apcer_percent": 12.52,
+      "auc": 0.868,
+      "bpcer_percent": 32.7,
+      "dataset": "LCC",
+      "eer_percent": 20.91,
+      "gflops_published": 3.64,
+      "model": "AENET",
+      "params_m": 11.22
+    },
+    {
+      "acer_percent": 20.26,
+      "apcer_percent": 28.34,
+      "auc": 0.892,
+      "bpcer_percent": 12.18,
+      "dataset": "LCC",
+      "eer_percent": 19.42,
+      "gflops_published": 0.1,
+      "model": "MN3_large_075",
+      "params_m": 1.86
+    },
+    {
+      "acer_percent": 19.69,
+      "apcer_percent": 14.79,
+      "auc": 0.889,
+      "bpcer_percent": 24.6,
+      "dataset": "LCC",
+      "eer_percent": 18.7,
+      "gflops_published": 0.04,
+      "model": "MN3_small",
+      "params_m": 1.0
+    },
+    {
+      "acer_percent": 21.04,
+      "apcer_percent": 22.77,
+      "auc": 0.879,
+      "bpcer_percent": 19.3,
+      "dataset": "LCC",
+      "eer_percent": 21.07,
+      "gflops_published": 0.03,
+      "model": "MN3_small_075",
+      "params_m": 0.6
+    }
+  ],
+  "runs": {
+    "C_FULL_crop15": {
+      "counting_method": "torch.profiler CPU with_flops=True on clean forward; Conv2d/Linear supported operator FLOPs; MACs=FLOPs/2",
+      "deployment": "MiniFASNetV2 feature trunk + binary PAD head only",
+      "deployment_params": 434434,
+      "flops": 81621784,
+      "gflops": 0.081621784,
+      "input_shape": [
+        1,
+        3,
+        80,
+        80
+      ],
+      "macs": 40810892.0,
+      "measurement_status": "computed",
+      "params_m": 0.434434,
+      "same_inference_architecture_for_all_runs": true,
+      "scope": "Conv/Linear arithmetic only; normalization/activation/pooling costs not included. Published reference counting convention may differ.",
+      "spectral_training_included": false,
+      "total_params": 441658,
+      "trainable_params": 441658
+    },
+    "P3_SF_FULL_crop15": {
+      "counting_method": "torch.profiler CPU with_flops=True on clean forward; Conv2d/Linear supported operator FLOPs; MACs=FLOPs/2",
+      "deployment": "MiniFASNetV2 feature trunk + binary PAD head only",
+      "deployment_params": 434434,
+      "flops": 81621784,
+      "gflops": 0.081621784,
+      "input_shape": [
+        1,
+        3,
+        80,
+        80
+      ],
+      "macs": 40810892.0,
+      "measurement_status": "computed",
+      "params_m": 0.434434,
+      "same_inference_architecture_for_all_runs": true,
+      "scope": "Conv/Linear arithmetic only; normalization/activation/pooling costs not included. Published reference counting convention may differ.",
+      "spectral_training_included": false,
+      "total_params": 441658,
+      "trainable_params": 441658
+    },
+    "R7_SC_FULL_crop15": {
+      "counting_method": "torch.profiler CPU with_flops=True on clean forward; Conv2d/Linear supported operator FLOPs; MACs=FLOPs/2",
+      "deployment": "MiniFASNetV2 feature trunk + binary PAD head only",
+      "deployment_params": 434434,
+      "flops": 81621784,
+      "gflops": 0.081621784,
+      "input_shape": [
+        1,
+        3,
+        80,
+        80
+      ],
+      "macs": 40810892.0,
+      "measurement_status": "computed",
+      "params_m": 0.434434,
+      "same_inference_architecture_for_all_runs": true,
+      "scope": "Conv/Linear arithmetic only; normalization/activation/pooling costs not included. Published reference counting convention may differ.",
+      "spectral_training_included": false,
+      "total_params": 441658,
+      "trainable_params": 441658
+    },
+    "R7_SC_NOGATE_FULL_crop15": {
+      "counting_method": "torch.profiler CPU with_flops=True on clean forward; Conv2d/Linear supported operator FLOPs; MACs=FLOPs/2",
+      "deployment": "MiniFASNetV2 feature trunk + binary PAD head only",
+      "deployment_params": 434434,
+      "flops": 81621784,
+      "gflops": 0.081621784,
+      "input_shape": [
+        1,
+        3,
+        80,
+        80
+      ],
+      "macs": 40810892.0,
+      "measurement_status": "computed",
+      "params_m": 0.434434,
+      "same_inference_architecture_for_all_runs": true,
+      "scope": "Conv/Linear arithmetic only; normalization/activation/pooling costs not included. Published reference counting convention may differ.",
+      "spectral_training_included": false,
+      "total_params": 441658,
+      "trainable_params": 441658
+    }
+  },
+  "shared_clean_inference": {
+    "counting_method": "torch.profiler CPU with_flops=True on clean forward; Conv2d/Linear supported operator FLOPs; MACs=FLOPs/2",
+    "deployment": "MiniFASNetV2 feature trunk + binary PAD head only",
+    "deployment_params": 434434,
+    "flops": 81621784,
+    "gflops": 0.081621784,
+    "input_shape": [
+      1,
+      3,
+      80,
+      80
+    ],
+    "macs": 40810892.0,
+    "measurement_status": "computed",
+    "params_m": 0.434434,
+    "same_inference_architecture_for_all_runs": true,
+    "scope": "Conv/Linear arithmetic only; normalization/activation/pooling costs not included. Published reference counting convention may differ.",
+    "spectral_training_included": false,
+    "total_params": 441658,
+    "trainable_params": 441658
+  }
+}

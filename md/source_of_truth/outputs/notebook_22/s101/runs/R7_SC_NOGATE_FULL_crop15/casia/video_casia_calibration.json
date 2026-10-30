@@ -1,0 +1,37 @@
+{
+  "casia_calibrated_threshold": -2.0143433,
+  "fit_n": 237,
+  "fit_split": "train",
+  "objective": "minimum pooled binary ACER/HTER",
+  "run_id": "R7_SC_NOGATE_FULL_crop15",
+  "source_threshold": 5.2744140625,
+  "status": "calibrated",
+  "tie_break": "closest to source threshold",
+  "train_test_copy_overlap": {
+    "frame_ids": 1403,
+    "subjects": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20
+    ],
+    "video_ids": 240
+  },
+  "unit": "video"
+}

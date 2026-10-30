@@ -1,0 +1,12 @@
+{
+  "acer": 0.23402630614459857,
+  "apcer": 0.14270994332818135,
+  "auc": 0.8574128110170336,
+  "bpcer": 0.3253426689610158,
+  "candidate_n": 18827,
+  "convention": "Reference variable names: APCER=real->attack; BPCER=attack->real; argmax logits; ROC attack probability",
+  "coverage": 0.9982471981728369,
+  "eer": 0.22251231234794988,
+  "global_argmax_accuracy": 0.6935192082579547,
+  "scored_n": 18794
+}

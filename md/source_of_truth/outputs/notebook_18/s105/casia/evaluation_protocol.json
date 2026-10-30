@@ -1,0 +1,97 @@
+{
+  "dataset": "CASIA-FASD Kaggle extracted-image train + test evaluation (minhnh2107/casiafasd)",
+  "official_subject_disjoint_protocol_verified": false,
+  "splits": [
+    "train_img/train_img/color",
+    "test_img/test_img/color"
+  ],
+  "train_test_copy_overlap": {
+    "subjects": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20
+    ],
+    "video_ids": 240,
+    "frame_ids": 1403
+  },
+  "frame_sampling": "none; all available train and test color JPEGs",
+  "raw_train_test_frames": 4063,
+  "populations": {
+    "train": {
+      "candidate_frames": 1655,
+      "candidate_videos": 240
+    },
+    "test": {
+      "candidate_frames": 2408,
+      "candidate_videos": 360
+    },
+    "combined": {
+      "candidate_frames": 2660,
+      "candidate_videos": 360
+    }
+  },
+  "combined_policy": "unique (video_id,frame_index); prefer test copy before detection; no duplicate weighting",
+  "selected_runs": [
+    "R7_SC_FULL_crop15"
+  ],
+  "detector": "SCRFD-500M",
+  "detector_path": "/kaggle/input/datasets/locngodev/scrfd-model/det_500m.onnx",
+  "detector_sizes": [
+    [
+      640,
+      640
+    ],
+    [
+      480,
+      480
+    ],
+    [
+      320,
+      320
+    ]
+  ],
+  "detector_confidence": 0.5,
+  "face_selection": "largest positive finite bbox; confidence tie-break",
+  "crop_factor": 1.5,
+  "input_size": 80,
+  "color_order": "BGR",
+  "input_range": "[0,1]",
+  "score": "logit(real)-logit(attack)",
+  "primary_unit": "reconstructed video; mean valid-frame score",
+  "min_valid_frames": 4,
+  "secondary_unit": "all successfully localized frames in the specified pool",
+  "threshold_policy": "source-frozen baseline plus CASIA train-calibrated frame/video thresholds",
+  "eer_policy": "descriptive ROC EER only; its target threshold is never used for predictions",
+  "target_training": false,
+  "target_adaptation": false,
+  "target_threshold_calibration": true,
+  "threshold_fit_split": "train only",
+  "threshold_objective": "minimum pooled binary ACER/HTER; ties closest to source threshold",
+  "full_scale_source_selection": "CelebA Test-as-Val, as in experiment18",
+  "inference_precision": "per-run original AMP setting; logits converted to float32 before subtraction",
+  "seed": 100,
+  "batch_size": 256,
+  "torch_version": "2.11.0+cu128",
+  "ort_version": "1.26.0",
+  "detector_active_providers": [
+    "CUDAExecutionProvider",
+    "CPUExecutionProvider"
+  ]
+}

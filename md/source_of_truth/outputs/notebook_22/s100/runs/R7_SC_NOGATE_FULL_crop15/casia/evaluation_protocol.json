@@ -1,0 +1,97 @@
+{
+  "batch_size": 256,
+  "color_order": "BGR",
+  "combined_policy": "unique (video_id,frame_index); prefer test copy before detection; no duplicate weighting",
+  "crop_factor": 1.5,
+  "dataset": "CASIA-FASD Kaggle extracted-image train + test evaluation (minhnh2107/casiafasd)",
+  "detector": "SCRFD-500M",
+  "detector_active_providers": [
+    "CUDAExecutionProvider",
+    "CPUExecutionProvider"
+  ],
+  "detector_confidence": 0.5,
+  "detector_path": "/content/scrfd/det_500m.onnx",
+  "detector_sizes": [
+    [
+      640,
+      640
+    ],
+    [
+      480,
+      480
+    ],
+    [
+      320,
+      320
+    ]
+  ],
+  "eer_policy": "descriptive ROC EER only; its target threshold is never used for predictions",
+  "face_selection": "largest positive finite bbox; confidence tie-break",
+  "frame_sampling": "none; all available train and test color JPEGs",
+  "full_scale_source_selection": "CelebA Test-as-Val, as in experiment18",
+  "inference_precision": "per-run original AMP setting; logits converted to float32 before subtraction",
+  "input_range": "[0,1]",
+  "input_size": 80,
+  "min_valid_frames": 4,
+  "official_subject_disjoint_protocol_verified": false,
+  "ort_version": "1.26.0",
+  "populations": {
+    "combined": {
+      "candidate_frames": 2660,
+      "candidate_videos": 360
+    },
+    "test": {
+      "candidate_frames": 2408,
+      "candidate_videos": 360
+    },
+    "train": {
+      "candidate_frames": 1655,
+      "candidate_videos": 240
+    }
+  },
+  "primary_unit": "reconstructed video; mean valid-frame score",
+  "raw_train_test_frames": 4063,
+  "score": "logit(real)-logit(attack)",
+  "secondary_unit": "all successfully localized frames in the specified pool",
+  "seed": 100,
+  "selected_runs": [
+    "R7_SC_NOGATE_FULL_crop15"
+  ],
+  "splits": [
+    "train_img/train_img/color",
+    "test_img/test_img/color"
+  ],
+  "target_adaptation": false,
+  "target_threshold_calibration": true,
+  "target_training": false,
+  "threshold_fit_split": "train only",
+  "threshold_objective": "minimum pooled binary ACER/HTER; ties closest to source threshold",
+  "threshold_policy": "source-frozen baseline plus CASIA train-calibrated frame/video thresholds",
+  "torch_version": "2.11.0+cu130",
+  "train_test_copy_overlap": {
+    "frame_ids": 1403,
+    "subjects": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20
+    ],
+    "video_ids": 240
+  }
+}

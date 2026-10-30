@@ -1,0 +1,44 @@
+{
+  "accuracy": "We additionally report global argmax accuracy; reference averages per-batch accuracies, which can differ on the final partial batch",
+  "aenet_caveat": "README imports AENET results; exact evaluator identity for those imported results is not established",
+  "apcer_reference": "FP / real_count (real classified attack), corresponds to project BPCER at argmax threshold",
+  "bpcer_reference": "FN / attack_count (attack classified real), corresponds to project APCER at argmax threshold",
+  "classification": "argmax raw logits (tie chooses class 0)",
+  "commit": "38233cd3eb25a69d4fcc6aa681d49cddcd635907",
+  "comparison_caveat": "Same full split scope as confirmed by user; scored population can differ with localization/preprocessing. Metric-compatible comparison is not identical preprocessing.",
+  "eer": "min(FPR,FNR) at first nanargmin(abs(FNR-FPR)); no interpolation",
+  "label_inversion_required": false,
+  "our_binary_mapping": {
+    "attack": 1,
+    "real": 0
+  },
+  "population_protocol": "Full official CelebA Test and pooled full LCC, confirmed by user; no further population audit requested",
+  "preprocessing": "Reference tight crops, RGB 128x128 normalized; project frozen SCRFD crop1.5, BGR 80x80 [0,1]. Impact is not measured.",
+  "project_metrics": "Preserved real-positive logit difference, source-calibrated threshold, ISO rate names, averaged FPR/FNR EER",
+  "reference_label_mapping": {
+    "attack": 1,
+    "real": 0
+  },
+  "reference_snapshot_caveat": "LCC registry entries are commented at this pinned snapshot; constants are published README results, not reproduced runs.",
+  "repository": "https://github.com/Inria-CENATAV-Tec/Assessing-Efficient-FAS-CVPR2024",
+  "score": "softmax(two PAD logits)[:,1], attack positive",
+  "source_sha256": {
+    "README.md": "61125717b9e69efb189f1dede29b952eee9922fd52e4e7453daa6ba788d16bb4",
+    "datasets/celeba_spoof.py": "b55cedf13b7ad14ec23a57c6bb74c51f128afd4738f679e437e0b6e6d0f8e62b",
+    "datasets/database.py": "b17309390478750c94d635193f75567775ee3eabbde2a9bb3550628d9915960b",
+    "datasets/lcc_fasd.py": "7bab548a4b3f63f81236d8aedc5d76dc2d4d8241af2a58f6247825a0f74df61c",
+    "eval_protocol.py": "1b299f47393f7ae46292ab7f029989854a688b156cfa1b5080f65e9b8e2b143f",
+    "trainer.py": "7bfc7c07777f3d8458d808b18cf5883536070f115ca40008c5cba4cd3e1d5923",
+    "utils.py": "891321f3738c28d032114506611b7e1bb6ce1cd320a5edff23da56a0736bdb50"
+  },
+  "source_urls": {
+    "README.md": "https://github.com/Inria-CENATAV-Tec/Assessing-Efficient-FAS-CVPR2024/blob/38233cd3eb25a69d4fcc6aa681d49cddcd635907/README.md",
+    "datasets/celeba_spoof.py": "https://github.com/Inria-CENATAV-Tec/Assessing-Efficient-FAS-CVPR2024/blob/38233cd3eb25a69d4fcc6aa681d49cddcd635907/datasets/celeba_spoof.py",
+    "datasets/database.py": "https://github.com/Inria-CENATAV-Tec/Assessing-Efficient-FAS-CVPR2024/blob/38233cd3eb25a69d4fcc6aa681d49cddcd635907/datasets/database.py",
+    "datasets/lcc_fasd.py": "https://github.com/Inria-CENATAV-Tec/Assessing-Efficient-FAS-CVPR2024/blob/38233cd3eb25a69d4fcc6aa681d49cddcd635907/datasets/lcc_fasd.py",
+    "eval_protocol.py": "https://github.com/Inria-CENATAV-Tec/Assessing-Efficient-FAS-CVPR2024/blob/38233cd3eb25a69d4fcc6aa681d49cddcd635907/eval_protocol.py",
+    "trainer.py": "https://github.com/Inria-CENATAV-Tec/Assessing-Efficient-FAS-CVPR2024/blob/38233cd3eb25a69d4fcc6aa681d49cddcd635907/trainer.py",
+    "utils.py": "https://github.com/Inria-CENATAV-Tec/Assessing-Efficient-FAS-CVPR2024/blob/38233cd3eb25a69d4fcc6aa681d49cddcd635907/utils.py"
+  },
+  "units": "AUC fraction; computed rates fractions; published README EER/APCER/BPCER/ACER percent; params millions; GFLOPs as published"
+}

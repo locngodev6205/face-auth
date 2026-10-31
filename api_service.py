@@ -1,3 +1,8 @@
+"""
+cd SmartFace-AIoT-Based-Staff-Management-Attendance-System/face_auth
+uvicorn api_service:app --host 0.0.0.0 --port 5000 --reload
+"""
+
 import base64
 import os
 import secrets

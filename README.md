@@ -98,6 +98,11 @@ x_i^k = \text{clip}( \Re[ \mathcal{F}^{-1}( G_{i,k} \odot \mathcal{F}(x_i) ) ], 
 $$
 
 ### 2. Label-Aligned Margin & Worst-View Selection
+
+<p align="center">
+  <img src="slide_figures_mast_pad_fullscale/fig_mast_pad_spectral_supervision_flow.png" alt="MAST-PAD Margin-Aware Spectral Supervision Mechanism" width="85%">
+</p>
+
 The network predicts binary logits $f_\theta(x) = (z_{\text{Real}}, z_{\text{Attack}})$. The decision score and label-aligned classification margin are:
 
 $$

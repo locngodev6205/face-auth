@@ -1,15 +1,17 @@
 # MAST-PAD & Face-Auth: Margin-Aware Spectral Training for Lightweight Cross-Domain Face Anti-Spoofing
 
-<p align="center">
-  <img src="https://img.shields.io/static/v1?label=Python&message=3.10%20%7C%203.11&color=3776ab&logo=python&logoColor=white" alt="Python">
-  <img src="https://img.shields.io/static/v1?label=Deep%20Learning&message=PyTorch%20%7C%20ONNX%20Runtime&color=ee4c2c&logo=pytorch&logoColor=white" alt="PyTorch">
-  <img src="https://img.shields.io/static/v1?label=Computer%20Vision&message=OpenCV%20%7C%20InsightFace&color=5c3ee8&logo=opencv&logoColor=white" alt="CV">
-  <img src="https://img.shields.io/static/v1?label=Vector%20Search&message=PostgreSQL%20%2B%20pgvector&color=336791&logo=postgresql&logoColor=white" alt="Database">
-  <img src="https://img.shields.io/static/v1?label=Parameters&message=434K%20(1.74%20MB)&color=success" alt="Parameters">
-  <img src="https://img.shields.io/static/v1?label=CASIA%20AUC&message=93.52%25&color=brightgreen" alt="CASIA AUC">
-  <img src="https://img.shields.io/static/v1?label=LCC%20AUC&message=86.03%25&color=brightgreen" alt="LCC AUC">
-  <img src="https://img.shields.io/static/v1?label=License&message=MIT&color=blue" alt="License">
-</p>
+<div align="center">
+
+[![Python](https://img.shields.io/badge/Python-3.10%20%7C%203.11-3776ab.svg?logo=python&logoColor=white)](https://www.python.org/)
+[![PyTorch](https://img.shields.io/badge/PyTorch-2.x-EE4C2C.svg?logo=pytorch&logoColor=white)](https://pytorch.org/)
+[![OpenCV](https://img.shields.io/badge/OpenCV-Computer%20Vision-5C3EE8.svg?logo=opencv&logoColor=white)](https://opencv.org/)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-pgvector-336791.svg?logo=postgresql&logoColor=white)](https://github.com/pgvector/pgvector)
+[![Parameters](https://img.shields.io/badge/Parameters-0.434M%20(1.74MB)-success.svg)](https://github.com/locngodev6205/face-auth)
+[![CASIA AUC](https://img.shields.io/badge/CASIA--FASD%20AUC-93.52%25-brightgreen.svg)](https://github.com/locngodev6205/face-auth)
+[![LCC AUC](https://img.shields.io/badge/LCC--FASD%20AUC-86.03%25-brightgreen.svg)](https://github.com/locngodev6205/face-auth)
+[![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+
+</div>
 
 > **Paper**: *MAST-PAD: Margin-Aware Spectral Training for Lightweight Cross-Domain Face Anti-Spoofing*  
 > **Authors**: Quang Anh Nguyen, Van Loc Ngo  
@@ -76,19 +78,25 @@ $$
 Three smooth radial Gaussian attenuation profiles are centered at $c_L = 1/12$, $c_M = 1/4$, and $c_H = 5/12$ representing **LOW**, **MID**, and **HIGH** spectral bands:
 
 $$
-a_k(r) = \exp\left( -\frac{(r - c_k)^2}{2\sigma^2} \right), \quad k \in \{L, M, H\}, \quad \sigma = 0.10
+a_k(r) = \exp\left( -\frac{(r - c_k)^2}{2\sigma^2} \right), \quad k \in [L, M, H], \quad \sigma = 0.10
 $$
 
-A random attenuation gain $g_i \sim \mathcal{U}(0.65, 0.90)$ is sampled per instance and shared across all three bands. The spectral transfer multiplier with an explicit DC override is:
+A random attenuation gain $g_i \sim \mathcal{U}(0.65, 0.90)$ is sampled per instance and shared across all three bands. The spectral transfer multiplier with an explicit DC override is defined piecewise:
 
+- For the DC zero-frequency coefficient $(u, v) = (0, 0)$:
 $$
-G_{i,k}(u, v) = \begin{cases} 1, & (u, v) = (0, 0) \\ 1 - (1 - g_i) a_k(r(u, v)), & \text{otherwise} \end{cases}
+G_{i,k}(0, 0) = 1
+$$
+
+- For all radial spatial frequencies $(u, v) \neq (0, 0)$:
+$$
+G_{i,k}(u, v) = 1 - (1 - g_i) a_k(r(u, v))
 $$
 
 The counterfactual spatial views are reconstructed via inverse FFT while preserving original Fourier phase:
 
 $$
-x_i^k = \text{clip}_{[0, 1]}\left( \Re\left\{ \mathcal{F}^{-1}\left[ G_{i,k} \odot \mathcal{F}(x_i) \right] \right\} \right)
+x_i^k = \text{clip}( \Re[ \mathcal{F}^{-1}( G_{i,k} \odot \mathcal{F}(x_i) ) ], 0, 1 )
 $$
 
 ### 2. Label-Aligned Margin & Worst-View Selection
@@ -99,26 +107,34 @@ d_\theta(x) = z_{\text{Real}}(x) - z_{\text{Attack}}(x)
 $$
 
 $$
-m_\theta(x, y) = s_y \cdot d_\theta(x), \quad s_y = \begin{cases} +1, & y = \text{Real} \\ -1, & y = \text{Attack} \end{cases}
+m_\theta(x, y) = s_y \cdot d_\theta(x)
 $$
+
+where $s_y = +1$ for Real genuine samples, and $s_y = -1$ for Attack spoof samples.
 
 A larger aligned margin indicates stronger confidence for the ground-truth class. In a no-gradient evaluation pass ($\bar{f}_\theta$), MAST-PAD selects the spectral candidate that produces the **minimum aligned margin**:
 
 $$
-k_i^* = \arg\min_{k \in \{L, M, H\}} m_i^k, \quad x_i^* = x_i^{k_i^*}
+k_i^* = \arg\min_{k \in [L, M, H]} m_i^k, \quad x_i^* = x_i^{k_i^*}
 $$
 
 ### 3. Detached Harmful Gate & Count-Normalized Loss
 A candidate view is defined as **harmful** if and only if it strictly reduces the decision margin below the clean base margin $m_i^0$:
 
 $$
-h_i = \mathbf{1}\left[ m_i^{k_i^*} < m_i^0 \right], \quad H = \sum_{i=1}^B h_i
+h_i = \mathbf{1}[ m_i^{k_i^*} < m_i^0 ], \quad H = \sum_{i=1}^B h_i
 $$
 
 The detached gate activates even when the predicted class does not flip: a smaller positive margin represents weakened decision support. The harmful spectral loss is normalized by the count of active harmful samples $H$:
 
+- When $H > 0$ (at least one candidate reduces the margin):
 $$
-\mathcal{L}_{\text{harm}} = \begin{cases} \frac{1}{H} \sum_{i=1}^B h_i \cdot \text{CE}(f_\theta(x_i^*), y_i), & H > 0 \\ 0, & H = 0 \end{cases}
+\mathcal{L}_{\text{harm}} = \frac{1}{H} \sum_{i=1}^B h_i \cdot \text{CE}(f_\theta(x_i^*), y_i)
+$$
+
+- When $H = 0$ (no candidate degrades the margin):
+$$
+\mathcal{L}_{\text{harm}} = 0
 $$
 
 The overall training objective combines clean cross-entropy, harmful spectral supervision, and semantic auxiliary heads (11 spoof types, 5 lighting classes, 40 facial attributes):
@@ -243,7 +259,7 @@ $$
 * **Normalized Identity Centroid**:
 
 $$
-\mathbf{c} = \frac{\sum_{k=1}^K \mathbf{f}_k}{\left\| \sum_{k=1}^K \mathbf{f}_k \right\|_2}
+\mathbf{c} = \frac{\sum_{k=1}^K \mathbf{f}_k}{\| \sum_{k=1}^K \mathbf{f}_k \|_2}
 $$
 
 * **Vector Search Engine**: PostgreSQL 16 + `pgvector` with HNSW indexing ($M=16, \text{efConstruction}=64$) for sub-millisecond cosine distance querying over large identity galleries.

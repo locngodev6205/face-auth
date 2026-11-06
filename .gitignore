@@ -1,7 +1,30 @@
 # ==============================================================================
-# MODULE FACE_AUTH: QUẢN LÝ DỮ LIỆU ẢNH, DATASET & ARTIFACTS
-# (Các ignore hệ thống như OS, IDE, .env, Python bytecode được quản lý ở root .gitignore)
+# FACE-AUTH: PRESENTATION ATTACK DETECTION & BIOMETRIC RECOGNITION
 # ==============================================================================
+
+# ------------------------------------------------------------------------------
+# 0. ENVIRONMENT & SECRETS
+# ------------------------------------------------------------------------------
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.crt
+
+# ------------------------------------------------------------------------------
+# 0.1 PYTHON & VIRTUAL ENVIRONMENTS
+# ------------------------------------------------------------------------------
+__pycache__/
+**/__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+env/
+ENV/
+.pytest_cache/
+*.log
 
 # ------------------------------------------------------------------------------
 # 1. GALLERY: Thư mục chứa ảnh khuôn mặt đăng ký (User Gallery)

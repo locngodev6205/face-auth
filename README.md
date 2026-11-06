@@ -1,177 +1,277 @@
-# 👁️ Face-Auth: Edge-Ready Face Biometrics & Multi-Domain Presentation Attack Detection
+# MAST-PAD & Face-Auth: Margin-Aware Spectral Training for Lightweight Cross-Domain Face Anti-Spoofing
 
-[![Python Version](https://img.shields.io/badge/Python-3.10%20%7C%203.11-3776AB?logo=python&logoColor=white)](https://www.python.org/)
-[![Deep Learning](https://img.shields.io/badge/Framework-PyTorch%20%7C%20ONNX%20Runtime-EE4C2C?logo=pytorch&logoColor=white)](https://pytorch.org/)
-[![Computer Vision](https://img.shields.io/badge/CV-OpenCV%20%7C%20InsightFace-5C3EE8?logo=opencv&logoColor=white)](https://opencv.org/)
-[![Database](https://img.shields.io/badge/Vector%20Search-PostgreSQL%20%2B%20pgvector-336791?logo=postgresql&logoColor=white)](https://github.com/pgvector/pgvector)
-[![Inference Latency](https://img.shields.io/badge/PAD%20Latency-~2.2ms%20(CPU)-success)](antispoof/models/smartface_pad_artifacts/)
-[![Held-out AUC](https://img.shields.io/badge/PAD%20AUC-98.57%25%20(Held--out)-brightgreen)](antispoof/models/smartface_pad_artifacts/)
-[![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+<p align="center">
+  <img src="https://img.shields.io/static/v1?label=Python&message=3.10%20%7C%203.11&color=3776ab&logo=python&logoColor=white" alt="Python">
+  <img src="https://img.shields.io/static/v1?label=Deep%20Learning&message=PyTorch%20%7C%20ONNX%20Runtime&color=ee4c2c&logo=pytorch&logoColor=white" alt="PyTorch">
+  <img src="https://img.shields.io/static/v1?label=Computer%20Vision&message=OpenCV%20%7C%20InsightFace&color=5c3ee8&logo=opencv&logoColor=white" alt="CV">
+  <img src="https://img.shields.io/static/v1?label=Vector%20Search&message=PostgreSQL%20%2B%20pgvector&color=336791&logo=postgresql&logoColor=white" alt="Database">
+  <img src="https://img.shields.io/static/v1?label=Parameters&message=434K%20(1.74%20MB)&color=success" alt="Parameters">
+  <img src="https://img.shields.io/static/v1?label=CASIA%20AUC&message=93.52%25&color=brightgreen" alt="CASIA AUC">
+  <img src="https://img.shields.io/static/v1?label=LCC%20AUC&message=86.03%25&color=brightgreen" alt="LCC AUC">
+  <img src="https://img.shields.io/static/v1?label=License&message=MIT&color=blue" alt="License">
+</p>
 
-An open-source, edge-optimized Computer Vision framework for **Real-Time Facial Authentication**, **Multi-Target Video Tracking**, and **Multi-Domain Presentation Attack Detection (Face Anti-Spoofing)**.
+> **Paper**: *MAST-PAD: Margin-Aware Spectral Training for Lightweight Cross-Domain Face Anti-Spoofing*  
+> **Authors**: Quang Anh Nguyen, Van Loc Ngo  
+> **Affiliation**: University of Science and Technology – The University of Danang, Vietnam  
 
-Designed for low-latency edge platforms (Raspberry Pi 4, Jetson Orin/Nano, edge servers) and scalable cloud biometric microservices.
+---
+
+## 📌 Overview
+
+**Face-Auth** is an open-source, edge-optimized Computer Vision and Biometric Authentication framework featuring **MAST-PAD (Margin-Aware Spectral Training)** for state-of-the-art, lightweight Presentation Attack Detection (PAD / Anti-Spoofing), high-speed **Face Detection**, **Canonical 5-Point Alignment**, **Multi-Target Video Tracking**, and **ArcFace Deep Metric Recognition**.
+
+### Key Highlight: Pure Spatial Inference with Zero Spectral Overhead
+Unlike conventional frequency-based anti-spoofing methods that mandate dual-branch architectures or frequency transformations during deployment, **MAST-PAD uses spectral interventions strictly as a training stressor**. At inference time, the model runs as a **compact, purely spatial MiniFASNetV2 network**:
+* **Total Deployed Parameters**: **434,434 (0.434M)**
+* **Model Size**: **~1.74 MB** (FP32 raw weights)
+* **Computational Cost**: **40.81M MACs (~0.0816 GFLOPs)** per $80 \times 80$ input crop
+* **Zero Runtime Overhead**: No Fourier transforms, no candidate generators, no auxiliary prediction heads at deployment!
 
 ---
 
 ## 📑 Table of Contents
-- [Architecture & Processing Pipeline](#-architecture--processing-pipeline)
-- [Computer Vision Modules](#-computer-vision-modules)
-  - [1. Face Detection & Landmark Localization](#1-face-detection--landmark-localization)
-  - [2. Multi-Face Video Tracking (MOT)](#2-multi-face-video-tracking-mot)
-  - [3. Multi-Domain Presentation Attack Detection (PAD)](#3-multi-domain-presentation-attack-detection-pad)
-  - [4. Canonical 5-Point Similarity Alignment](#4-canonical-5-point-similarity-alignment)
-  - [5. Deep Representation Learning (ArcFace 512-D)](#5-deep-representation-learning-arcface-512-d)
-  - [6. Centroid Enrollment & Metric Vector Search](#6-centroid-enrollment--metric-vector-search)
-- [Experimental Benchmarks & Model Zoo](#-experimental-benchmarks--model-zoo)
-- [Edge AI Optimization & Asynchronous Worker](#-edge-ai-optimization--asynchronous-worker)
+- [MAST-PAD Methodology](#-mast-pad-methodology)
+  - [1. Smooth Spectral Counterfactuals](#1-smooth-spectral-counterfactuals)
+  - [2. Label-Aligned Margin & Worst-View Selection](#2-label-aligned-margin--worst-view-selection)
+  - [3. Detached Harmful Gate & Count-Normalized Loss](#3-detached-harmful-gate--count-normalized-loss)
+  - [4. Compact Spatial Deployment](#4-compact-spatial-deployment)
+- [Experimental Benchmarks & Results](#-experimental-benchmarks--results)
+  - [Cross-Domain Strategy Comparison (CelebA-Spoof Source)](#cross-domain-strategy-comparison-celeba-spoof-source)
+  - [Comparison with Literature (LCC-FASD & CASIA-FASD)](#comparison-with-literature-lcc-fasd--casia-fasd)
+  - [Training Diagnostics & Margin Sensitivity](#training-diagnostics--margin-sensitivity)
+- [End-to-End Face Authentication Pipeline](#-end-to-end-face-authentication-pipeline)
+  - [1. Face Detection & Landmark Extraction](#1-face-detection--landmark-extraction)
+  - [2. Multi-Target Video Tracking (MOT)](#2-multi-target-video-tracking-mot)
+  - [3. Canonical Similarity Alignment](#3-canonical-similarity-alignment)
+  - [4. ArcFace 512-D Embeddings](#4-arcface-512-d-embeddings)
+  - [5. Centroid Enrollment & Vector Database](#5-centroid-enrollment--vector-database)
+- [Edge AI Asynchronous Execution](#-edge-ai-asynchronous-execution)
 - [Directory Structure](#-directory-structure)
-- [Prerequisites & Installation](#-prerequisites--installation)
+- [Installation & Setup](#-installation--setup)
 - [Quick Start](#-quick-start)
-  - [1. Real-Time Camera Inference Application](#1-real-time-camera-inference-application)
-  - [2. High-Throughput REST API Microservice](#2-high-throughput-rest-api-microservice)
-  - [3. Biometric Identity Enrollment](#3-biometric-identity-enrollment)
-- [Configuration Reference (.env)](#-configuration-reference-env)
-- [Research & Reproducibility](#-research--reproducibility)
-- [References & Citations](#-references--citations)
+  - [1. Live Camera Inference Application](#1-live-camera-inference-application)
+  - [2. FastAPI Biometric Microservice](#2-fastapi-biometric-microservice)
+  - [3. Batch Identity Enrollment](#3-batch-identity-enrollment)
+- [Citation](#-citation)
+- [License](#-license)
 
 ---
 
-## 🏗️ Architecture & Processing Pipeline
+## 🔬 MAST-PAD Methodology
 
-The system processes incoming video streams through a decoupled, multi-stage Computer Vision pipeline:
+<p align="center">
+  <img src="slide_figures_mast_pad_fullscale/fig_mast_pad_method_flow.png" alt="MAST-PAD Method Overview" width="90%">
+</p>
 
-```mermaid
-flowchart TD
-    A["Raw Video Frame (Camera / RTSP / Video File)"] --> B["Face Detection (SCRFD-500M / YunNet)"]
-    B --> C["5-Facial Landmark Extraction\n(Eyes, Nose, Mouth Corners)"]
-    C --> D["Multi-Object Tracking (IoU Tracker)\nTrack ID, Box Smoothing & Identity Latch"]
+MAST-PAD treats frequency variations as controlled probes during training to expose fragile decisions of a compact spatial classifier without increasing its inference capacity.
 
-    D --> E{"PAD Verification"}
+### 1. Smooth Spectral Counterfactuals
+Given an augmented base face crop $x_i \in \mathbb{R}^{80 \times 80 \times 3}$, we compute the 2D orthonormal Discrete Fourier Transform $\mathcal{F}$ per color channel with zero-frequency centered. The normalized radial distance on the centered grid $u, v \in \{-40, \dots, 39\}$ is defined as:
 
-    subgraph PAD_Module ["Presentation Attack Detection (Anti-Spoofing)"]
-        E --> F1["Spatial Branch\nMobileNetV3-Small (1.55x BBox)"]
-        E --> F2["Frequency Branch\n2D-DCT Spectral Energy"]
-        F1 & F2 --> F3["Multimodal Feature Fusion (E3 Concat)"]
-        F3 --> F4["Logit Decision & Temporal Voting"]
-    end
+$$
+r(u, v) = \frac{\sqrt{u^2 + v^2}}{\sqrt{2 \cdot 40^2}}
+$$
 
-    F4 -->|Spoof Attack Detected| G["Reject Identity / Alert Flag"]
-    F4 -->|Genuine Real Face| H["Similarity Transform (Canonical Alignment 112x112)"]
+Three smooth radial Gaussian attenuation profiles are centered at $c_L = 1/12$, $c_M = 1/4$, and $c_H = 5/12$ representing **LOW**, **MID**, and **HIGH** spectral bands:
 
-    subgraph Recognition_Engine ["Biometric Recognition Engine"]
-        H --> I["Deep Feature Extraction\nArcFace 512-D Embeddings"]
-        I --> J["Outlier Rejection & Centroid Aggregation"]
-        J --> K["pgvector HNSW Cosine Metric Search\n(Threshold: d <= 0.35)"]
-    end
+$$
+a_k(r) = \exp\left( -\frac{(r - c_k)^2}{2\sigma^2} \right), \quad k \in \{L, M, H\}, \quad \sigma = 0.10
+$$
 
-    K --> L["Verified Identity (Subject Code / Name / Similarity)"]
+A random attenuation gain $g_i \sim \mathcal{U}(0.65, 0.90)$ is sampled per instance and shared across all three bands. The spectral transfer multiplier with an explicit DC override is:
+
+$$
+G_{i,k}(u, v) = \begin{cases} 1, & (u, v) = (0, 0) \\ 1 - (1 - g_i) a_k(r(u, v)), & \text{otherwise} \end{cases}
+$$
+
+The counterfactual spatial views are reconstructed via inverse FFT while preserving original Fourier phase:
+
+$$
+x_i^k = \text{clip}_{[0, 1]}\left( \Re\left\{ \mathcal{F}^{-1}\left[ G_{i,k} \odot \mathcal{F}(x_i) \right] \right\} \right)
+$$
+
+### 2. Label-Aligned Margin & Worst-View Selection
+The network predicts binary logits $f_\theta(x) = (z_{\text{Real}}, z_{\text{Attack}})$. The decision score and label-aligned classification margin are:
+
+$$
+d_\theta(x) = z_{\text{Real}}(x) - z_{\text{Attack}}(x)
+$$
+
+$$
+m_\theta(x, y) = s_y \cdot d_\theta(x), \quad s_y = \begin{cases} +1, & y = \text{Real} \\ -1, & y = \text{Attack} \end{cases}
+$$
+
+A larger aligned margin indicates stronger confidence for the ground-truth class. In a no-gradient evaluation pass ($\bar{f}_\theta$), MAST-PAD selects the spectral candidate that produces the **minimum aligned margin**:
+
+$$
+k_i^* = \arg\min_{k \in \{L, M, H\}} m_i^k, \quad x_i^* = x_i^{k_i^*}
+$$
+
+### 3. Detached Harmful Gate & Count-Normalized Loss
+A candidate view is defined as **harmful** if and only if it strictly reduces the decision margin below the clean base margin $m_i^0$:
+
+$$
+h_i = \mathbf{1}\left[ m_i^{k_i^*} < m_i^0 \right], \quad H = \sum_{i=1}^B h_i
+$$
+
+The detached gate activates even when the predicted class does not flip: a smaller positive margin represents weakened decision support. The harmful spectral loss is normalized by the count of active harmful samples $H$:
+
+$$
+\mathcal{L}_{\text{harm}} = \begin{cases} \frac{1}{H} \sum_{i=1}^B h_i \cdot \text{CE}(f_\theta(x_i^*), y_i), & H > 0 \\ 0, & H = 0 \end{cases}
+$$
+
+The overall training objective combines clean cross-entropy, harmful spectral supervision, and semantic auxiliary heads (11 spoof types, 5 lighting classes, 40 facial attributes):
+
+$$
+\mathcal{L}_{\text{clean}} = \frac{1}{B} \sum_{i=1}^B \text{CE}(f_\theta(x_i), y_i)
+$$
+
+$$
+\mathcal{L}_{\text{aux}} = 0.1 \mathcal{L}_{\text{spoof}} + 0.1 \mathcal{L}_{\text{light}} + \mathcal{L}_{\text{attr,real}}
+$$
+
+After a 1-epoch clean warmup, the final MAST objective is:
+
+$$
+\mathcal{L}_{\text{MAST}} = 0.75 \mathcal{L}_{\text{clean}} + 0.25 \mathcal{L}_{\text{harm}} + \mathcal{L}_{\text{aux}}
+$$
+
+### 4. Compact Spatial Deployment
+At deployment time, all spectral operations, Fourier transforms, candidate selectors, harmful gates, and auxiliary heads are discarded. The deployed system executes a **single-stream spatial forward pass**:
+
+```text
+Input Frame -> SCRFD (1.5x Context Crop) -> 80x80 BGR -> MiniFASNetV2 -> Binary Logits (Real / Attack)
 ```
 
 ---
 
-## 🔬 Computer Vision Modules
+## 📊 Experimental Benchmarks & Results
 
-### 1. Face Detection & Landmark Localization
-* **Algorithms**:
-  * **SCRFD-500M**: Sample and Computation Redistribution for Efficient Face Detection. High recall for occluded, angled, and distant faces.
-  * **OpenCV YunNet**: Ultra-lightweight INT8 deep face detector (~122 KB), optimized for ARM / Raspberry Pi edge processing.
-* **Outputs**: High-precision bounding box $(x_1, y_1, x_2, y_2)$, detection confidence score, and 5 facial landmarks:
-  $$\mathbf{P} = \left\{ [x_{\text{left\_eye}}, y_{\text{left\_eye}}], [x_{\text{right\_eye}}, y_{\text{right\_eye}}], [x_{\text{nose}}, y_{\text{nose}}], [x_{\text{left\_mouth}}, y_{\text{left\_mouth}}], [x_{\text{right\_mouth}}, y_{\text{right\_mouth}}] \right\}$$
-* **Context Expansion**: Dynamic $1.55\times$ bounding box expansion to supply spatial context (hair, ears, chin, background reflection) for anti-spoofing classifiers.
+### Cross-Domain Strategy Comparison (CelebA-Spoof Source)
+All models were trained on **484,561 usable images** from the official CelebA-Spoof training set and evaluated directly on target domains **without any fine-tuning or domain adaptation**:
 
-### 2. Multi-Face Video Tracking (MOT)
-* **IoU Tracker with Temporal Smoothing**: Associates detected bounding boxes across consecutive frames using Intersection-over-Union (IoU) spatial matching.
-* **Identity Latching & State Machine**:
-  * Maintains per-track identification states (`PENDING`, `VERIFYING`, `CONFIRMED`, `SPOOF`, `REVERIFY`).
-  * Dampens bounding box jitter using moving-average coordinate smoothing.
-  * Prevents identity switching when multiple subjects enter or cross the camera viewport.
+| Strategy | Clean CE | Clean Aux | Spectral View | Harmful Gate | Gaussian $\sigma$ | CelebA Val AUC (%) | LCC Combined AUC (%) | CASIA Combined AUC (%) | Parameters |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| **CE-only** | Yes | No | None | No | — | 99.21 | 84.40 | 89.83 | 434,434 |
+| **C-clean** | Yes | Yes | None | No | — | 99.07 | 84.60 | 92.04 | 434,434 |
+| **WBST** | Yes | Yes | Worst of 3 | No | $1/18$ | 99.22 | **86.08** | 92.23 | 434,434 |
+| **MAST-PAD (Ours)**| **Yes** | **Yes** | **Worst of 3** | **Yes** | **0.10** | **99.23** | **86.03** | **93.52** | **434,434** |
 
-### 3. Multi-Domain Presentation Attack Detection (PAD)
-Presentation Attack Detection prevents physical biometric spoofing from:
-* **2D Print Attacks**: High-resolution photo prints, paper masks, copperplate cutouts.
-* **Replay / Screen Attacks**: 4K tablets, AMOLED smartphones, laptop monitors.
-* **3D Masks**: Silicone and resin realistic masks.
+<p align="center">
+  <img src="slide_figures_mast_pad_fullscale/fig_main_ablation_two_target_auc.png" alt="Ablation & Target AUC Comparison" width="85%">
+</p>
 
-#### Multimodal Spatial-Frequency Architecture (MAST-PAD / E3 Fusion)
-* **Spatial Stream**: MobileNetV3-Small backbone trained on multi-resolution crops capturing micro-textures, specular highlights, and natural skin reflectance.
-* **Frequency Stream**: 2D Discrete Cosine Transform (2D-DCT) decomposing the facial patch into spatial frequency coefficients:
-  $$F(u, v) = \alpha(u)\alpha(v) \sum_{x=0}^{N-1} \sum_{y=0}^{N-1} f(x, y) \cos\left[\frac{\pi(2x+1)u}{2N}\right] \cos\left[\frac{\pi(2y+1)v}{2N}\right]$$
-  Detects unnatural high-frequency moiré patterns, screen sub-pixel grids, and printing halftoning.
-* **Feature Concatenation**: Merges spatial semantics and spectral power distributions into a compact vector for final classification.
-* **Illumination Adaptation**: Dynamic gamma correction ($\gamma = \frac{\log(\text{Target}/\text{Max})}{\log(\text{Mean}/\text{Max})}$) standardizes facial patches under extreme backlighting or low-light conditions.
-
-### 4. Canonical 5-Point Similarity Alignment
-* Computes the optimal Similarity Transformation matrix $\mathbf{M}$ (scale, rotation, translation) via least-squares Procrustes alignment:
-  $$\mathbf{M}^* = \arg\min_{\mathbf{M}} \sum_{i=1}^5 \|\mathbf{M} \mathbf{p}_i - \mathbf{q}_i\|^2$$
-  where $\mathbf{p}_i$ represents detected landmarks and $\mathbf{q}_i$ represents standard canonical facial coordinates.
-* Warps the facial crop into a normalized $112 \times 112 \times 3$ RGB tensor, invariant to in-plane head tilt and camera distance.
-
-### 5. Deep Representation Learning (ArcFace 512-D)
-* **ArcFace Loss (Additive Angular Margin Loss)**:
-  $$\mathcal{L} = -\frac{1}{N} \sum_{i=1}^N \log \frac{e^{s(\cos(\theta_{y_i} + m))}}{e^{s(\cos(\theta_{y_i} + m))} + \sum_{j \neq y_i} e^{s \cos \theta_j}}$$
-  where $s = 64$ is the feature sphere radius and $m = 0.5$ is the angular margin penalty.
-* **Embeddings**: Produces 512-dimensional $L_2$-normalized feature representations ($\|\mathbf{f}\|_2 = 1$).
-* **Backbone Models**:
-  * `buffalo_s` (MobileFaceNet): Ultra-fast embedding model for Edge AI and real-time inference.
-  * `buffalo_l` (ResNet-50): Deep high-capacity model for high-precision verification.
-
-### 6. Centroid Enrollment & Metric Vector Search
-* **Outlier Filtering during Enrollment**:
-  * Computes pairwise cosine distances among all enrolled facial images for a subject:
-    $$d(\mathbf{f}_i, \mathbf{f}_j) = 1 - \mathbf{f}_i^\top \mathbf{f}_j$$
-  * Automatically discards extreme poses, blur, or corrupted frames exceeding variance thresholds.
-* **Normalized Centroid**:
-  $$\mathbf{c} = \frac{\sum_{k=1}^K \mathbf{f}_k}{\left\| \sum_{k=1}^K \mathbf{f}_k \right\|_2}$$
-* **Vector Database**: PostgreSQL with `pgvector` extension utilizing Hierarchical Navigable Small World (HNSW) indexing for sub-millisecond nearest neighbor search over millions of biometric identities.
+* **CASIA Video Gains**: MAST-PAD achieves **93.52% AUC** on deduplicated reconstructed CASIA videos, outperforming CE-only by **+3.69 pp**, C-clean by **+1.48 pp**, and WBST by **+1.29 pp**.
+* **LCC Image Generalization**: MAST-PAD reaches **86.03% AUC** across 18,794 pooled LCC-FASD images (+1.63 pp over CE-only).
 
 ---
 
-## 📊 Experimental Benchmarks & Model Zoo
+### Comparison with Literature (LCC-FASD & CASIA-FASD)
 
-### Presentation Attack Detection (PAD) Models
+#### LCC-FASD Dataset Context:
+| Method | AUC (%) | Parameters | Backbones & Reference |
+| :--- | :---: | :---: | :--- |
+| **Graph Transformer** | 83.30 | ~10.84M | Trinh et al. (ESANN 2023) |
+| **AENet** | 86.80 | 11.22M | CelebA-Spoof Benchmark (ECCV 2020) |
+| **MAST-PAD (Ours)** | **86.03** | **0.434M** | **MiniFASNetV2 (~25.8x fewer parameters than AENet)** |
 
-Pre-trained models and ONNX runtimes are located in [`antispoof/models/`](antispoof/models/):
-
-| Model Name | Backbone Architecture | Input Geometry | Parameter Count | Latency (CPU) | Held-out AUC | Key Strength |
-| :--- | :--- | :---: | :---: | :---: | :---: | :--- |
-| **`E3_concat_v1`** | MobileNetV3-Small + 2D-DCT | Spatial + Freq ($224 \times 224$) | **1.13M** | **~2.21 ms** | **98.57%** | 🚀 **State-of-the-Art Dual-Domain Fusion** |
-| **`E1_v5_3_mnv3_small`**| MobileNetV3-Small (Spatial) | RGB ($224 \times 224$) | **1.11M** | **~2.47 ms** | **98.14%** | ⭐ **Standard Production Baseline** |
-| **`R7_SC_FULL`** | Multi-Scale MiniFASNet | BGR ($80 \times 80$) | **0.47M** | **~1.15 ms** | **97.80%** | 🌐 **Cross-Domain Generalization** |
-| **`minifasnet_v2se`** | MiniFASNetV2SE (INT8) | RGB ($128 \times 128$) | **0.47M** | **~1.20 ms** | **96.50%** | ⚡ **Ultra-lightweight Embedded Edge** |
-| **`E2_dct_v1`** | Tiny Spectral CNN | 2D-DCT ($224 \times 224$) | **17.1K** | **~0.57 ms** | **83.66%** | 🔬 **Frequency-only Analysis** |
-
-### Face Verification Benchmark (LFW Protocol)
-* **Dataset**: Labeled Faces in the Wild (LFW 6,000 pair protocol).
-* **Backbone**: ArcFace `buffalo_s` (MobileFaceNet).
-* **Verification Accuracy**: **99.52%** with cosine similarity threshold $0.35$.
+#### CASIA-FASD Cross-Domain Context:
+| Method | Target AUC (%) | Protocol Setting | Architectural Family |
+| :--- | :---: | :---: | :--- |
+| **MADDG** (CVPR 2019) | 84.51 | $\text{OMI} \to \text{C}$ | MADDG Architecture (3.35M params) |
+| **AMEL** (ACM MM 2022) | 94.39 | $\text{OMI} \to \text{C}$ | Multi-Domain Experts |
+| **PatchNet** (CVPR 2022) | 94.58 | $\text{OMI} \to \text{C}$ | ResNet-18 Backbone |
+| **GAC-FAS** (CVPR 2024) | 95.16 | $\text{OMI} \to \text{C}$ | ResNet-18 Backbone |
+| **SA-FAS** (CVPR 2023) | 95.37 | $\text{OMI} \to \text{C}$ | ResNet-18 Backbone |
+| **MAST-PAD (Ours)** | **93.52** | $\text{CelebA} \to \text{CASIA}$ | **MiniFASNetV2 (Only 0.434M parameters)** |
 
 ---
 
-## ⚡ Edge AI Optimization & Asynchronous Worker
+### Training Diagnostics & Margin Sensitivity
 
-Running deep neural networks on edge processors (e.g. Raspberry Pi 4 Cortex-A72) often leads to frame drops if feature extraction blocks the camera thread.
+<p align="center">
+  <img src="slide_figures_mast_pad_fullscale/fig_mast_pad_training_diagnostics.png" alt="Training Diagnostics" width="75%">
+</p>
 
-**Face-Auth implements an Asynchronous Multi-Threaded Pipeline:**
+* **Margin Deterioration vs. Sign Flips**: In the final training epoch (epoch 11), **83.21%** of selected counterfactual views activated the harmful gate, whereas only **0.31%** caused an outright sign flip (misclassification).
+* **Takeaway**: Conventional hard-example mining only penalizes misclassified samples, ignoring views that dangerously weaken the decision boundary. The harmful gate directly supervises these degraded representations before label errors occur.
+* **Band Distribution**: Selected view distribution across LOW (42.65%), MID (27.30%), and HIGH (30.05%) proves that vulnerabilities span across the entire spectral frequency spectrum.
+
+---
+
+## 🔍 End-to-End Face Authentication Pipeline
+
+In addition to MAST-PAD anti-spoofing, this repository provides a complete biometric authentication pipeline:
+
+```mermaid
+flowchart LR
+    A["Raw Frame"] --> B["SCRFD / YunNet\n(Face Detection)"]
+    B --> C["IoU Face Tracker\n(MOT Smoothing)"]
+    C --> D["MAST-PAD\n(Anti-Spoofing)"]
+    D -->|Real| E["Similarity Transform\n(112x112 Alignment)"]
+    D -->|Spoof| F["Alert / Reject"]
+    E --> G["ArcFace\n(512-D Embeddings)"]
+    G --> H["pgvector HNSW\n(Cosine Search)"]
+```
+
+### 1. Face Detection & Landmark Extraction
+* Backbones: **SCRFD-500M** and **OpenCV YunNet** (INT8 quantized, ~122 KB).
+* Outputs: Bounding box coordinates and 5 primary facial landmarks (Left Eye, Right Eye, Nose Tip, Left Mouth Corner, Right Mouth Corner).
+* Anti-spoofing crop: Adaptive $1.55\times$ bounding box contextual expansion.
+
+### 2. Multi-Target Video Tracking (MOT)
+* IoU spatial tracker associating identities across frames with velocity and coordinate smoothing.
+* Prevents identity flipping and handles momentary occlusions in multi-person scenarios.
+
+### 3. Canonical Similarity Alignment
+* Computes least-squares Procrustes similarity transformation matrix $\mathbf{M}$ mapping 5 detected landmarks to canonical reference coordinates.
+* Warps face crops into standardized $112 \times 112 \times 3$ RGB tensors, robust to in-plane head tilt.
+
+### 4. ArcFace 512-D Embeddings
+* Additive Angular Margin Loss (ArcFace):
+  
+$$
+\mathcal{L}_{\text{ArcFace}} = -\frac{1}{N} \sum_{i=1}^N \log \frac{e^{s(\cos(\theta_{y_i} + m))}}{e^{s(\cos(\theta_{y_i} + m))} + \sum_{j \neq y_i} e^{s \cos \theta_j}}
+$$
+
+* Extracts $L_2$-normalized 512-dimensional vectors ($\|\mathbf{f}\|_2 = 1$).
+* Model backbones: `buffalo_s` (MobileFaceNet, ultra-lightweight) and `buffalo_l` (ResNet-50).
+
+### 5. Centroid Enrollment & Vector Database
+* **Outlier Filtering**: Calculates inter-sample cosine distances $d(\mathbf{f}_i, \mathbf{f}_j) = 1 - \mathbf{f}_i^\top \mathbf{f}_j$ to reject poor quality enrollment captures.
+* **Normalized Identity Centroid**:
+
+$$
+\mathbf{c} = \frac{\sum_{k=1}^K \mathbf{f}_k}{\left\| \sum_{k=1}^K \mathbf{f}_k \right\|_2}
+$$
+
+* **Vector Search Engine**: PostgreSQL 16 + `pgvector` with HNSW indexing ($M=16, \text{efConstruction}=64$) for sub-millisecond cosine distance querying over large identity galleries.
+
+---
+
+## ⚡ Edge AI Asynchronous Execution
+
+To maintain 30+ FPS video streaming on edge platforms like Raspberry Pi 4 (Quad-Core Cortex-A72 @ 1.5GHz), Face-Auth decouples vision tracking from heavy biometric vector extraction:
 
 ```text
-[Camera Capture Thread] (30+ FPS, Zero-Copy BGR Frame Buffer)
-           │
-           ├──► [Lightweight Face Detection & Tracking] (SCRFD / YunNet)
-           │
-           ├──► [PAD Inference] (~2.2 ms ONNX Runtime)
-           │
-           └──► [Asynchronous Recognition Dispatcher]
-                      │ (Non-blocking bounded queue, size = 2)
-                      ▼
-        [Background ArcFace & Vector Worker]
-           ├── ArcFace Feature Extraction
-           ├── Dynamic Track Centroid Cache (TTL = 30s)
+[Camera Capture Loop] (30+ FPS, Zero-Copy BGR Frame Buffer)
+       │
+       ├──► [SCRFD / YunNet Face Detection] (~15-20 ms)
+       │
+       ├──► [MAST-PAD Inference] (~2.2 ms on CPU)
+       │
+       └──► [Asynchronous Worker Dispatcher]
+                  │ (Bounded queue, size = 2)
+                  ▼
+        [Background Recognition Thread]
+           ├── ArcFace Feature Extraction (512-D)
+           ├── Track Centroid Memoization (TTL = 30s)
            └── Database Vector Search (pgvector HNSW)
 ```
 
-* **Zero Frame-Drop Camera Loop**: Video visualization remains smooth at full sensor frame rate.
-* **Memoization Cache**: Re-uses verified identity embeddings for the same tracked face trajectory, eliminating redundant cloud/database RPCs.
+* **Zero-Lag Video**: The UI and camera stream remain uninterrupted.
+* **Track Memoization**: Once a face trajectory is verified, its identity is cached for the duration of the track, eliminating redundant inference cycles.
 
 ---
 
@@ -179,66 +279,60 @@ Running deep neural networks on edge processors (e.g. Raspberry Pi 4 Cortex-A72)
 
 ```text
 face-auth/
-├── app.py                     # Real-time interactive camera GUI application with PAD overlay
-├── api_service.py             # Headless FastAPI microservice for feature extraction & enrollment
-├── config.py                  # Central configuration: detection, PAD paths, DB pools, thresholds
-├── requirements.txt           # Python package dependencies
-├── .env.example               # Template environment configuration
+├── app.py                     # Real-time camera GUI app with live PAD & recognition overlay
+├── api_service.py             # Headless FastAPI microservice (vector extraction & enrollment)
+├── config.py                  # Global configurations (thresholds, model paths, DB connections)
+├── requirements.txt           # Python library dependencies
+├── .env.example               # Environment variables template
+├── LICENSE                    # MIT License
 │
 ├── alignment/                 # Canonical 5-point face alignment via Similarity Transform
-│   └── aligner.py             # Procrustes alignment implementation
+│   └── aligner.py
 │
-├── antispoof/                 # Presentation Attack Detection (PAD) research & deployment
-│   ├── predictor.py           # Unified PAD inference engine (ONNX / PyTorch)
-│   ├── preprocess.py          # Spatial crop scaling, color transforms, and normalization
-│   ├── lighting.py            # Adaptive illumination & gamma correction
-│   ├── models/                # ONNX checkpoints, PyTorch weights & runtime configs
-│   │   └── smartface_pad_artifacts/ # Artifacts for E1, E2, E3 architectures
-│   └── notebooks/             # Jupyter notebooks: training, EDA, and held-out evaluations
+├── antispoof/                 # Presentation Attack Detection (PAD)
+│   ├── predictor.py           # Unified inference runner (supports ONNX and PyTorch)
+│   ├── preprocess.py          # Crop scaling, color normalization, and bounding box expansion
+│   ├── lighting.py            # Illumination-aware adaptive gamma correction
+│   ├── models/                # Production ONNX checkpoints and runtime configs
+│   │   ├── R7_SC_FULL_crop15.onnx            # Pre-trained MAST-PAD model
+│   │   └── smartface_pad_artifacts/          # E1, E2, E3 model artifacts
+│   └── notebooks/             # Research & training notebooks
 │
-├── database/                  # Vector database integration
-│   ├── vector_db.py           # PostgreSQL + pgvector connection pool & cosine distance queries
-│   └── schema.sql             # SQL schema for face_embeddings and HNSW indexes
+├── database/                  # Vector database layer
+│   ├── vector_db.py           # PostgreSQL connection pool & pgvector HNSW search
+│   └── schema.sql             # SQL schema for identities and face_embeddings
 │
 ├── detection/                 # Deep face detection backbones
 │   ├── detector.py            # InsightFace SCRFD wrapper
 │   └── yunnet_detector.py     # OpenCV YunNet wrapper
 │
-├── enrollment/                # Biometric identity enrollment & centroid computation
-│   └── enroll.py              # Pairwise distance filter, outlier rejection & centroid math
+├── enrollment/                # Biometric enrollment & centroid math
+│   └── enroll.py              # Pairwise distance outlier rejection & centroid calculation
 │
-├── evaluation/                # LFW benchmark notebooks & identity verification evaluation
-│   └── lfw_identity_benchmark.ipynb
+├── slide_figures_mast_pad_fullscale/ # Publication figures, diagrams, and benchmarks
+│   ├── fig_mast_pad_method_flow.png
+│   ├── fig_main_ablation_two_target_auc.png
+│   └── fig_mast_pad_training_diagnostics.png
 │
-├── tracking/                  # Real-time multi-target tracking
-│   └── tracker.py             # Multi-object IoU FaceTracker with trajectory smoothing
-│
-├── utils/                     # Vision utilities (drawing, bounding boxes, transforms)
-│   └── image.py
-│
-├── scripts/                   # Utility and calibration scripts
-│   ├── calibrate_domain_threshold.py # Adaptive threshold search on custom validation sets
-│   ├── list_cameras.py        # Probe connected USB/CSI cameras and indices
-│   ├── run_enroll.py          # Batch enrollment CLI from folder hierarchies
-│   └── export_onnx.py         # PyTorch checkpoint to ONNX export utility
+├── scripts/                   # Utility and calibration CLI tools
+│   ├── run_enroll.py          # Batch directory enrollment
+│   ├── calibrate_domain_threshold.py # Adaptive threshold calibrator
+│   └── list_cameras.py        # Probes attached camera devices
 │
 └── tests/                     # Unit and regression test suite
     ├── test_detection.py
     ├── test_pad_predictor.py
-    ├── test_enrollment_math.py
     └── test_runtime.py
 ```
 
 ---
 
-## 🛠️ Prerequisites & Installation
+## 🛠️ Installation & Setup
 
-### 1. System Requirements
-* **Operating System**: Linux (Ubuntu 20.04+, Debian, Raspberry Pi OS 64-bit), macOS, or Windows 10/11.
-* **Python**: `3.10` or `3.11`.
-* **Hardware**:
-  * Standard USB Webcam, CSI Camera, or RTSP IP Camera stream.
-  * *Optional*: NVIDIA GPU with CUDA 11.8+ / TensorRT for accelerated throughput.
+### 1. Requirements
+* **Python**: `3.10` or `3.11`
+* **OS**: Linux (Ubuntu 20.04+, Debian, Raspberry Pi OS 64-bit), macOS, or Windows
+* **Camera**: USB Webcam, CSI Camera, or RTSP Video Stream
 
 ### 2. Environment Setup
 ```bash
@@ -246,9 +340,9 @@ face-auth/
 git clone git@github.com:locngodev6205/face-auth.git
 cd face-auth
 
-# Create and activate a Python virtual environment
+# Create and activate Python virtual environment
 python3 -m venv .venv
-source .venv/bin/activate       # On Linux / macOS
+source .venv/bin/activate       # On Linux/macOS
 # or: .venv\Scripts\activate    # On Windows
 
 # Install dependencies
@@ -256,150 +350,87 @@ pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
-### 3. Configure Environment Variables
-Copy `.env.example` to `.env` and configure your database and model options:
+### 3. Configure `.env`
 ```bash
 cp .env.example .env
 ```
+Key configuration settings in `.env`:
+* `DATABASE_URL`: Connection string for PostgreSQL with `pgvector`.
+* `APP_DETECTOR`: `scrfd` (higher accuracy) or `yunnet` (ultra-lightweight edge).
+* `PAD_ENABLED`: `true` to enable anti-spoofing verification.
+* `PAD_MODEL_NAME`: Name of the active ONNX model (e.g. `R7_SC_FULL_crop15.onnx`).
+* `MATCH_THRESHOLD`: Cosine distance cutoff threshold for identity verification (default `0.35`).
 
 ---
 
 ## 🚀 Quick Start
 
-### 1. Real-Time Camera Inference Application
-
-Run the interactive live-feed authentication application:
+### 1. Live Camera Inference Application
+Launch the real-time application with camera feed, PAD liveness detection, and facial recognition:
 
 ```bash
-# Launch with default webcam and active PAD anti-spoofing
+# Run with default camera index 0 and active MAST-PAD
 python app.py
 
-# Select camera index (e.g. external USB camera at index 1)
+# Specify camera device index
 python app.py --camera 1
 
-# Run with ultra-lightweight settings for maximum FPS on low-power devices
+# Select specific PAD ONNX model
+python app.py --pad-model antispoof/models/R7_SC_FULL_crop15.onnx
+
+# Maximum performance mode on low-resource hardware
 python app.py --no-fps
-
-# Evaluate without PAD anti-spoofing
-python app.py --no-pad
-
-# Select custom PAD model checkpoint
-python app.py --pad-model antispoof/models/smartface_pad_artifacts/E3_concat_v1/deployment/e3_concat_preliminary_v1_best.onnx
 ```
 
-#### Keyboard Shortcuts during Live Execution:
-* `Q` or `ESC`: Quit application.
-* `C`: Capture current face crop to disk for evaluation/calibration datasets.
+**Controls**:
+* Press `Q` or `ESC` to exit.
+* Press `C` to capture current face crop to disk for evaluation.
 
----
-
-### 2. High-Throughput REST API Microservice
-
-Launch the FastAPI biometric microservice on port `5000`:
+### 2. FastAPI Biometric Microservice
+Start the headless REST API service on port `5000`:
 
 ```bash
 uvicorn api_service:app --host 0.0.0.0 --port 5000 --workers 2
 ```
 
-#### API Endpoints:
-* **`GET /health`**: Health check and runtime detector status.
-* **`POST /internal/face-embedding`**: Extracts a 512-D normalized vector from a base64 image:
-  ```json
-  {
-    "image_base64": "data:image/jpeg;base64,/9j/4AAQSkZJRg..."
-  }
-  ```
-  **Response**:
-  ```json
-  {
-    "embedding": [0.0215, -0.0481, ..., 0.0892],
-    "embedding_model_version": "buffalo_s",
-    "det_score": 0.9984
-  }
-  ```
-* **`POST /internal/enroll`**: Performs multi-image outlier filtering, computes the identity centroid, and persists it to the vector database.
+* `GET /health`: Health check and model readiness.
+* `POST /internal/face-embedding`: Extracts a 512-D normalized vector from a base64 encoded image.
+* `POST /internal/enroll`: Performs outlier filtering and enrolls identity centroids into the vector database.
 
----
-
-### 3. Biometric Identity Enrollment
-
-Enroll new identities from structured image directories:
+### 3. Batch Identity Enrollment
+Enroll employee/user identity galleries structured in subfolders:
 
 ```text
 gallery/
-├── EMP001_John_Doe/
-│   ├── photo_1.jpg
-│   ├── photo_2.jpg
-│   └── photo_3.jpg
-└── EMP002_Jane_Smith/
-    ├── photo_1.jpg
-    └── photo_2.jpg
+├── EMP001_Alice/
+│   ├── img1.jpg
+│   └── img2.jpg
+└── EMP002_Bob/
+    ├── img1.jpg
+    └── img2.jpg
 ```
 
-Execute batch enrollment:
+Run batch enrollment:
 ```bash
 python scripts/run_enroll.py --gallery gallery
 ```
 
 ---
 
-## ⚙️ Configuration Reference (.env)
+## 📖 Citation
 
-| Environment Variable | Default Value | Description |
-| :--- | :---: | :--- |
-| `DATABASE_URL` | `postgresql://...` | Connection URI for PostgreSQL + pgvector instance |
-| `APP_DETECTOR` | `scrfd` | Face detector backbone (`scrfd` or `yunnet`) |
-| `DETECTOR_CONF_THRESH`| `0.5` | Minimum confidence score for detected faces |
-| `MODEL_PACK_NAME` | `buffalo_s` | ArcFace backbone model (`buffalo_s` or `buffalo_l`) |
-| `MATCH_THRESHOLD` | `0.35` | Maximum cosine distance threshold for positive verification |
-| `PAD_ENABLED` | `true` | Enable or disable presentation attack detection |
-| `PAD_MODEL_NAME` | `R7_SC_FULL_crop15.onnx` | Active PAD model weights filename |
-| `PAD_THRESHOLD` | `0.50` | Probability cutoff threshold $P(\text{Real})$ |
-| `RECOGNIZE_INTERVAL_SECONDS`| `1.0` | Face re-verification cadence per tracked face |
-| `RECOGNITION_QUEUE_SIZE` | `2` | Maximum pending frames in asynchronous worker queue |
-| `CAMERA_INDEX` | `0` | OpenCV video capture device index |
-
----
-
-## 📖 Research & Reproducibility
-
-Detailed research audits, ablation studies, and mathematical formulations are available in [`md/`](md/README.md) and [`antispoof/notebooks/`](antispoof/notebooks/):
-* **Cross-Dataset Evaluations**: Rigorous cross-domain tests between CASIA-FASD, CelebA-Spoof, and private Edge datasets.
-* **Harmful Gate Ablation**: Evaluation of spatial gating and auxiliary classification losses across multiple random seeds ($s=100, 101, 102, 105$).
-* **LFW Benchmark**: Notebooks verifying zero leakage and high separation margins on standard open-set protocols.
-
----
-
-## 📚 References & Citations
-
-If you use **Face-Auth** or components of this architecture in your research or applications, please cite:
+If you find **MAST-PAD** or this codebase helpful in your research or project, please cite:
 
 ```bibtex
-@inproceedings{deng2019arcface,
-  title={ArcFace: Additive Angular Margin Loss for Deep Face Recognition},
-  author={Deng, Jiankang and Guo, Jia and Xue, Niannan and Zafeiriou, Stefanos},
-  booktitle={Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)},
-  pages={4690--4699},
-  year={2019}
-}
-
-@inproceedings{guo2021sample,
-  title={Sample and Computation Redistribution for Efficient Face Detection},
-  author={Guo, Jia and Deng, Jiankang and Lattas, Alexandros and Zafeiriou, Stefanos},
-  journal={arXiv preprint arXiv:2105.04714},
-  year={2021}
-}
-
-@inproceedings{zhang2020celeba,
-  title={CelebA-Spoof: Large-scale Face Anti-spoofing Dataset with Rich Annotations},
-  author={Zhang, Yuanhan and Yin, Zhenfei and Li, Yidong and Yin, Guojun and Yan, Junjie and Shao, Jing and Liu, Ziwei},
-  booktitle={European Conference on Computer Vision (ECCV)},
-  pages={70--85},
-  year={2020}
+@article{nguyen2026mastpad,
+  title={MAST-PAD: Margin-Aware Spectral Training for Lightweight Cross-Domain Face Anti-Spoofing},
+  author={Nguyen, Quang Anh and Ngo, Van Loc},
+  journal={University of Science and Technology -- The University of Danang},
+  year={2026}
 }
 ```
 
 ---
 
 ## 📄 License
-This project is licensed under the [MIT License](LICENSE).
+This project is open-source under the [MIT License](LICENSE).

@@ -81,10 +81,15 @@ $$
 a_k(r) = \exp\left( -\frac{(r - c_k)^2}{2\sigma^2} \right), \quad k \in [L, M, H], \quad \sigma = 0.10
 $$
 
-A random attenuation gain $g_i \sim \mathcal{U}(0.65, 0.90)$ is sampled per instance and shared across all three bands. The spectral transfer multiplier with an explicit DC override is defined piecewise:
+A random attenuation gain $g_i \sim \mathcal{U}(0.65, 0.90)$ is sampled per instance and shared across all three bands. The spectral transfer multiplier with an explicit DC override is defined as:
 
-* For the DC zero-frequency coefficient $(u, v) = (0, 0)$: $G_{i,k}(0, 0) = 1$
-* For all radial spatial frequencies $(u, v) \neq (0, 0)$: $G_{i,k}(u, v) = 1 - (1 - g_i) a_k(r(u, v))$
+$$
+G_{i,k}(0, 0) = 1 \quad \text{for } (u, v) = (0, 0)
+$$
+
+$$
+G_{i,k}(u, v) = 1 - (1 - g_i) a_k(r(u, v)) \quad \text{for } (u, v) \neq (0, 0)
+$$
 
 The counterfactual spatial views are reconstructed via inverse FFT while preserving original Fourier phase:
 
@@ -120,8 +125,9 @@ $$
 
 The detached gate activates even when the predicted class does not flip: a smaller positive margin represents weakened decision support. The harmful spectral loss is normalized by the count of active harmful samples $H$:
 
-* When $H > 0$ (at least one candidate reduces the margin): $\mathcal{L}_{\text{harm}} = \frac{1}{H} \sum_{i=1}^B h_i \cdot \text{CE}(f_\theta(x_i^*), y_i)$
-* When $H = 0$ (no candidate degrades the margin): $\mathcal{L}_{\text{harm}} = 0$
+$$
+\mathcal{L}_{\text{harm}} = \frac{1}{H} \sum_{i=1}^B h_i \cdot \text{CE}(f_\theta(x_i^*), y_i) \quad \text{if } H > 0, \qquad \mathcal{L}_{\text{harm}} = 0 \quad \text{if } H = 0
+$$
 
 The overall training objective combines clean cross-entropy, harmful spectral supervision, and semantic auxiliary heads (11 spoof types, 5 lighting classes, 40 facial attributes):
 

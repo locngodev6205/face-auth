@@ -2,13 +2,13 @@
 
 <div align="center">
 
-[![Python](https://img.shields.io/badge/Python-3.10%20%7C%203.11-3776ab.svg?logo=python&logoColor=white)](https://www.python.org/)
+[![Python](https://img.shields.io/badge/Python-3.10_--_3.11-3776AB.svg?logo=python&logoColor=white)](https://www.python.org/)
 [![PyTorch](https://img.shields.io/badge/PyTorch-2.x-EE4C2C.svg?logo=pytorch&logoColor=white)](https://pytorch.org/)
-[![OpenCV](https://img.shields.io/badge/OpenCV-Computer%20Vision-5C3EE8.svg?logo=opencv&logoColor=white)](https://opencv.org/)
-[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-pgvector-336791.svg?logo=postgresql&logoColor=white)](https://github.com/pgvector/pgvector)
-[![Parameters](https://img.shields.io/badge/Parameters-0.434M%20(1.74MB)-success.svg)](https://github.com/locngodev6205/face-auth)
-[![CASIA AUC](https://img.shields.io/badge/CASIA--FASD%20AUC-93.52%25-brightgreen.svg)](https://github.com/locngodev6205/face-auth)
-[![LCC AUC](https://img.shields.io/badge/LCC--FASD%20AUC-86.03%25-brightgreen.svg)](https://github.com/locngodev6205/face-auth)
+[![OpenCV](https://img.shields.io/badge/OpenCV-Computer_Vision-5C3EE8.svg?logo=opencv&logoColor=white)](https://opencv.org/)
+[![PostgreSQL](https://img.shields.io/badge/Vector_DB-PostgreSQL_pgvector-336791.svg?logo=postgresql&logoColor=white)](https://github.com/pgvector/pgvector)
+[![Parameters](https://img.shields.io/badge/Params-0.434M_--_1.74MB-success.svg)](https://github.com/locngodev6205/face-auth)
+[![CASIA AUC](https://img.shields.io/badge/CASIA_AUC-93.52%25-brightgreen.svg)](https://github.com/locngodev6205/face-auth)
+[![LCC AUC](https://img.shields.io/badge/LCC_AUC-86.03%25-brightgreen.svg)](https://github.com/locngodev6205/face-auth)
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
 </div>
@@ -83,15 +83,8 @@ $$
 
 A random attenuation gain $g_i \sim \mathcal{U}(0.65, 0.90)$ is sampled per instance and shared across all three bands. The spectral transfer multiplier with an explicit DC override is defined piecewise:
 
-- For the DC zero-frequency coefficient $(u, v) = (0, 0)$:
-$$
-G_{i,k}(0, 0) = 1
-$$
-
-- For all radial spatial frequencies $(u, v) \neq (0, 0)$:
-$$
-G_{i,k}(u, v) = 1 - (1 - g_i) a_k(r(u, v))
-$$
+* For the DC zero-frequency coefficient $(u, v) = (0, 0)$: $G_{i,k}(0, 0) = 1$
+* For all radial spatial frequencies $(u, v) \neq (0, 0)$: $G_{i,k}(u, v) = 1 - (1 - g_i) a_k(r(u, v))$
 
 The counterfactual spatial views are reconstructed via inverse FFT while preserving original Fourier phase:
 
@@ -127,15 +120,8 @@ $$
 
 The detached gate activates even when the predicted class does not flip: a smaller positive margin represents weakened decision support. The harmful spectral loss is normalized by the count of active harmful samples $H$:
 
-- When $H > 0$ (at least one candidate reduces the margin):
-$$
-\mathcal{L}_{\text{harm}} = \frac{1}{H} \sum_{i=1}^B h_i \cdot \text{CE}(f_\theta(x_i^*), y_i)
-$$
-
-- When $H = 0$ (no candidate degrades the margin):
-$$
-\mathcal{L}_{\text{harm}} = 0
-$$
+* When $H > 0$ (at least one candidate reduces the margin): $\mathcal{L}_{\text{harm}} = \frac{1}{H} \sum_{i=1}^B h_i \cdot \text{CE}(f_\theta(x_i^*), y_i)$
+* When $H = 0$ (no candidate degrades the margin): $\mathcal{L}_{\text{harm}} = 0$
 
 The overall training objective combines clean cross-entropy, harmful spectral supervision, and semantic auxiliary heads (11 spoof types, 5 lighting classes, 40 facial attributes):
 
